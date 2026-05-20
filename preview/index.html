@@ -1,0 +1,501 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Excelsuperpower MVP Preview</title>
+  <style>
+    :root {
+      --brand: #176b87;
+      --brand-dark: #0f4c5c;
+      --ink: #102a43;
+      --muted: #637381;
+      --line: #d9e4ea;
+      --paper: #ffffff;
+      --bg: #edf3f6;
+      --soft: #eef8fb;
+      --good: #1f8a70;
+      --warn: #c98200;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #dceef3 0%, #f7fafc 48%, #e9f5ef 100%);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
+    }
+
+    .stage {
+      display: grid;
+      grid-template-columns: minmax(280px, 390px) minmax(360px, 560px);
+      gap: 42px;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 42px;
+    }
+
+    .phone {
+      width: 390px;
+      max-width: calc(100vw - 32px);
+      height: 812px;
+      max-height: calc(100vh - 32px);
+      overflow: hidden;
+      border: 10px solid #17202a;
+      border-radius: 34px;
+      background: var(--bg);
+      box-shadow: 0 28px 80px rgba(16, 42, 67, 0.22);
+    }
+
+    .statusbar {
+      height: 30px;
+      background: #17202a;
+    }
+
+    .nav {
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--brand);
+      color: #fff;
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .screen {
+      height: calc(100% - 82px);
+      overflow-y: auto;
+      padding: 16px;
+    }
+
+    .hero {
+      padding: 8px 2px 16px;
+    }
+
+    .title {
+      margin: 0;
+      font-size: 27px;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .panel {
+      margin-bottom: 14px;
+      padding: 16px;
+      background: var(--paper);
+      border: 1px solid rgba(217, 228, 234, 0.78);
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(16, 42, 67, 0.08);
+    }
+
+    .section-title {
+      margin-bottom: 12px;
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .button {
+      width: 100%;
+      height: 44px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--brand);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .button:active {
+      background: var(--brand-dark);
+    }
+
+    .file {
+      display: none;
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: 8px;
+      background: #f6fafc;
+      color: var(--muted);
+      font-size: 13px;
+      word-break: break-all;
+    }
+
+    .sheet-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #eef2f5;
+    }
+
+    .sheet-row:last-child {
+      border-bottom: 0;
+    }
+
+    .checkbox {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--brand);
+    }
+
+    .sheet-name {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .sheet-meta,
+    .plan-desc,
+    .diagnosis,
+    .caption {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .plan {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 12px;
+      text-align: left;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    .plan:last-child {
+      margin-bottom: 0;
+    }
+
+    .plan.active {
+      border-color: var(--brand);
+      background: var(--soft);
+    }
+
+    .plan-name {
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .diagnosis {
+      padding: 12px;
+      border-radius: 8px;
+      background: #fff8e8;
+      color: #6f5100;
+    }
+
+    .result {
+      display: none;
+    }
+
+    .download-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      font-size: 13px;
+      border-bottom: 1px solid #eef2f5;
+    }
+
+    .download-row:last-child {
+      border-bottom: 0;
+    }
+
+    .mini-button {
+      padding: 6px 10px;
+      border: 0;
+      border-radius: 6px;
+      background: #e7f3f6;
+      color: var(--brand-dark);
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .sidebar {
+      padding: 8px 0;
+    }
+
+    .eyebrow {
+      color: var(--brand-dark);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .sidebar h1 {
+      margin: 12px 0 14px;
+      font-size: 42px;
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .sidebar p {
+      margin: 0 0 20px;
+      color: #3d4f5c;
+      font-size: 17px;
+      line-height: 1.75;
+    }
+
+    .flow {
+      display: grid;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .flow-item {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 12px;
+      align-items: start;
+      padding: 14px;
+      border: 1px solid rgba(217, 228, 234, 0.9);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    .num {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--brand);
+      color: #fff;
+      font-weight: 800;
+    }
+
+    .flow-title {
+      font-weight: 800;
+    }
+
+    .flow-text {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.55;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    .tag {
+      padding: 7px 10px;
+      border-radius: 999px;
+      background: #fff;
+      color: var(--brand-dark);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    @media (max-width: 860px) {
+      .stage {
+        grid-template-columns: 1fr;
+        padding: 18px;
+      }
+
+      .sidebar {
+        order: -1;
+      }
+
+      .sidebar h1 {
+        font-size: 30px;
+      }
+
+      .phone {
+        justify-self: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage">
+    <section class="phone" aria-label="小程序预览">
+      <div class="statusbar"></div>
+      <div class="nav">Excel优化打印</div>
+      <div class="screen">
+        <header class="hero">
+          <h2 class="title">Excel优化打印</h2>
+          <p class="subtitle">上传表格，自动识别 Sheet，推荐适合打印的版式。</p>
+        </header>
+
+        <section class="panel">
+          <div class="section-title">1. 上传文件</div>
+          <button class="button" id="uploadButton">选择 Excel 文件</button>
+          <div class="file" id="fileName">经营月报_打印版.xlsx</div>
+        </section>
+
+        <section class="panel" id="sheetsPanel" hidden>
+          <div class="section-title">2. 选择需要打印的 Sheet</div>
+          <label class="sheet-row">
+            <input class="checkbox" type="checkbox" checked />
+            <span>
+              <span class="sheet-name">销售明细</span>
+              <span class="sheet-meta">240 行 · 18 列 · 建议横向</span>
+            </span>
+          </label>
+          <label class="sheet-row">
+            <input class="checkbox" type="checkbox" checked />
+            <span>
+              <span class="sheet-name">汇总表</span>
+              <span class="sheet-meta">36 行 · 9 列 · 建议纵向</span>
+            </span>
+          </label>
+          <label class="sheet-row">
+            <input class="checkbox" type="checkbox" />
+            <span>
+              <span class="sheet-name">隐藏参数</span>
+              <span class="sheet-meta">12 行 · 4 列 · 可能无需打印</span>
+            </span>
+          </label>
+        </section>
+
+        <section class="panel" id="plansPanel" hidden>
+          <div class="section-title">3. 选择推荐方案</div>
+          <button class="plan active" data-plan="标准清晰版">
+            <span class="plan-name">标准清晰版</span>
+            <span class="plan-desc">保留可读字号，自动设置打印区域、重复标题行和页边距。</span>
+          </button>
+          <button class="plan" data-plan="节纸紧凑版">
+            <span class="plan-name">节纸紧凑版</span>
+            <span class="plan-desc">适配一页宽，缩小页边距，适合内部流转和批量打印。</span>
+          </button>
+          <button class="plan" data-plan="宽表横向版">
+            <span class="plan-name">宽表横向版</span>
+            <span class="plan-desc">横向打印并优化分页，适合列很多的台账和明细表。</span>
+          </button>
+        </section>
+
+        <section class="panel" id="generatePanel" hidden>
+          <div class="section-title">4. 生成打印文件</div>
+          <div class="diagnosis" id="diagnosis">
+            已识别 2 个 Sheet。建议为宽表启用横向打印，并为明细表重复首行表头。
+          </div>
+          <p class="caption">MVP 中这里会创建后端生成任务，完成后返回 PDF 和优化 Excel。</p>
+          <button class="button" id="generateButton">生成 PDF 和优化 Excel</button>
+        </section>
+
+        <section class="panel result" id="resultPanel">
+          <div class="section-title">生成完成</div>
+          <div class="download-row">
+            <span>可打印 PDF</span>
+            <button class="mini-button">下载</button>
+          </div>
+          <div class="download-row">
+            <span>优化 Excel</span>
+            <button class="mini-button">下载</button>
+          </div>
+          <div class="download-row">
+            <span>批量打印 XLSM</span>
+            <button class="mini-button">高级版</button>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <aside class="sidebar">
+      <div class="eyebrow">MVP Preview</div>
+      <h1>上传、识别、推荐、生成，一条线跑通。</h1>
+      <p>
+        这个预览用于确认第一版产品体验：先把 Excel 打印前最容易出错的步骤做成清晰流程，
+        让用户不用理解复杂打印设置，也能得到稳定可打印的 PDF 和优化表格。
+      </p>
+      <div class="flow">
+        <div class="flow-item">
+          <div class="num">1</div>
+          <div>
+            <div class="flow-title">文件上传</div>
+            <div class="flow-text">MVP 支持 xlsx，预留 xlsm 用于未来批量打印按钮。</div>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="num">2</div>
+          <div>
+            <div class="flow-title">Sheet 诊断</div>
+            <div class="flow-text">识别行列范围、隐藏表、宽表风险和重复表头需求。</div>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="num">3</div>
+          <div>
+            <div class="flow-title">方案选择</div>
+            <div class="flow-text">提供标准清晰、节纸紧凑、宽表横向三种稳定策略。</div>
+          </div>
+        </div>
+        <div class="flow-item">
+          <div class="num">4</div>
+          <div>
+            <div class="flow-title">文件生成</div>
+            <div class="flow-text">生成 PDF 和优化 Excel，高级版再加入 XLSM 批量打印。</div>
+          </div>
+        </div>
+      </div>
+      <div class="tag-row">
+        <span class="tag">微信小程序</span>
+        <span class="tag">Excel 打印优化</span>
+        <span class="tag">PDF 输出</span>
+        <span class="tag">AI 推荐解释</span>
+      </div>
+    </aside>
+  </main>
+
+  <script>
+    const uploadButton = document.querySelector("#uploadButton");
+    const fileName = document.querySelector("#fileName");
+    const sheetsPanel = document.querySelector("#sheetsPanel");
+    const plansPanel = document.querySelector("#plansPanel");
+    const generatePanel = document.querySelector("#generatePanel");
+    const resultPanel = document.querySelector("#resultPanel");
+    const generateButton = document.querySelector("#generateButton");
+    const diagnosis = document.querySelector("#diagnosis");
+
+    uploadButton.addEventListener("click", () => {
+      fileName.style.display = "block";
+      sheetsPanel.hidden = false;
+      plansPanel.hidden = false;
+      generatePanel.hidden = false;
+      resultPanel.style.display = "none";
+    });
+
+    document.querySelectorAll(".plan").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".plan").forEach((item) => item.classList.remove("active"));
+        button.classList.add("active");
+        diagnosis.textContent = button.dataset.plan + "将用于当前选中的 Sheet，生成前会自动检查打印区域和分页。";
+      });
+    });
+
+    generateButton.addEventListener("click", () => {
+      generateButton.textContent = "生成中...";
+      generateButton.disabled = true;
+
+      window.setTimeout(() => {
+        generateButton.textContent = "生成 PDF 和优化 Excel";
+        generateButton.disabled = false;
+        resultPanel.style.display = "block";
+        resultPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }, 650);
+    });
+  </script>
+</body>
+</html>
