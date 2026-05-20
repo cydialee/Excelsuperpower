@@ -1,0 +1,55 @@
+<view class="page">
+  <view class="hero">
+    <view class="title">Excel优化打印</view>
+    <view class="subtitle">上传表格，自动识别 Sheet，推荐适合打印的版式。</view>
+  </view>
+
+  <view class="panel">
+    <view class="section-title">1. 上传文件</view>
+    <button class="upload-button" bindtap="chooseExcel">选择 Excel 文件</button>
+    <view wx:if="{{fileName}}" class="file-name">{{fileName}}</view>
+  </view>
+
+  <view wx:if="{{sheets.length}}" class="panel">
+    <view class="section-title">2. 选择需要打印的 Sheet</view>
+    <checkbox-group bindchange="onSheetChange">
+      <label wx:for="{{sheets}}" wx:key="id" class="sheet-row">
+        <checkbox value="{{item.id}}" checked="{{item.checked}}" />
+        <view class="sheet-info">
+          <view class="sheet-name">{{item.name}}</view>
+          <view class="sheet-meta">{{item.rows}} 行 · {{item.columns}} 列 · {{item.orientation}}</view>
+        </view>
+      </label>
+    </checkbox-group>
+  </view>
+
+  <view wx:if="{{plans.length}}" class="panel">
+    <view class="section-title">3. 选择推荐方案</view>
+    <view
+      wx:for="{{plans}}"
+      wx:key="id"
+      class="plan {{selectedPlanId === item.id ? 'plan-active' : ''}}"
+      data-id="{{item.id}}"
+      bindtap="selectPlan"
+    >
+      <view class="plan-name">{{item.name}}</view>
+      <view class="plan-desc">{{item.description}}</view>
+    </view>
+  </view>
+
+  <view wx:if="{{selectedPlanId}}" class="panel">
+    <view class="section-title">4. 生成打印文件</view>
+    <view class="diagnosis">{{diagnosis}}</view>
+    <button class="generate-button" bindtap="generateFiles" loading="{{generating}}">
+      生成 PDF 和优化 Excel
+    </button>
+  </view>
+
+  <view wx:if="{{downloads.length}}" class="panel result-panel">
+    <view class="section-title">生成完成</view>
+    <view wx:for="{{downloads}}" wx:key="type" class="download-row">
+      <view>{{item.label}}</view>
+      <button size="mini" data-url="{{item.url}}" bindtap="copyDownloadUrl">复制链接</button>
+    </view>
+  </view>
+</view>

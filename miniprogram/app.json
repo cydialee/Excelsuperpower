@@ -1,0 +1,13 @@
+{
+  "pages": [
+    "pages/index/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "Excel优化打印",
+    "navigationBarBackgroundColor": "#176B87",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#F5F7FA"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

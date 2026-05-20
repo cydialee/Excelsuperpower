@@ -1,0 +1,25 @@
+# dependencies
+node_modules/
+miniprogram_npm/
+
+# build outputs
+dist/
+build/
+coverage/
+
+# local files
+.DS_Store
+Thumbs.db
+*.log
+.env
+.env.*
+
+# generated files
+uploads/
+outputs/
+*.tmp
+
+# WeChat DevTools
+.idea/
+.vscode/
+private.*
