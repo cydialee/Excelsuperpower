@@ -1,12 +1,45 @@
 {
   "pages": [
-    "pages/index/index"
+    "pages/index/index",
+    "pages/analyze/analyze",
+    "pages/report/report",
+    "pages/plans/plans",
+    "pages/compare/compare",
+    "pages/settings/settings",
+    "pages/result/result",
+    "pages/templates/templates",
+    "pages/batch/batch",
+    "pages/profile/profile"
   ],
   "window": {
-    "navigationBarTitleText": "Excel优化打印",
-    "navigationBarBackgroundColor": "#176B87",
-    "navigationBarTextStyle": "white",
-    "backgroundColor": "#F5F7FA"
+    "navigationBarTitleText": "PrintMind",
+    "navigationBarBackgroundColor": "#FFF7F3",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#FFF7F3"
+  },
+  "tabBar": {
+    "color": "#9A8188",
+    "selectedColor": "#FF6F91",
+    "backgroundColor": "#FFF8F5",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "工作台"
+      },
+      {
+        "pagePath": "pages/plans/plans",
+        "text": "方案中心"
+      },
+      {
+        "pagePath": "pages/templates/templates",
+        "text": "模板乐园"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的星球"
+      }
+    ]
   },
   "style": "v2",
   "sitemapLocation": "sitemap.json"

@@ -1,0 +1,84 @@
+.page-title {
+  font-size: 31rpx;
+  font-weight: 700;
+}
+
+.result-card,
+.empty-card {
+  margin: 62rpx 0 28rpx;
+  padding: 40rpx 32rpx;
+  text-align: center;
+}
+
+.preview-card {
+  margin: -8rpx 0 24rpx;
+  padding: 28rpx;
+}
+
+.preview-sheet {
+  min-height: 62rpx;
+  margin-top: 12rpx;
+  border-top: 2rpx solid #f4e8e5;
+  padding-top: 12rpx;
+  text-align: left;
+}
+
+.ready-mark {
+  width: 92rpx;
+  height: 92rpx;
+  margin: 0 auto 20rpx;
+  border-radius: 50%;
+  background: #62b98c;
+  color: #ffffff;
+  font-size: 58rpx;
+  line-height: 92rpx;
+}
+
+.headline {
+  margin-bottom: 10rpx;
+  font-size: 38rpx;
+  font-weight: 800;
+}
+
+.summary {
+  margin: 28rpx 0;
+  padding: 18rpx;
+  border-radius: 24rpx;
+  background: #fff5f1;
+  text-align: left;
+  line-height: 2;
+}
+
+.summary text {
+  color: #31906b;
+  font-weight: 700;
+}
+
+.output {
+  display: flex;
+  justify-content: space-between;
+  min-height: 58rpx;
+  border-top: 2rpx solid #f4e8e5;
+  line-height: 58rpx;
+  text-align: left;
+}
+
+.download {
+  display: flex;
+  justify-content: space-between;
+  min-height: 64rpx;
+  border-top: 2rpx solid #f4e8e5;
+  color: #473039;
+  line-height: 64rpx;
+}
+
+.download-action {
+  color: #ff6f91;
+  font-weight: 700;
+}
+
+.restart {
+  width: 100%;
+  min-height: 84rpx;
+  margin-top: 18rpx;
+}

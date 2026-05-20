@@ -1,55 +1,64 @@
-<view class="page">
-  <view class="hero">
-    <view class="title">Excel优化打印</view>
-    <view class="subtitle">上传表格，自动识别 Sheet，推荐适合打印的版式。</view>
-  </view>
-
-  <view class="panel">
-    <view class="section-title">1. 上传文件</view>
-    <button class="upload-button" bindtap="chooseExcel">选择 Excel 文件</button>
-    <view wx:if="{{fileName}}" class="file-name">{{fileName}}</view>
-  </view>
-
-  <view wx:if="{{sheets.length}}" class="panel">
-    <view class="section-title">2. 选择需要打印的 Sheet</view>
-    <checkbox-group bindchange="onSheetChange">
-      <label wx:for="{{sheets}}" wx:key="id" class="sheet-row">
-        <checkbox value="{{item.id}}" checked="{{item.checked}}" />
-        <view class="sheet-info">
-          <view class="sheet-name">{{item.name}}</view>
-          <view class="sheet-meta">{{item.rows}} 行 · {{item.columns}} 列 · {{item.orientation}}</view>
-        </view>
-      </label>
-    </checkbox-group>
-  </view>
-
-  <view wx:if="{{plans.length}}" class="panel">
-    <view class="section-title">3. 选择推荐方案</view>
-    <view
-      wx:for="{{plans}}"
-      wx:key="id"
-      class="plan {{selectedPlanId === item.id ? 'plan-active' : ''}}"
-      data-id="{{item.id}}"
-      bindtap="selectPlan"
-    >
-      <view class="plan-name">{{item.name}}</view>
-      <view class="plan-desc">{{item.description}}</view>
+<view class="page-shell workbench">
+  <view class="brand-row">
+    <view class="brand-mark">P</view>
+    <view>
+      <view class="brand-name">PrintMind</view>
+      <view class="brand-caption">AI 打印助手</view>
+    </view>
+    <view class="header-stars">
+      <view class="star-dot"></view>
+      <view class="bell">⌁</view>
     </view>
   </view>
 
-  <view wx:if="{{selectedPlanId}}" class="panel">
-    <view class="section-title">4. 生成打印文件</view>
-    <view class="diagnosis">{{diagnosis}}</view>
-    <button class="generate-button" bindtap="generateFiles" loading="{{generating}}">
-      生成 PDF 和优化 Excel
-    </button>
+  <view class="hero-copy">
+    <view class="hero-title">PrintMind</view>
+    <view class="hero-subtitle">AI 打印助手</view>
   </view>
 
-  <view wx:if="{{downloads.length}}" class="panel result-panel">
-    <view class="section-title">生成完成</view>
-    <view wx:for="{{downloads}}" wx:key="type" class="download-row">
-      <view>{{item.label}}</view>
-      <button size="mini" data-url="{{item.url}}" bindtap="copyDownloadUrl">复制链接</button>
+  <view class="file-stage">
+    <view class="paper paper-left"></view>
+    <view class="paper paper-center"></view>
+    <view class="paper paper-right"></view>
+    <swiper
+      class="promo-swiper"
+      autoplay
+      circular
+      interval="2600"
+      duration="520"
+      indicator-dots
+      indicator-color="rgba(255,255,255,.54)"
+      indicator-active-color="#ffffff"
+      bindtap="previewFlow"
+    >
+      <swiper-item wx:for="{{promoSlides}}" wx:key="id">
+        <view class="play-panel promo-{{item.tone}}">
+          <view class="panel-copy">{{item.title}}</view>
+          <view class="panel-subtitle">{{item.subtitle}}</view>
+          <view class="play-arrow"></view>
+          <view class="tiny-helper">
+            <view class="helper-face"></view>
+          </view>
+        </view>
+      </swiper-item>
+    </swiper>
+  </view>
+
+  <view class="upload-card soft-panel" bindtap="chooseExcelFile">
+    <view class="section-title">拖拽 Excel 文件到这里</view>
+    <view class="muted">或点击上传文件</view>
+    <view class="support-line">支持 .xlsx / .xlsm 格式</view>
+  </view>
+
+  <view class="between-row list-heading">
+    <view class="section-title">最近文件</view>
+    <view class="all-link" bindtap="openBatch">全部 ›</view>
+  </view>
+  <view class="soft-panel recent-list">
+    <view wx:for="{{recentFiles}}" wx:key="id" class="recent-row" bindtap="openRecent">
+      <view class="excel-pill">X</view>
+      <view class="recent-name">{{item.name}}</view>
+      <view class="recent-time">{{item.updatedAt}}</view>
     </view>
   </view>
 </view>

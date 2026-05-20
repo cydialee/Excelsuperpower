@@ -1,0 +1,145 @@
+.page-title {
+  font-size: 31rpx;
+  font-weight: 700;
+}
+
+.report-title {
+  margin-top: 42rpx;
+  font-size: 43rpx;
+  font-weight: 800;
+  text-align: center;
+}
+
+.report-subtitle {
+  margin-top: 12rpx;
+  color: #8f717b;
+  text-align: center;
+}
+
+.map-stage {
+  position: relative;
+  height: 520rpx;
+  margin-top: 24rpx;
+  overflow: hidden;
+  border-radius: 44rpx;
+  background:
+    radial-gradient(circle at 18% 34%, #8bc79f 0 54rpx, transparent 56rpx),
+    radial-gradient(circle at 82% 28%, #f08e7f 0 48rpx, transparent 50rpx),
+    linear-gradient(180deg, #dff0d1, #a8d38e);
+}
+
+.hill {
+  position: absolute;
+  right: -40rpx;
+  bottom: -72rpx;
+  left: -40rpx;
+  height: 270rpx;
+  border-radius: 50%;
+  background: #d7d88e;
+}
+
+.fountain {
+  position: absolute;
+  top: 154rpx;
+  left: 266rpx;
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 50%;
+  background: #7bc7d6;
+  box-shadow: inset 0 -18rpx 0 #e9c26e;
+}
+
+.fountain view {
+  width: 42rpx;
+  height: 42rpx;
+  margin: 40rpx auto;
+  border-radius: 12rpx;
+  background: #f7c85e;
+  transform: rotate(45deg);
+}
+
+.map-helper {
+  position: absolute;
+  bottom: 82rpx;
+  width: 100rpx;
+  height: 126rpx;
+  border-radius: 56rpx 56rpx 38rpx 38rpx;
+  background: #f7c85e;
+}
+
+.map-helper.left {
+  left: 110rpx;
+}
+
+.map-helper.right {
+  right: 144rpx;
+  background: #ffb17f;
+}
+
+.risk-bubble {
+  position: absolute;
+  max-width: 176rpx;
+  padding: 18rpx;
+  border: 2rpx solid #e8d0ca;
+  border-radius: 22rpx;
+  background: rgba(255, 252, 250, 0.95);
+  font-size: 22rpx;
+}
+
+.risk-count {
+  color: #ff6f91;
+  font-weight: 700;
+}
+
+.bubble-0 {
+  top: 30rpx;
+  left: 28rpx;
+}
+
+.bubble-1 {
+  top: 42rpx;
+  right: 30rpx;
+}
+
+.bubble-2 {
+  top: 218rpx;
+  left: 18rpx;
+}
+
+.bubble-3 {
+  top: 214rpx;
+  right: 22rpx;
+}
+
+.health-card {
+  position: relative;
+  z-index: 1;
+  margin-top: -58rpx;
+  padding: 34rpx;
+}
+
+.health-grid {
+  display: grid;
+  grid-template-columns: 230rpx 1fr;
+  gap: 18rpx;
+  align-items: center;
+  margin: 24rpx 0 34rpx;
+}
+
+.score {
+  color: #ff6f91;
+  font-size: 92rpx;
+  font-weight: 800;
+}
+
+.score-total {
+  font-size: 28rpx;
+}
+
+.metric-row {
+  display: flex;
+  justify-content: space-between;
+  min-height: 52rpx;
+  color: #725a64;
+  font-size: 24rpx;
+}

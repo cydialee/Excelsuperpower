@@ -1,0 +1,41 @@
+<view class="page-shell report-page">
+  <view class="nav-row">
+    <view class="back-link" bindtap="goBack">‹</view>
+    <view class="page-title">AI 分析地图</view>
+    <view></view>
+  </view>
+
+  <view class="report-title">AI 分析完成!</view>
+  <view class="report-subtitle">
+    {{session ? session.filename : '当前工作簿'}} · 发现 {{snapshot.opportunities.length}} 个优化机会
+  </view>
+
+  <view class="map-stage">
+    <view class="hill"></view>
+    <view class="fountain"><view></view></view>
+    <view class="map-helper left"></view>
+    <view class="map-helper right"></view>
+    <view wx:for="{{snapshot.opportunities}}" wx:key="id" class="risk-bubble bubble-{{index}}">
+      <view>{{item.label}}</view>
+      <view class="risk-count">{{item.count}}</view>
+    </view>
+  </view>
+
+  <view class="soft-panel health-card">
+    <view class="section-title">打印健康度</view>
+    <view class="health-grid">
+      <view>
+        <text class="score">{{snapshot.score}}</text>
+        <text class="score-total">/100</text>
+        <view class="score-stars">★★★★☆</view>
+      </view>
+      <view class="metrics">
+        <view wx:for="{{snapshot.metrics}}" wx:key="label" class="metric-row">
+          <text>{{item.label}}</text>
+          <text>{{item.value}}</text>
+        </view>
+      </view>
+    </view>
+    <button class="primary-button" bindtap="seePlans">查看优化方案</button>
+  </view>
+</view>

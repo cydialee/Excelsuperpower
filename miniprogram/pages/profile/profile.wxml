@@ -1,0 +1,37 @@
+<view class="page-shell profile-page">
+  <view class="profile-head">
+    <view class="avatar"><view></view></view>
+    <view class="profile-copy">
+      <view class="user-name">Lee</view>
+      <view class="level">星球居民 Lv.3</view>
+      <view class="energy-label">星能值　1280/2000</view>
+      <view class="energy"><view></view></view>
+    </view>
+    <view class="star-dot"></view>
+  </view>
+
+  <view class="soft-panel achievement-panel">
+    <view class="section-title">我的成就</view>
+    <view class="achievement-row">
+      <view wx:for="{{achievements}}" wx:key="name" class="achievement">
+        <view class="badge {{item.tone}}"></view>
+        <view>{{item.name}}</view>
+        <view class="muted">{{item.desc}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="soft-panel stat-panel">
+    <view wx:for="{{stats}}" wx:key="label" class="stat">
+      <view class="muted">{{item.label}}</view>
+      <view>{{item.value}}</view>
+    </view>
+  </view>
+
+  <view class="soft-panel menu-panel">
+    <view wx:for="{{menus}}" wx:key="name" class="menu-row" data-name="{{item.name}}" bindtap="openSettings">
+      <view>{{item.name}}</view>
+      <view class="muted">{{item.count}}　›</view>
+    </view>
+  </view>
+</view>

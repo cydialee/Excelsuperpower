@@ -1,0 +1,94 @@
+.search-bar {
+  margin: 8rpx 0 18rpx;
+  padding: 24rpx 28rpx;
+  border: 2rpx solid #f0dbd8;
+  border-radius: 999rpx;
+  background: rgba(255, 252, 250, 0.78);
+  color: #b29aa1;
+}
+
+.category-row {
+  display: flex;
+  gap: 10rpx;
+  margin-bottom: 22rpx;
+  overflow-x: auto;
+}
+
+.category {
+  flex: none;
+  padding: 12rpx 22rpx;
+  border-radius: 999rpx;
+  color: #8f747c;
+  font-size: 23rpx;
+}
+
+.category.active {
+  background: #ffd9df;
+  color: #ff5f84;
+}
+
+.template-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18rpx;
+}
+
+.template-card {
+  min-height: 306rpx;
+  padding: 22rpx;
+}
+
+.template-sheet {
+  position: relative;
+  height: 192rpx;
+  margin-bottom: 18rpx;
+  border-radius: 22rpx;
+  background:
+    linear-gradient(90deg, rgba(255,255,255,0.28), transparent),
+    repeating-linear-gradient(0deg, rgba(255,255,255,0.72) 0 22rpx, rgba(255,255,255,0.2) 22rpx 28rpx);
+}
+
+.template-sheet.green {
+  background-color: #7cc39a;
+}
+
+.template-sheet.pink {
+  background-color: #ff9ab0;
+}
+
+.template-sheet.blue {
+  background-color: #7ac3dc;
+}
+
+.template-sheet.yellow {
+  background-color: #f7c85e;
+}
+
+.mini-helper {
+  position: absolute;
+  right: 18rpx;
+  bottom: 14rpx;
+  width: 76rpx;
+  height: 90rpx;
+  border-radius: 42rpx 42rpx 26rpx 26rpx;
+  background: #ffd066;
+}
+
+.template-name {
+  margin-bottom: 8rpx;
+  font-size: 25rpx;
+  font-weight: 700;
+}
+
+.custom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.plus {
+  margin-bottom: 26rpx;
+  color: #735964;
+  font-size: 86rpx;
+}

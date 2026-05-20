@@ -1,0 +1,122 @@
+.profile-head {
+  display: flex;
+  align-items: center;
+  gap: 24rpx;
+  margin: 24rpx 0 38rpx;
+}
+
+.avatar {
+  width: 136rpx;
+  height: 136rpx;
+  border-radius: 50%;
+  background: #f7c85e;
+  box-shadow: inset 0 0 0 10rpx #ff91a7;
+}
+
+.avatar view {
+  width: 76rpx;
+  height: 76rpx;
+  margin: 34rpx auto;
+  border-radius: 50%;
+  background: #ffd7c7;
+}
+
+.profile-copy {
+  flex: 1;
+}
+
+.user-name {
+  font-size: 34rpx;
+  font-weight: 700;
+}
+
+.level {
+  display: inline-block;
+  margin: 10rpx 0;
+  padding: 8rpx 16rpx;
+  border-radius: 999rpx;
+  background: #ffe2e8;
+  color: #c96982;
+  font-size: 21rpx;
+}
+
+.energy-label {
+  color: #78616a;
+  font-size: 22rpx;
+}
+
+.energy {
+  height: 8rpx;
+  margin-top: 10rpx;
+  border-radius: 999rpx;
+  background: #efdeda;
+}
+
+.energy view {
+  width: 62%;
+  height: 100%;
+  border-radius: inherit;
+  background: #ff6f91;
+}
+
+.achievement-panel {
+  padding: 28rpx;
+}
+
+.achievement-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10rpx;
+  margin-top: 24rpx;
+  text-align: center;
+  font-size: 21rpx;
+}
+
+.badge {
+  width: 74rpx;
+  height: 88rpx;
+  margin: 0 auto 12rpx;
+  clip-path: polygon(50% 0, 90% 18%, 90% 62%, 50% 100%, 10% 62%, 10% 18%);
+  background: #74b9e0;
+}
+
+.badge.gold {
+  background: #f2b84b;
+}
+
+.badge.rose {
+  background: #ff91a7;
+}
+
+.menu-panel {
+  margin-top: 24rpx;
+  padding: 6rpx 24rpx;
+}
+
+.stat-panel {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10rpx;
+  margin-top: 24rpx;
+  padding: 24rpx 18rpx;
+  text-align: center;
+  font-weight: 700;
+}
+
+.stat .muted {
+  margin-bottom: 8rpx;
+  font-size: 21rpx;
+  font-weight: 400;
+}
+
+.menu-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 74rpx;
+  border-bottom: 2rpx solid #f4e8e5;
+}
+
+.menu-row:last-child {
+  border-bottom: 0;
+}

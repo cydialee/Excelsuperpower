@@ -1,0 +1,150 @@
+.page-title {
+  font-size: 31rpx;
+  font-weight: 700;
+}
+
+.switch-row {
+  display: grid;
+  grid-template-columns: 1fr 60rpx 1fr;
+  gap: 10rpx;
+  align-items: center;
+  margin: 42rpx 70rpx 28rpx;
+  padding: 10rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 252, 250, 0.82);
+  font-size: 23rpx;
+  text-align: center;
+}
+
+.switch-row .active {
+  padding: 14rpx;
+  border-radius: 999rpx;
+  background: #ff6f91;
+  color: #ffffff;
+}
+
+.preview-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18rpx;
+}
+
+.compare-swiper {
+  height: 482rpx;
+}
+
+.preview-column {
+  min-height: 430rpx;
+  padding: 24rpx;
+  text-align: center;
+}
+
+.preview-column.after {
+  background: rgba(241, 250, 235, 0.95);
+  border-color: #d6e5c7;
+}
+
+.preview-title {
+  color: #725a64;
+  font-size: 24rpx;
+}
+
+.sheet-stack {
+  display: grid;
+  gap: 18rpx;
+  margin: 28rpx 0;
+}
+
+.sheet-stack.before {
+  grid-template-columns: 1fr 1fr;
+  gap: 10rpx;
+}
+
+.sheet-stack view {
+  height: 124rpx;
+  border: 2rpx solid #efd7d2;
+  border-radius: 10rpx;
+  background:
+    linear-gradient(90deg, transparent 0 18%, rgba(243, 189, 183, 0.8) 18% 20%, transparent 20%),
+    repeating-linear-gradient(0deg, #fff 0 17rpx, #f6ddd7 17rpx 19rpx);
+}
+
+.before view {
+  height: 138rpx;
+}
+
+.page-count {
+  color: #715964;
+  font-size: 25rpx;
+}
+
+.saving-bar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8rpx;
+  margin: 28rpx 0;
+  padding: 28rpx 18rpx;
+  text-align: center;
+}
+
+.saving-bar text,
+.saving-bar strong {
+  display: block;
+}
+
+.saving-bar text {
+  color: #8e737c;
+  font-size: 22rpx;
+}
+
+.saving-bar strong {
+  margin-top: 8rpx;
+  color: #31906b;
+  font-size: 32rpx;
+}
+
+.real-preview {
+  margin-top: 24rpx;
+  padding: 24rpx;
+}
+
+.page-rail {
+  margin-top: 18rpx;
+  white-space: nowrap;
+}
+
+.paper-page {
+  display: inline-block;
+  width: 470rpx;
+  min-height: 320rpx;
+  margin-right: 18rpx;
+  padding: 18rpx;
+  border: 2rpx solid #ead7d2;
+  border-radius: 18rpx;
+  background: #fffdfa;
+  vertical-align: top;
+  white-space: normal;
+}
+
+.paper-caption {
+  margin-bottom: 8rpx;
+  color: #715964;
+  font-size: 21rpx;
+}
+
+.paper-row {
+  display: flex;
+  overflow: hidden;
+  min-height: 26rpx;
+}
+
+.paper-cell {
+  flex: 1 0 58rpx;
+  overflow: hidden;
+  padding: 4rpx;
+  border: 1rpx solid #f2dfda;
+  color: #715964;
+  font-size: 16rpx;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

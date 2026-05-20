@@ -1,0 +1,19 @@
+<view class="page-shell templates-page">
+  <view class="search-bar">⌕　搜索模板...</view>
+  <view class="category-row">
+    <view wx:for="{{categories}}" wx:key="*this" class="category {{index === 0 ? 'active' : ''}}">{{item}}</view>
+  </view>
+  <view class="template-grid">
+    <view wx:for="{{templates}}" wx:key="id" class="soft-panel template-card" bindtap="useTemplate">
+      <view class="template-sheet {{item.tone}}">
+        <view class="mini-helper"></view>
+      </view>
+      <view class="template-name">{{item.name}}</view>
+      <view class="muted">{{item.count}}</view>
+    </view>
+    <view class="soft-panel template-card custom">
+      <view class="plus">+</view>
+      <view class="template-name">自定义模板</view>
+    </view>
+  </view>
+</view>

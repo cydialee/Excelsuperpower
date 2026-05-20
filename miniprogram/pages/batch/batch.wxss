@@ -1,0 +1,110 @@
+.page-title {
+  font-size: 31rpx;
+  font-weight: 700;
+}
+
+.ship-stage {
+  position: relative;
+  height: 448rpx;
+}
+
+.ship-star {
+  position: absolute;
+  top: 56rpx;
+  left: 320rpx;
+  width: 58rpx;
+  height: 58rpx;
+  border-radius: 16rpx;
+  background: #f7c85e;
+  transform: rotate(45deg);
+}
+
+.ship-body {
+  position: absolute;
+  right: 118rpx;
+  bottom: 72rpx;
+  left: 118rpx;
+  height: 230rpx;
+  border: 4rpx solid #ce665d;
+  border-radius: 50% 50% 42% 42%;
+  background: linear-gradient(180deg, #ff8e9c, #ef5b6d);
+}
+
+.ship-window {
+  position: absolute;
+  z-index: 1;
+  top: 140rpx;
+  left: 178rpx;
+  width: 342rpx;
+  height: 122rpx;
+  border: 8rpx solid #ffc77a;
+  border-radius: 999rpx;
+  background:
+    radial-gradient(circle at 22% 52%, #ffd7c7 0 34rpx, transparent 36rpx),
+    radial-gradient(circle at 50% 52%, #ffd7c7 0 34rpx, transparent 36rpx),
+    radial-gradient(circle at 78% 52%, #ffd7c7 0 34rpx, transparent 36rpx),
+    #86cad6;
+}
+
+.ship-paper {
+  position: absolute;
+  top: 150rpx;
+  display: grid;
+  place-items: center;
+  width: 82rpx;
+  height: 112rpx;
+  border-radius: 12rpx;
+  background: #fffdfa;
+  color: #62b98c;
+  font-weight: 800;
+}
+
+.ship-paper.left {
+  left: 38rpx;
+  transform: rotate(-18deg);
+}
+
+.ship-paper.right {
+  right: 34rpx;
+  transform: rotate(15deg);
+}
+
+.batch-count {
+  margin-bottom: 22rpx;
+  color: #473039;
+  font-size: 31rpx;
+  font-weight: 700;
+  text-align: center;
+}
+
+.queue-panel {
+  padding: 8rpx 24rpx;
+}
+
+.queue-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  min-height: 82rpx;
+  border-bottom: 2rpx solid #f5e8e6;
+  font-size: 24rpx;
+}
+
+.queue-row:last-child {
+  border-bottom: 0;
+}
+
+.queue-name {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.queue-state {
+  color: #3ca16d;
+}
+
+.batch-button {
+  margin-top: 24rpx;
+}

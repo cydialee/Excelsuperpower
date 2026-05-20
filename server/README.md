@@ -1,15 +1,20 @@
 # Server
 
-后端暂为接口和引擎占位，建议后续拆成三个模块：
+后端 Demo 现已提供本地 Excel 处理 API：
 
-- `api`：上传、任务、下载接口。
-- `excel-engine`：Excel 解析和打印规则执行。
-- `worker`：异步生成 PDF / Excel / XLSM 文件。
+- `POST /api/upload`：上传 `.xlsx` / `.xlsm`，返回真实 Sheet、使用区域和预览数据。
+- `POST /api/preview-plan`：按所选 Sheet 和方案返回生成前分页模拟。
+- `POST /api/optimize`：选择 Sheet 和方案后输出优化 `.xlsx` 与可打印 `.pdf`。
+- `GET /outputs/...`：下载生成文件。
 
-MVP推荐 Python 实现文件处理，Node.js 或 Python 实现 API 均可。
+## 本地启动
 
-关键原则：
+在仓库根目录运行：
 
-- AI 只生成诊断和推荐，不直接改文件。
-- Excel 修改必须由规则引擎确定性执行。
-- PDF 生成优先使用 LibreOffice headless 或 OnlyOffice 服务。
+```powershell
+& "C:\Users\zsgjl\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" -m server.api
+```
+
+服务默认监听 `http://127.0.0.1:4173/`，同时托管浏览器 Demo 和 API。
+
+当前 PDF 由后端根据工作表数据渲染，适合 Demo 打印验证；若后续需要与 Excel/WPS 打印视觉完全一致，可把 PDF 适配器替换为 LibreOffice / OnlyOffice 转换服务。

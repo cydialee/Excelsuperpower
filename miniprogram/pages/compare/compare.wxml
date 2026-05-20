@@ -1,0 +1,58 @@
+<view class="page-shell compare-page">
+  <view class="nav-row">
+    <view class="back-link" bindtap="goBack">‹</view>
+    <view class="page-title">对比预览</view>
+    <view class="star-dot"></view>
+  </view>
+
+  <view class="switch-row">
+    <view>原始效果</view>
+    <view class="muted">VS</view>
+    <view class="active">优化后效果</view>
+  </view>
+
+  <swiper class="compare-swiper" autoplay circular interval="3200" duration="520" bindchange="changePreview">
+    <swiper-item wx:for="{{slides}}" wx:key="id">
+      <view class="preview-grid">
+        <view class="soft-panel preview-column">
+          <view class="preview-title">原始效果 · {{item.title}}</view>
+          <view class="sheet-stack before">
+            <view></view><view></view><view></view><view></view>
+          </view>
+          <view class="page-count">共 {{preview ? preview.originalPageCount : item.beforePages}} 页</view>
+        </view>
+        <view class="soft-panel preview-column after">
+          <view class="preview-title">优化后效果</view>
+          <view class="sheet-stack">
+            <view></view><view></view>
+          </view>
+          <view class="page-count">共 {{preview ? preview.optimizedPageCount : item.afterPages}} 页</view>
+        </view>
+      </view>
+    </swiper-item>
+  </swiper>
+
+  <view wx:if="{{pages.length}}" class="soft-panel real-preview">
+    <view class="between-row">
+      <view class="section-title">真实分页模拟</view>
+      <view class="muted">{{pages.length}} 页待生成</view>
+    </view>
+    <scroll-view scroll-x class="page-rail">
+      <view wx:for="{{pages}}" wx:key="number" class="paper-page">
+        <view class="paper-caption">{{item.sheet}} · 第 {{item.number}} 页</view>
+        <view class="paper-caption muted">行 {{item.rowRange}} · 列 {{item.columnRange}}</view>
+        <view wx:for="{{item.rows}}" wx:for-item="row" wx:key="index" class="paper-row">
+          <view wx:for="{{row}}" wx:for-item="cell" wx:key="index" class="paper-cell">{{cell}}</view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <view class="soft-panel saving-bar">
+    <view><text>节省纸张</text><strong>{{preview ? preview.originalPageCount - preview.optimizedPageCount : plan.pages}}</strong></view>
+    <view><text>纸张利用率</text><strong>{{plan.paperUse || '92%'}}↑</strong></view>
+    <view><text>预计节省</text><strong>{{plan.saving || '18%'}}↓</strong></view>
+  </view>
+
+  <button class="primary-button" bindtap="confirmPlan">确认使用此方案</button>
+</view>

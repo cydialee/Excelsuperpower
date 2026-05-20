@@ -1,0 +1,614 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PrintMind Excel 打印助手</title>
+  <style>
+    :root {
+      --bg: #fff6f3;
+      --paper: #fffdfb;
+      --ink: #553d48;
+      --muted: #9b7f89;
+      --pink: #ff6f91;
+      --pink-soft: #ffd7e0;
+      --green: #3fa679;
+      --gold: #f7c458;
+      --sky: #8bc8ef;
+      --line: #efd9d7;
+      --shadow: 0 22px 62px rgba(154, 98, 117, .16);
+    }
+    * { box-sizing: border-box; letter-spacing: 0; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 2%, rgba(255, 187, 210, .52), transparent 27rem),
+        radial-gradient(circle at 92% 4%, rgba(247, 196, 88, .24), transparent 20rem),
+        var(--bg);
+      font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    .shell {
+      display: grid;
+      grid-template-columns: minmax(300px, 420px) 392px;
+      gap: clamp(18px, 5vw, 86px);
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 28px;
+    }
+    .intro { max-width: 410px; }
+    .intro h1 { margin: 12px 0; font-size: clamp(38px, 5vw, 68px); }
+    .intro p { color: #775b66; font-size: 17px; line-height: 1.8; }
+    .pill-row, .metric-row, .plan-tabs, .chips, .bottom-actions { display: flex; gap: 9px; }
+    .pill, .chip {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(255, 253, 251, .82);
+      color: var(--muted);
+      padding: 9px 13px;
+    }
+    .pill-row { flex-wrap: wrap; margin-top: 20px; }
+    .phone {
+      position: relative;
+      width: 392px;
+      max-width: calc(100vw - 22px);
+      height: min(864px, calc(100vh - 26px));
+      overflow: hidden;
+      border: 10px solid #fffaf7;
+      border-radius: 40px;
+      background:
+        radial-gradient(circle at 8% 0%, rgba(255, 191, 210, .58), transparent 11rem),
+        radial-gradient(circle at 96% 1%, rgba(247, 196, 88, .2), transparent 10rem),
+        var(--bg);
+      box-shadow: var(--shadow);
+    }
+    .screen { height: 100%; overflow-y: auto; padding: 20px 18px 92px; }
+    .view.hidden, .hidden { display: none; }
+    .brand, .between, .sheet-row, .task, .download { display: flex; align-items: center; }
+    .brand { gap: 10px; margin-bottom: 26px; }
+    .between { justify-content: space-between; gap: 10px; }
+    .mark, .excel, .avatar, .ok {
+      display: grid;
+      place-items: center;
+      color: white;
+      font-weight: 800;
+    }
+    .mark { width: 30px; height: 30px; border-radius: 10px; background: var(--pink); }
+    .excel { width: 30px; height: 30px; flex: none; border-radius: 9px; background: var(--green); }
+    .star { width: 13px; height: 13px; margin-left: auto; border-radius: 4px; background: var(--gold); transform: rotate(45deg); box-shadow: 0 0 0 5px rgba(247, 196, 88, .16); }
+    h2, h3, p { margin: 0; }
+    .muted { color: var(--muted); }
+    .small { font-size: 12px; }
+    .section-title { margin: 18px 2px 11px; font-weight: 800; }
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: rgba(255, 253, 251, .93);
+      box-shadow: 0 14px 32px rgba(154, 98, 117, .09);
+    }
+    .hero h2 { color: #7b4054; font-size: 36px; line-height: 1.1; }
+    .hero p { margin-top: 7px; }
+    .stage {
+      position: relative;
+      height: 214px;
+      margin: 14px 0 12px;
+      overflow: hidden;
+      border-radius: 28px;
+      background: linear-gradient(135deg, rgba(255, 227, 235, .8), rgba(255, 247, 224, .88));
+    }
+    .paper {
+      position: absolute;
+      top: 54px;
+      width: 148px;
+      height: 124px;
+      border-radius: 18px;
+      opacity: .95;
+    }
+    .paper.one { left: 9px; background: #da8cc1; transform: rotate(-11deg); }
+    .paper.two { left: 104px; background: #57ade0; }
+    .paper.three { right: 12px; background: #53aa7d; transform: rotate(13deg); }
+    .promo {
+      position: absolute;
+      inset: 88px 26px 20px;
+      padding: 18px;
+      border: 1px solid rgba(255,255,255,.62);
+      border-radius: 22px;
+      color: white;
+      background: linear-gradient(135deg, rgba(209, 139, 204, .92), rgba(69, 174, 185, .92));
+      backdrop-filter: blur(6px);
+      transition: transform .45s ease, opacity .45s ease;
+    }
+    .promo h3 { font-size: 17px; }
+    .promo p { margin-top: 5px; color: rgba(255,255,255,.9); font-size: 12px; }
+    .play {
+      width: 0;
+      height: 0;
+      margin: 16px auto 0;
+      border-top: 22px solid transparent;
+      border-bottom: 22px solid transparent;
+      border-left: 30px solid rgba(255,255,255,.86);
+    }
+    .dots { position: absolute; right: 18px; bottom: 12px; display: flex; gap: 5px; }
+    .dots i { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,.5); }
+    .dots i.active { width: 18px; border-radius: 99px; background: white; }
+    .upload {
+      position: relative;
+      display: block;
+      padding: 20px 16px;
+      text-align: center;
+    }
+    .upload input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+    .upload strong { display: block; font-size: 17px; }
+    .recent { padding: 7px 14px; }
+    .task, .sheet-row { gap: 10px; min-height: 48px; border-bottom: 1px solid #f3e5e3; font-size: 13px; }
+    .task:last-child, .sheet-row:last-child { border-bottom: 0; }
+    .task span:last-child { margin-left: auto; color: var(--muted); }
+    .analysis { margin-top: 13px; padding: 14px; }
+    .track { height: 8px; margin: 10px 0; overflow: hidden; border-radius: 999px; background: #f7e2e8; }
+    .fill { height: 100%; width: 100%; border-radius: inherit; background: linear-gradient(90deg, #ffb3c2, var(--pink)); }
+    .sheet-list { padding: 7px 13px; }
+    .sheet-row input { accent-color: var(--pink); }
+    .sheet-copy { min-width: 0; }
+    .preview-cells {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 3px;
+      margin: -2px 0 9px 39px;
+      font-size: 10px;
+    }
+    .preview-cells span, .paper-cell {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .preview-cells span { padding: 4px; border-radius: 5px; background: #fff1ee; }
+    .map {
+      position: relative;
+      min-height: 212px;
+      margin-top: 13px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 53% 46%, #ffe07d 0 18px, transparent 19px),
+        radial-gradient(circle at 24% 25%, #b7df9a 0 34px, transparent 35px),
+        radial-gradient(circle at 77% 28%, #ff9d8f 0 31px, transparent 32px),
+        radial-gradient(circle at 76% 78%, #9fd7b7 0 36px, transparent 37px),
+        #e8f2d1;
+    }
+    .map h3 { padding: 14px; text-align: center; }
+    .risk { position: absolute; max-width: 112px; padding: 8px; border: 1px solid var(--line); border-radius: 14px; background: white; font-size: 11px; }
+    .risk.one { top: 49px; left: 12px; }
+    .risk.two { top: 47px; right: 10px; }
+    .risk.three { bottom: 18px; left: 18px; }
+    .risk.four { right: 12px; bottom: 23px; }
+    .health { margin-top: 12px; padding: 15px; }
+    .score { color: var(--pink); font-size: 42px; font-weight: 800; }
+    .plan-tabs { overflow-x: auto; margin: 13px 0; }
+    .chip { flex: none; padding: 8px 12px; border: 0; }
+    .chip.active { color: white; background: var(--pink); }
+    .plan-window { position: relative; min-height: 250px; }
+    .plan-card {
+      position: absolute;
+      inset: 0;
+      padding: 16px;
+      opacity: 0;
+      transform: translateX(28px) scale(.96);
+      pointer-events: none;
+      transition: opacity .4s ease, transform .4s ease;
+    }
+    .plan-card.active { opacity: 1; transform: translateX(0) scale(1); pointer-events: auto; }
+    .plan-card h3 { color: var(--pink); font-size: 18px; }
+    .plan-grid { display: grid; grid-template-columns: 1fr 100px; gap: 10px; align-items: center; min-height: 146px; margin-top: 13px; }
+    .thumb, .mini-page {
+      border: 1px solid #ead5d2;
+      background:
+        linear-gradient(90deg, transparent 0 24%, rgba(237, 195, 188, .75) 24% 25%, transparent 25%),
+        repeating-linear-gradient(0deg, white 0 13px, #f5ddd8 13px 15px);
+    }
+    .thumb { height: 128px; border-radius: 15px; }
+    .compare-toggle { margin: 14px auto; width: 290px; padding: 7px; border-radius: 999px; background: rgba(255,253,251,.86); text-align: center; }
+    .compare-slider { position: relative; min-height: 246px; }
+    .compare-card {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity .4s ease, transform .4s ease;
+    }
+    .compare-card.active { opacity: 1; transform: translateY(0); }
+    .compare-col { min-height: 230px; padding: 13px; text-align: center; }
+    .compare-col.after { border-color: #d7e5c5; background: rgba(240, 250, 235, .96); }
+    .page-stack { display: grid; gap: 8px; margin: 13px 0; }
+    .before .page-stack { grid-template-columns: 1fr 1fr; }
+    .mini-page { height: 68px; border-radius: 9px; }
+    .paper-rail { display: flex; gap: 11px; overflow-x: auto; padding-bottom: 3px; }
+    .print-page {
+      flex: 0 0 286px;
+      min-height: 300px;
+      padding: 13px;
+      border: 1px solid #ead7d2;
+      border-radius: 18px;
+      background: white;
+      box-shadow: 0 10px 22px rgba(112, 85, 91, .08);
+    }
+    .paper-grid { margin-top: 9px; overflow: hidden; border-radius: 9px; }
+    .paper-row { display: flex; min-height: 18px; }
+    .paper-cell { flex: 1 0 42px; padding: 3px; border: 1px solid #f0dfdb; font-size: 9px; }
+    .paper-row:first-child .paper-cell { color: white; background: #5b9a78; }
+    .settings { padding: 14px; }
+    .switches { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 9px 0; }
+    .switches button {
+      min-height: 38px;
+      border: 0;
+      border-radius: 13px;
+      color: var(--muted);
+      background: #fff1ed;
+    }
+    .switches button.active { color: white; background: var(--pink); }
+    .checks { display: grid; gap: 8px; margin-top: 10px; font-size: 13px; }
+    .checks label { display: flex; justify-content: space-between; }
+    .btn {
+      min-height: 50px;
+      border: 0;
+      border-radius: 28px;
+      color: white;
+      background: linear-gradient(135deg, #ff7b99, #ff678a);
+      box-shadow: 0 13px 24px rgba(255, 111, 145, .23);
+      font-weight: 800;
+    }
+    .wide { width: 100%; margin-top: 13px; }
+    .ghost { color: var(--pink); border: 1px solid var(--line); background: white; box-shadow: none; }
+    .result { margin-top: 13px; padding: 16px; }
+    .ok { width: 56px; height: 56px; margin: 0 auto 10px; border-radius: 50%; background: var(--green); font-size: 28px; }
+    .download { justify-content: space-between; min-height: 40px; border-top: 1px solid #f1e2df; font-size: 13px; }
+    .download a { color: var(--pink); font-weight: 800; text-decoration: none; }
+    .template-grid, .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .template { min-height: 126px; padding: 12px; }
+    .template-art { height: 62px; margin-bottom: 9px; border-radius: 14px; background: repeating-linear-gradient(0deg, rgba(255,255,255,.75) 0 12px, transparent 12px 17px), var(--green); }
+    .template:nth-child(2n) .template-art { background-color: #fb8ea7; }
+    .template:nth-child(3n) .template-art { background-color: #74bfe4; }
+    .batch, .profile { margin-top: 12px; padding: 15px; }
+    .avatar { width: 62px; height: 62px; border-radius: 50%; background: linear-gradient(135deg, #ff7b99, var(--gold)); }
+    .stat-grid { grid-template-columns: repeat(3, 1fr); margin-top: 13px; text-align: center; font-size: 12px; }
+    .stat { padding: 10px 4px; border-radius: 14px; background: #fff1ed; }
+    .menu { display: flex; justify-content: space-between; min-height: 38px; border-top: 1px solid #f1e2df; line-height: 38px; font-size: 13px; }
+    .tabbar {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      height: 70px;
+      border-top: 1px solid var(--line);
+      background: rgba(255, 251, 248, .96);
+    }
+    .tabbar button { border: 0; color: #9e818b; background: transparent; font-size: 11px; }
+    .tabbar b { display: block; color: var(--pink); font-size: 18px; }
+    @media (max-width: 860px) {
+      .shell { grid-template-columns: 1fr; padding: 14px; }
+      .intro { display: none; }
+      .phone { justify-self: center; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <aside class="intro">
+      <span class="pill">Executable MVP</span>
+      <h1>PrintMind</h1>
+      <p>上传 Excel 后读取真实 Sheet，先看打印风险和分页模拟，再选择优化方案，最后下载已经设置打印区域、重复表头与页面缩放的 Excel 和可打印 PDF。</p>
+      <div class="pill-row">
+        <span class="pill">真实 Sheet 解析</span>
+        <span class="pill">生成前分页预览</span>
+        <span class="pill">优化 XLSX</span>
+        <span class="pill">打印 PDF</span>
+      </div>
+    </aside>
+    <section class="phone">
+      <div class="screen">
+        <header class="brand">
+          <div class="mark">P</div>
+          <div><b>PrintMind</b><p class="muted small">AI 打印助手</p></div>
+          <div class="star"></div>
+        </header>
+
+        <section id="workbenchView" class="view">
+          <div class="hero"><h2>PrintMind</h2><p>Excel 优化打印工作台</p></div>
+          <div class="stage">
+            <div class="paper one"></div><div class="paper two"></div><div class="paper three"></div>
+            <article id="promo" class="promo"></article>
+            <div id="promoDots" class="dots"></div>
+          </div>
+          <label class="upload panel">
+            <input id="fileInput" type="file" accept=".xlsx,.xlsm">
+            <strong>拖拽或选择 Excel 文件</strong>
+            <p class="muted">支持 .xlsx / .xlsm，上传后立即生成打印诊断</p>
+          </label>
+          <div class="section-title between"><span>最近文件</span><button class="chip" data-go="template">模板场景</button></div>
+          <div class="panel recent">
+            <div class="task"><span class="excel">X</span><span>销售数据总表_2024.xlsx</span><span>14:30</span></div>
+            <div class="task"><span class="excel">X</span><span>财务报表_季度汇总.xlsx</span><span>09:12</span></div>
+            <div class="task"><span class="excel">X</span><span>库存管理明细_5月.xlsx</span><span>05-14</span></div>
+          </div>
+          <section id="analysisBlock" class="hidden">
+            <div class="panel analysis">
+              <div class="between"><b id="workbookName"></b><span id="uploadState" class="muted">解析完成</span></div>
+              <div class="track"><div class="fill"></div></div>
+              <p class="small muted">读取数据区域、Sheet 与打印风险后，可以继续切换方案。</p>
+            </div>
+            <div class="section-title">选择要打印的 Sheet</div>
+            <div id="sheetList" class="panel sheet-list"></div>
+            <div class="panel map">
+              <h3>AI 分析地图</h3>
+              <span class="risk one">表头未重复<br><b>分页会丢上下文</b></span>
+              <span class="risk two">列宽较窄<br><b>推荐横向页</b></span>
+              <span class="risk three">打印区域<br><b>自动收敛数据区</b></span>
+              <span class="risk four">冻结首行<br><b>便于校对</b></span>
+            </div>
+            <div class="panel health between">
+              <div><b class="score">72</b><span>/100</span><p class="muted small">打印健康度</p></div>
+              <button class="btn" data-go="plan">查看优化方案</button>
+            </div>
+          </section>
+        </section>
+
+        <section id="planView" class="view hidden">
+          <div class="hero between"><div><h2>方案推荐</h2><p>动态比较打印策略</p></div><button class="chip" data-go="workbench">返回上传</button></div>
+          <div class="plan-tabs"><button class="chip active">推荐方案</button><button class="chip">节省优先</button><button class="chip">效果优先</button><button class="chip">自定义</button></div>
+          <div id="planWindow" class="plan-window"></div>
+          <div class="bottom-actions"><button id="prevPlan" class="btn ghost">上一方案</button><button id="nextPlan" class="btn" style="flex:1">应用并预览</button></div>
+          <div class="compare-toggle">原始效果　VS　<b>优化后效果</b></div>
+          <div id="compareSlider" class="compare-slider"></div>
+          <div class="section-title between"><span>生成前真实分页模拟</span><span id="pageCount" class="muted small">请先上传 Excel</span></div>
+          <div id="pageRail" class="paper-rail"></div>
+          <div class="section-title">打印设置</div>
+          <div class="panel settings">
+            <p class="small muted">打印方向</p>
+            <div class="switches"><button class="orientation" data-value="portrait">纵向</button><button class="orientation active" data-value="landscape">横向</button></div>
+            <div class="checks">
+              <label>适配一页宽 <input id="fit" type="checkbox" checked></label>
+              <label>重复表头 <input id="header" type="checkbox" checked></label>
+              <label>冻结首行 <input id="freeze" type="checkbox" checked></label>
+            </div>
+          </div>
+          <button id="generate" class="btn wide">生成优化 Excel 与 PDF</button>
+          <section id="result" class="panel result hidden"></section>
+        </section>
+
+        <section id="templateView" class="view hidden">
+          <div class="hero"><h2>模板乐园</h2><p>按业务场景快速选择打印配置</p></div>
+          <div class="chips"><button class="chip active">全部</button><button class="chip">财务</button><button class="chip">销售</button><button class="chip">行政</button></div>
+          <div class="section-title">场景模板</div>
+          <div class="template-grid">
+            <article class="panel template"><div class="template-art"></div><b>财务报表</b><p class="muted small">总账、费用、利润表</p></article>
+            <article class="panel template"><div class="template-art"></div><b>销售清单</b><p class="muted small">报价单、订单、出库</p></article>
+            <article class="panel template"><div class="template-art"></div><b>库存台账</b><p class="muted small">明细分页与表头</p></article>
+            <article class="panel template"><div class="template-art"></div><b>培训签到</b><p class="muted small">横向名单打印</p></article>
+            <article class="panel template"><div class="template-art"></div><b>工资考勤</b><p class="muted small">隐私列与汇总页</p></article>
+            <article class="panel template"><div class="template-art"></div><b>学校成绩</b><p class="muted small">班级分组打印</p></article>
+          </div>
+          <div class="panel batch">
+            <div class="between"><b>批量任务舱</b><span class="muted">3 个文件待处理</span></div>
+            <div class="task"><span class="excel">X</span><span>销售数据分析_2024.xlsx</span><span>分析完成</span></div>
+            <div class="task"><span class="excel">X</span><span>财务报表_季度汇总.xlsx</span><span>优化中</span></div>
+            <div class="task"><span class="excel">X</span><span>库存管理明细_5月.xlsx</span><span>等待中</span></div>
+          </div>
+        </section>
+
+        <section id="profileView" class="view hidden">
+          <div class="hero"><h2>我的星球</h2><p>文件、方案与节纸记录</p></div>
+          <div class="panel profile">
+            <div class="between"><div class="avatar">Lee</div><div style="flex:1"><b>Lee</b><p class="muted small">星球居民 Lv.3</p></div><span class="chip">1280/2000</span></div>
+            <div class="stat-grid"><div class="stat">优化文件<br><b>28</b></div><div class="stat">节省纸张<br><b>316</b></div><div class="stat">批量打印<br><b>12</b></div></div>
+          </div>
+          <div class="panel profile">
+            <div class="menu"><span>我的方案</span><span>12 ›</span></div>
+            <div class="menu"><span>我的模板</span><span>8 ›</span></div>
+            <div class="menu"><span>打印记录</span><span>156 ›</span></div>
+            <div class="menu"><span>节纸报告</span><span>¥48.60 ›</span></div>
+            <div class="menu"><span>设置中心</span><span>›</span></div>
+          </div>
+        </section>
+      </div>
+      <nav class="tabbar">
+        <button data-view="workbench"><b>⌂</b>工作台</button>
+        <button data-view="plan"><b>▣</b>方案中心</button>
+        <button data-view="template"><b>▦</b>模板乐园</button>
+        <button data-view="profile"><b>◉</b>我的星球</button>
+      </nav>
+    </section>
+  </main>
+  <script>
+    const promos = [
+      ["智能优化打印方案", "上传后自动读 Sheet 与数据区域"],
+      ["真实分页预览", "生成前看见每一页会装下什么"],
+      ["批量打印任务", "方案、模板、输出文件在一个流里"]
+    ];
+    const compareSlides = [
+      { title: "分页收敛", before: 8, after: 4 },
+      { title: "表头重复", before: 6, after: 4 },
+      { title: "宽表横向", before: 10, after: 5 }
+    ];
+    const fallbackPlans = [
+      { id: "landscape", name: "横向明细版", description: "宽表一页宽，重复标题行。", fitToWidth: 1, repeatHeader: true, freezeTopRow: true },
+      { id: "compact", name: "节纸紧凑版", description: "缩小页边距，减少分页。", fitToWidth: 1, repeatHeader: true, freezeTopRow: true },
+      { id: "split", name: "阅读拆分页", description: "列很多时按宽度拆页。", fitToWidth: 2, repeatHeader: true, freezeTopRow: true },
+      { id: "standard", name: "正式归档版", description: "纵向优先，适合汇总表。", fitToWidth: 1, repeatHeader: true, freezeTopRow: true }
+    ];
+    const state = {
+      file: null,
+      workbookId: "",
+      sheets: [],
+      plans: fallbackPlans,
+      planIndex: 0,
+      preview: null,
+      orientation: "landscape"
+    };
+    const $ = (id) => document.getElementById(id);
+    const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
+
+    function showView(name) {
+      document.querySelectorAll(".view").forEach((view) => view.classList.toggle("hidden", view.id !== `${name}View`));
+      document.querySelectorAll("[data-view]").forEach((button) => button.classList.toggle("active", button.dataset.view === name));
+    }
+    document.querySelectorAll("[data-view]").forEach((button) => button.onclick = () => showView(button.dataset.view));
+    document.querySelectorAll("[data-go]").forEach((button) => button.onclick = () => showView(button.dataset.go));
+
+    let promoIndex = 0;
+    function renderPromo() {
+      $("promo").innerHTML = `<h3>${promos[promoIndex][0]}</h3><p>${promos[promoIndex][1]}</p><div class="play"></div>`;
+      $("promoDots").innerHTML = promos.map((_, index) => `<i class="${index === promoIndex ? "active" : ""}"></i>`).join("");
+    }
+    setInterval(() => { promoIndex = (promoIndex + 1) % promos.length; renderPromo(); }, 2600);
+
+    function selectedSheets() {
+      return state.sheets.filter((sheet) => sheet.checked);
+    }
+    function activePlan() {
+      return state.plans[state.planIndex] || fallbackPlans[0];
+    }
+    function planPayload() {
+      const plan = activePlan();
+      return {
+        ...plan,
+        orientation: state.orientation,
+        fitToWidth: $("fit").checked ? 1 : (plan.fitToWidth || 1),
+        repeatHeader: $("header").checked,
+        freezeTopRow: $("freeze").checked
+      };
+    }
+    function renderSheets() {
+      $("sheetList").innerHTML = state.sheets.map((sheet) => `
+        <label class="sheet-row"><input type="checkbox" data-sheet="${esc(sheet.name)}" ${sheet.checked ? "checked" : ""}><span class="excel">X</span><span class="sheet-copy">${esc(sheet.name)}<br><i class="muted small">${esc(sheet.range)} · ${sheet.rows} 行 · ${sheet.columns} 列</i></span></label>
+        <div class="preview-cells">${(sheet.preview || []).slice(0, 2).flat().slice(0, 8).map((cell) => `<span>${esc(cell)}</span>`).join("")}</div>
+      `).join("");
+      document.querySelectorAll("[data-sheet]").forEach((checkbox) => checkbox.onchange = () => {
+        const sheet = state.sheets.find((item) => item.name === checkbox.dataset.sheet);
+        sheet.checked = checkbox.checked;
+        requestPrintPreview();
+      });
+    }
+    function renderPlans() {
+      $("planWindow").innerHTML = state.plans.map((plan, index) => `
+        <article class="panel plan-card ${index === state.planIndex ? "active" : ""}" data-plan="${index}">
+          <div class="between"><h3>方案 ${String.fromCharCode(65 + index)}　${esc(plan.name)}</h3><span class="chip">${index === 0 ? "推荐" : "可选"}</span></div>
+          <div class="plan-grid"><div>${esc(plan.description)}<p class="muted small">宽度适配 ${plan.fitToWidth || 1} 页 · 重复表头 ${plan.repeatHeader ? "开启" : "可选"}</p><p style="color:var(--gold)">★★★★☆</p></div><div class="thumb"></div></div>
+        </article>
+      `).join("");
+      document.querySelectorAll("[data-plan]").forEach((card) => card.onclick = () => selectPlan(Number(card.dataset.plan)));
+    }
+    function selectPlan(index, loadPreview = true) {
+      state.planIndex = (index + state.plans.length) % state.plans.length;
+      renderPlans();
+      if (loadPreview) requestPrintPreview();
+    }
+    $("prevPlan").onclick = () => selectPlan(state.planIndex - 1);
+    $("nextPlan").onclick = () => { selectPlan(state.planIndex + 1); $("pageRail").scrollIntoView({ behavior: "smooth", block: "nearest" }); };
+    setInterval(() => {
+      if (!$("planView").classList.contains("hidden") && state.plans.length) selectPlan(state.planIndex + 1, Boolean(state.workbookId));
+    }, 4300);
+
+    let compareIndex = 0;
+    function renderCompare() {
+      const source = state.preview || {};
+      $("compareSlider").innerHTML = compareSlides.map((slide, index) => `
+        <article class="compare-card ${index === compareIndex ? "active" : ""}">
+          <div class="panel compare-col before"><b>原始效果 · ${slide.title}</b><div class="page-stack"><i class="mini-page"></i><i class="mini-page"></i><i class="mini-page"></i><i class="mini-page"></i></div><p>共 ${source.originalPageCount || slide.before} 页</p></div>
+          <div class="panel compare-col after"><b>优化后效果</b><div class="page-stack"><i class="mini-page"></i><i class="mini-page"></i></div><p>共 ${source.optimizedPageCount || slide.after} 页</p></div>
+        </article>
+      `).join("");
+    }
+    setInterval(() => { compareIndex = (compareIndex + 1) % compareSlides.length; renderCompare(); }, 3300);
+    function renderPages() {
+      if (!state.preview) {
+        $("pageRail").innerHTML = `<div class="panel print-page"><b>等待 Excel 数据</b><p class="muted small">上传后这里会按方案展示真实 Sheet 分页片段。</p></div>`;
+        $("pageCount").textContent = "请先上传 Excel";
+        renderCompare();
+        return;
+      }
+      const pages = state.preview.sheets.flatMap((sheet) => sheet.pages.map((page) => ({ ...page, sheet: sheet.name })));
+      $("pageCount").textContent = `${state.preview.originalPageCount} 页压缩为 ${state.preview.optimizedPageCount} 页`;
+      $("pageRail").innerHTML = pages.map((page) => `
+        <article class="print-page"><b>${esc(page.sheet)} · 第 ${page.number} 页</b><p class="muted small">行 ${page.rowRange} · 列 ${page.columnRange}${page.hasRepeatedHeader ? " · 重复表头" : ""}</p><div class="paper-grid">${page.rows.map((row) => `<div class="paper-row">${row.map((cell) => `<span class="paper-cell">${esc(cell)}</span>`).join("")}</div>`).join("")}</div></article>
+      `).join("");
+      renderCompare();
+    }
+    async function requestPrintPreview() {
+      if (!state.workbookId || !selectedSheets().length) return renderPages();
+      $("pageCount").textContent = "正在生成分页预览...";
+      const response = await fetch("/api/preview-plan", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ workbookId: state.workbookId, sheets: selectedSheets().map((sheet) => sheet.name), plan: planPayload() })
+      });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.error || "预览失败");
+      state.preview = payload.preview;
+      renderPages();
+    }
+    document.querySelectorAll(".orientation").forEach((button) => button.onclick = () => {
+      state.orientation = button.dataset.value;
+      document.querySelectorAll(".orientation").forEach((item) => item.classList.toggle("active", item === button));
+      requestPrintPreview().catch((error) => $("pageCount").textContent = error.message);
+    });
+    ["fit", "header", "freeze"].forEach((id) => $(id).onchange = () => requestPrintPreview().catch((error) => $("pageCount").textContent = error.message));
+
+    $("fileInput").onchange = async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      if (!/\.(xlsx|xlsm)$/i.test(file.name)) return alert("请选择 .xlsx 或 .xlsm 文件");
+      state.file = file;
+      $("analysisBlock").classList.remove("hidden");
+      $("workbookName").textContent = file.name;
+      $("uploadState").textContent = "上传解析中";
+      const body = new FormData();
+      body.append("file", file);
+      try {
+        const response = await fetch("/api/upload", { method: "POST", body });
+        const payload = await response.json();
+        if (!response.ok) throw new Error(payload.error || "上传失败");
+        state.workbookId = payload.workbookId;
+        state.sheets = payload.sheets.map((sheet, index) => ({ ...sheet, checked: index < 2 }));
+        state.plans = payload.plans;
+        state.planIndex = 0;
+        $("uploadState").textContent = `${payload.sheetCount} 个 Sheet 已解析`;
+        renderSheets();
+        renderPlans();
+        await requestPrintPreview();
+      } catch (error) {
+        $("uploadState").textContent = error.message;
+      }
+    };
+    $("generate").onclick = async () => {
+      if (!state.workbookId || !selectedSheets().length) return alert("请先上传 Excel 并选择至少一个 Sheet");
+      $("generate").textContent = "生成中...";
+      try {
+        const response = await fetch("/api/optimize", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ workbookId: state.workbookId, sheets: selectedSheets().map((sheet) => sheet.name), plan: planPayload() })
+        });
+        const payload = await response.json();
+        if (!response.ok) throw new Error(payload.error || "生成失败");
+        $("result").classList.remove("hidden");
+        $("result").innerHTML = `<div class="ok">✓</div><h3 style="text-align:center">文件已生成</h3><p class="muted small">已设置打印区域、缩放、重复表头与所选方案。</p>${payload.downloads.map((item) => `<div class="download"><span>${esc(item.label)}</span><a href="${esc(item.url)}">下载</a></div>`).join("")}`;
+        $("result").scrollIntoView({ behavior: "smooth", block: "nearest" });
+      } catch (error) {
+        alert(error.message);
+      } finally {
+        $("generate").textContent = "生成优化 Excel 与 PDF";
+      }
+    };
+    renderPromo();
+    renderPlans();
+    renderPages();
+    renderCompare();
+  </script>
+</body>
+</html>

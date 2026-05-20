@@ -1,0 +1,65 @@
+<view class="page-shell analyze-page">
+  <view class="nav-row">
+    <view class="back-link" bindtap="goBack">‹</view>
+    <view class="page-title">上传解析</view>
+    <view class="star-dot"></view>
+  </view>
+
+  <view class="research-copy">
+    <view class="headline">星星人正在研究中...</view>
+    <view class="muted">{{session ? session.filename : 'AI 正在理解你的表格结构'}}</view>
+  </view>
+
+  <view class="study-stage">
+    <view class="float-file file-a">X</view>
+    <view class="float-file file-b">X</view>
+    <view class="float-file file-c">表</view>
+    <view class="desk"></view>
+    <view class="mascot">
+      <view class="hood-star"></view>
+      <view class="mascot-face"></view>
+      <view class="glass"></view>
+    </view>
+  </view>
+
+  <view class="soft-panel progress-card">
+    <view class="between-row">
+      <view class="section-title">解析进度</view>
+      <view>{{progress}}%</view>
+    </view>
+    <view class="track"><view class="fill" style="width: {{progress}}%;"></view></view>
+    <view wx:for="{{steps}}" wx:key="label" class="step-row">
+      <view class="step-check {{item.done ? 'done' : ''}}">{{item.done ? '✓' : '·'}}</view>
+      <view class="step-label">{{item.label}}</view>
+      <view class="step-state">{{item.done ? '✓' : '◌'}}</view>
+    </view>
+  </view>
+
+  <view wx:if="{{ready}}" class="soft-panel sheet-card">
+    <view class="between-row">
+      <view class="section-title">选择要优化的 Sheet</view>
+      <view class="muted">{{selectedSheetIds.length}} 个已选</view>
+    </view>
+    <checkbox-group bindchange="onSheetChange">
+      <view wx:for="{{session.sheets}}" wx:key="id">
+        <label class="sheet-row">
+          <checkbox value="{{item.id}}" checked="{{item.checked}}" />
+          <view class="sheet-copy">
+            <view>{{item.name}}</view>
+            <view class="muted">{{item.rows}} 行 · {{item.columns}} 列</view>
+          </view>
+        </label>
+        <view wx:if="{{item.preview.length}}" class="sheet-preview">
+          <view wx:for="{{item.preview}}" wx:for-item="row" wx:key="index" class="preview-row">
+            <view wx:for="{{row}}" wx:for-item="cell" wx:key="index" class="preview-cell">{{cell}}</view>
+          </view>
+        </view>
+      </view>
+    </checkbox-group>
+  </view>
+
+  <view class="tip">小贴士：星星人正在努力节省纸张中~</view>
+  <button class="primary-button report-button" bindtap="seeReport" disabled="{{!ready}}">
+    {{ready ? '查看分析结果' : '解析中...'}}
+  </button>
+</view>

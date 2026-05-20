@@ -1,0 +1,218 @@
+.page-title {
+  font-size: 30rpx;
+  font-weight: 700;
+}
+
+.research-copy {
+  margin: 54rpx 0 20rpx;
+  text-align: center;
+}
+
+.headline {
+  margin-bottom: 12rpx;
+  font-size: 42rpx;
+  font-weight: 700;
+}
+
+.study-stage {
+  position: relative;
+  height: 396rpx;
+}
+
+.desk {
+  position: absolute;
+  right: 94rpx;
+  bottom: 54rpx;
+  left: 94rpx;
+  height: 58rpx;
+  border: 2rpx solid #dfa788;
+  border-radius: 18rpx 18rpx 0 0;
+  background: linear-gradient(90deg, #ffd2b8, #dfeacb);
+}
+
+.mascot {
+  position: absolute;
+  right: 222rpx;
+  bottom: 88rpx;
+  width: 210rpx;
+  height: 236rpx;
+  border-radius: 110rpx 110rpx 80rpx 80rpx;
+  background: #f7c85e;
+}
+
+.mascot-face {
+  position: absolute;
+  top: 68rpx;
+  left: 38rpx;
+  width: 142rpx;
+  height: 138rpx;
+  border-radius: 50%;
+  background: #ffd7c7;
+}
+
+.hood-star {
+  position: absolute;
+  top: -18rpx;
+  left: 90rpx;
+  width: 36rpx;
+  height: 36rpx;
+  border-radius: 10rpx;
+  background: #f7c85e;
+  border: 2rpx solid #ce8e18;
+  transform: rotate(45deg);
+}
+
+.glass {
+  position: absolute;
+  top: 102rpx;
+  right: -10rpx;
+  width: 74rpx;
+  height: 74rpx;
+  border: 10rpx solid #4d5b63;
+  border-radius: 50%;
+}
+
+.float-file {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100rpx;
+  height: 130rpx;
+  border: 2rpx solid #efd6cf;
+  border-radius: 18rpx;
+  background: #fffdfa;
+  color: #62b98c;
+  font-size: 42rpx;
+  font-weight: 800;
+  box-shadow: 0 12rpx 30rpx rgba(126, 93, 104, 0.12);
+}
+
+.file-a {
+  top: 118rpx;
+  left: 26rpx;
+  transform: rotate(-18deg);
+}
+
+.file-b {
+  top: 70rpx;
+  right: 44rpx;
+  transform: rotate(14deg);
+}
+
+.file-c {
+  top: 232rpx;
+  right: 70rpx;
+  color: #7d9f7f;
+  transform: rotate(-8deg);
+}
+
+.progress-card {
+  padding: 30rpx;
+}
+
+.track {
+  height: 12rpx;
+  margin: 22rpx 0;
+  overflow: hidden;
+  border-radius: 999rpx;
+  background: #f7e4e7;
+}
+
+.fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #ffb0c1, #ff6f91);
+  transition: width 0.35s ease;
+}
+
+.step-row {
+  display: flex;
+  align-items: center;
+  min-height: 54rpx;
+  color: #6d5861;
+}
+
+.step-check {
+  width: 30rpx;
+  height: 30rpx;
+  margin-right: 16rpx;
+  border: 2rpx solid #dab9c1;
+  border-radius: 8rpx;
+  color: #c9a0ac;
+  line-height: 28rpx;
+  text-align: center;
+}
+
+.step-check.done,
+.step-state {
+  color: #3ca16d;
+}
+
+.step-label {
+  flex: 1;
+}
+
+.tip {
+  margin: 28rpx 0;
+  color: #a58e96;
+  font-size: 23rpx;
+  text-align: center;
+}
+
+.sheet-card {
+  margin-top: 22rpx;
+  padding: 26rpx;
+}
+
+.sheet-row {
+  display: flex;
+  align-items: center;
+  min-height: 78rpx;
+  border-bottom: 2rpx solid #f7eceb;
+}
+
+.sheet-row:last-child {
+  border-bottom: 0;
+}
+
+.sheet-copy {
+  margin-left: 16rpx;
+  font-size: 25rpx;
+}
+
+.sheet-copy .muted {
+  margin-top: 5rpx;
+  font-size: 21rpx;
+}
+
+.sheet-preview {
+  max-height: 220rpx;
+  margin: 0 0 18rpx 54rpx;
+  overflow: hidden;
+  border: 2rpx solid #f1dedb;
+  border-radius: 18rpx;
+  background: #fff9f5;
+}
+
+.preview-row {
+  display: flex;
+}
+
+.preview-cell {
+  flex: 1;
+  min-width: 88rpx;
+  max-width: 148rpx;
+  overflow: hidden;
+  padding: 8rpx;
+  border-right: 2rpx solid #f4e8e5;
+  border-bottom: 2rpx solid #f4e8e5;
+  color: #765863;
+  font-size: 18rpx;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.report-button {
+  margin-top: 6rpx;
+}

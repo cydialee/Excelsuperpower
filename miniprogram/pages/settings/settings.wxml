@@ -1,0 +1,52 @@
+<view class="page-shell settings-page">
+  <view class="nav-row">
+    <view class="back-link" bindtap="goBack">‹</view>
+    <view class="page-title">打印设置</view>
+    <view class="star-dot"></view>
+  </view>
+
+  <view class="rider-stage">
+    <view class="cloud cloud-left"></view>
+    <view class="road"></view>
+    <view class="rider">
+      <view class="wheel"></view>
+      <view class="wheel second"></view>
+      <view class="rider-body"></view>
+    </view>
+  </view>
+
+  <view class="soft-panel setting-card">
+    <view class="setting-label">打印方向</view>
+    <view class="segmented">
+      <view class="{{settings.orientation === 'portrait' ? 'active' : ''}}" data-value="portrait" bindtap="setOrientation">纵向</view>
+      <view class="{{settings.orientation === 'landscape' ? 'active' : ''}}" data-value="landscape" bindtap="setOrientation">横向</view>
+    </view>
+
+    <view class="setting-label">纸张大小</view>
+    <view class="paper-row">
+      <view class="{{settings.paper === 'A4' ? 'active' : ''}}" data-value="A4" bindtap="setPaper">A4</view>
+      <view class="{{settings.paper === 'A3' ? 'active' : ''}}" data-value="A3" bindtap="setPaper">A3</view>
+      <view class="{{settings.paper === 'custom' ? 'active' : ''}}" data-value="custom" bindtap="setPaper">自定义</view>
+    </view>
+
+    <view class="setting-label">页边距（毫米）</view>
+    <view class="margin-grid">
+      <view>上 <text>{{settings.top}}</text></view>
+      <view>下 <text>{{settings.bottom}}</text></view>
+      <view>左 <text>{{settings.left}}</text></view>
+      <view>右 <text>{{settings.right}}</text></view>
+    </view>
+
+    <view class="toggle-row" bindtap="toggle" data-key="fitToWidth">
+      <text>缩放比例</text><view class="switch {{settings.fitToWidth ? 'on' : ''}}"></view>
+    </view>
+    <view class="toggle-row" bindtap="toggle" data-key="repeatHeader">
+      <text>重复表头</text><view class="switch {{settings.repeatHeader ? 'on' : ''}}"></view>
+    </view>
+    <view class="toggle-row" bindtap="toggle" data-key="gridline">
+      <text>网格线</text><view class="switch {{settings.gridline ? 'on' : ''}}"></view>
+    </view>
+  </view>
+
+  <button class="primary-button" bindtap="saveSettings">保存设置</button>
+</view>

@@ -1,0 +1,159 @@
+.page-title {
+  font-size: 31rpx;
+  font-weight: 700;
+}
+
+.rider-stage {
+  position: relative;
+  height: 300rpx;
+  overflow: hidden;
+}
+
+.cloud {
+  position: absolute;
+  top: 86rpx;
+  left: 146rpx;
+  width: 110rpx;
+  height: 52rpx;
+  border: 2rpx solid #f3c9c7;
+  border-radius: 999rpx;
+  background: #fffdfa;
+}
+
+.road {
+  position: absolute;
+  right: -50rpx;
+  bottom: -80rpx;
+  left: -50rpx;
+  height: 220rpx;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #cde9b6, #a7cf8a);
+}
+
+.rider {
+  position: absolute;
+  right: 120rpx;
+  bottom: 72rpx;
+  width: 210rpx;
+  height: 130rpx;
+}
+
+.wheel {
+  position: absolute;
+  bottom: 0;
+  left: 28rpx;
+  width: 54rpx;
+  height: 54rpx;
+  border: 10rpx solid #5e4a54;
+  border-radius: 50%;
+  background: #fff3de;
+}
+
+.wheel.second {
+  left: 132rpx;
+}
+
+.rider-body {
+  position: absolute;
+  right: 34rpx;
+  bottom: 34rpx;
+  width: 128rpx;
+  height: 84rpx;
+  border-radius: 42rpx 62rpx 28rpx 28rpx;
+  background: linear-gradient(135deg, #ff6f91, #f7c85e);
+}
+
+.setting-card {
+  margin-top: -28rpx;
+  margin-bottom: 24rpx;
+  padding: 30rpx;
+}
+
+.setting-label {
+  margin: 18rpx 0 14rpx;
+  color: #705962;
+  font-size: 24rpx;
+}
+
+.segmented,
+.paper-row {
+  display: grid;
+  gap: 10rpx;
+}
+
+.segmented {
+  grid-template-columns: 1fr 1fr;
+  padding: 8rpx;
+  border-radius: 22rpx;
+  background: #fff5f1;
+  text-align: center;
+}
+
+.paper-row {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.segmented view,
+.paper-row view {
+  min-height: 58rpx;
+  border-radius: 18rpx;
+  background: #fff9f5;
+  color: #927780;
+  line-height: 58rpx;
+  text-align: center;
+}
+
+.segmented .active,
+.paper-row .active {
+  background: #ff6f91;
+  color: #fff;
+}
+
+.margin-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12rpx;
+}
+
+.margin-grid view {
+  display: flex;
+  justify-content: space-between;
+  padding: 12rpx 18rpx;
+  border-radius: 18rpx;
+  background: #fff6f1;
+}
+
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 62rpx;
+  margin-top: 8rpx;
+}
+
+.switch {
+  position: relative;
+  width: 68rpx;
+  height: 38rpx;
+  border-radius: 999rpx;
+  background: #dfd0d1;
+}
+
+.switch::after {
+  position: absolute;
+  top: 4rpx;
+  left: 4rpx;
+  width: 30rpx;
+  height: 30rpx;
+  border-radius: 50%;
+  background: #ffffff;
+  content: "";
+}
+
+.switch.on {
+  background: #62b98c;
+}
+
+.switch.on::after {
+  left: 34rpx;
+}

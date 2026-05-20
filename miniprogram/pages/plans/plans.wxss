@@ -1,0 +1,106 @@
+.filter-row {
+  display: flex;
+  gap: 12rpx;
+  margin: 10rpx 0 28rpx;
+  overflow-x: auto;
+}
+
+.filter {
+  flex: none;
+  padding: 14rpx 24rpx;
+  border-radius: 999rpx;
+  color: #9d818b;
+  font-size: 24rpx;
+}
+
+.filter.active {
+  background: #ff6f91;
+  color: #ffffff;
+}
+
+.plan-swiper {
+  height: 430rpx;
+  margin-bottom: 22rpx;
+}
+
+.plan-card {
+  height: 390rpx;
+  margin: 0 8rpx;
+  padding: 26rpx;
+}
+
+.plan-card.selected {
+  border-color: #ff9bb1;
+  background: rgba(255, 248, 249, 0.98);
+}
+
+.plan-title {
+  color: #ff5f84;
+  font-weight: 700;
+}
+
+.pick {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  background: #ff6f91;
+  color: #fff;
+  line-height: 40rpx;
+  text-align: center;
+}
+
+.plan-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 18rpx;
+}
+
+.plan-metrics {
+  color: #715964;
+  font-size: 24rpx;
+  line-height: 2;
+}
+
+.plan-metrics text {
+  color: #31906b;
+  font-weight: 700;
+}
+
+.paper-preview {
+  width: 150rpx;
+  padding: 14rpx;
+  border: 2rpx solid #ecd8d4;
+  border-radius: 16rpx;
+  background: #fffdfa;
+}
+
+.paper-preview view {
+  height: 58rpx;
+  margin-bottom: 10rpx;
+  border: 2rpx solid #f0d8d4;
+  background: repeating-linear-gradient(0deg, #fff 0 10rpx, #f6d6d0 10rpx 12rpx);
+}
+
+.paper-preview view:last-child {
+  margin-bottom: 0;
+}
+
+.action-row {
+  display: flex;
+  gap: 18rpx;
+  align-items: center;
+  padding-top: 8rpx;
+}
+
+.grow {
+  flex: 1;
+}
+
+.tune {
+  width: 86rpx;
+  height: 86rpx;
+  padding: 0;
+  font-size: 30rpx;
+  line-height: 82rpx;
+}
