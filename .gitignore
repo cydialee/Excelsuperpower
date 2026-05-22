@@ -17,6 +17,7 @@ Thumbs.db
 # generated files
 uploads/
 outputs/
+.worktrees/
 *.tmp
 __pycache__/
 *.pyc
