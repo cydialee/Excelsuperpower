@@ -1,7 +1,7 @@
 page {
   min-height: 100%;
-  background: #fff7f3;
-  color: #4d3941;
+  background: #fff6d8;
+  color: #25443d;
   font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 
@@ -10,16 +10,19 @@ page {
   padding: 30rpx;
   box-sizing: border-box;
   background:
-    radial-gradient(circle at 10% 6%, rgba(255, 194, 210, 0.56), transparent 26%),
-    radial-gradient(circle at 90% 0%, rgba(247, 200, 94, 0.24), transparent 20%),
-    #fff7f3;
+    linear-gradient(rgba(255,255,255,0.36) 2rpx, transparent 2rpx),
+    linear-gradient(90deg, rgba(255,255,255,0.36) 2rpx, transparent 2rpx),
+    radial-gradient(circle at 10% 6%, rgba(244, 140, 128, 0.22), transparent 28%),
+    radial-gradient(circle at 92% 2%, rgba(66, 184, 180, 0.18), transparent 24%),
+    #fff6d8;
+  background-size: 52rpx 52rpx, 52rpx 52rpx, auto, auto, auto;
 }
 
 .soft-panel {
-  border: 2rpx solid rgba(255, 216, 224, 0.8);
-  border-radius: 36rpx;
-  background: rgba(255, 252, 250, 0.92);
-  box-shadow: 0 18rpx 50rpx rgba(165, 113, 127, 0.12);
+  border: 3rpx solid #dbc698;
+  border-radius: 22rpx;
+  background: rgba(255, 253, 243, 0.94);
+  box-shadow: 0 18rpx 44rpx rgba(89, 64, 39, 0.14);
 }
 
 .nav-row,
@@ -30,39 +33,39 @@ page {
 }
 
 .section-title {
-  color: #473039;
+  color: #25443d;
   font-size: 30rpx;
   font-weight: 700;
 }
 
 .muted {
-  color: #9a8188;
+  color: #7b8b80;
 }
 
 .primary-button {
   min-height: 92rpx;
   border: 0;
-  border-radius: 44rpx;
-  background: linear-gradient(135deg, #ff7897, #ff6588);
+  border-radius: 999rpx;
+  background: #42b8b4;
   color: #ffffff;
   font-size: 31rpx;
   font-weight: 700;
-  box-shadow: 0 16rpx 34rpx rgba(255, 111, 145, 0.28);
+  box-shadow: 0 16rpx 34rpx rgba(66, 184, 180, 0.28);
 }
 
 .ghost-button {
-  border: 2rpx solid #ffd4df;
-  border-radius: 36rpx;
-  background: #fffaf7;
-  color: #7b5663;
+  border: 3rpx dashed #42b8b4;
+  border-radius: 999rpx;
+  background: #fffdf3;
+  color: #25837f;
 }
 
 .star-dot {
   width: 18rpx;
   height: 18rpx;
   border-radius: 6rpx;
-  background: #f7c85e;
-  box-shadow: 0 0 0 6rpx rgba(247, 200, 94, 0.18);
+  background: #f4c95d;
+  box-shadow: 0 0 0 6rpx rgba(244, 201, 93, 0.2);
   transform: rotate(45deg);
 }
 
@@ -73,7 +76,7 @@ page {
   min-width: 46rpx;
   height: 46rpx;
   border-radius: 14rpx;
-  background: #62b98c;
+  background: #2f9f6f;
   color: #ffffff;
   font-size: 25rpx;
   font-weight: 700;
@@ -94,4 +97,121 @@ page {
   color: #f5a623;
   font-size: 28rpx;
   letter-spacing: 0;
+}
+
+.section-kicker {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44rpx;
+  padding: 0 18rpx;
+  border: 2rpx solid rgba(37, 131, 127, 0.12);
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.66);
+  color: #25837f;
+  font-size: 20rpx;
+  font-weight: 700;
+  letter-spacing: 2rpx;
+  text-transform: uppercase;
+}
+
+.glass-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46rpx;
+  padding: 0 18rpx;
+  border: 2rpx solid rgba(255, 255, 255, 0.45);
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 10rpx 26rpx rgba(83, 64, 39, 0.08);
+  color: #3e6d68;
+  font-size: 20rpx;
+  font-weight: 700;
+}
+
+.reveal-block {
+  opacity: 0;
+  transform: translateY(26rpx) scale(0.985);
+}
+
+.page-entered .reveal-block {
+  animation: rise-in 0.78s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.delay-1 {
+  animation-delay: 0.08s;
+}
+
+.delay-2 {
+  animation-delay: 0.16s;
+}
+
+.delay-3 {
+  animation-delay: 0.24s;
+}
+
+.delay-4 {
+  animation-delay: 0.32s;
+}
+
+.delay-5 {
+  animation-delay: 0.4s;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(26rpx) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-10rpx);
+  }
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.9;
+  }
+
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}
+
+@keyframes glow-shift {
+  0%,
+  100% {
+    opacity: 0.54;
+  }
+
+  50% {
+    opacity: 0.9;
+  }
+}
+
+@keyframes drift-x {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(12rpx);
+  }
 }

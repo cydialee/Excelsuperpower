@@ -1,19 +1,42 @@
-<view class="page-shell analyze-page">
-  <view class="nav-row">
-    <view class="back-link" bindtap="goBack">‹</view>
+<view class="page-shell analyze-page {{pageReady ? 'page-entered' : ''}}">
+  <view class="nav-row reveal-block">
+    <view class="back-link" bindtap="goBack">&lt;</view>
     <view class="page-title">上传解析</view>
     <view class="star-dot"></view>
   </view>
 
-  <view class="research-copy">
-    <view class="headline">星星人正在研究中...</view>
-    <view class="muted">{{session ? session.filename : 'AI 正在理解你的表格结构'}}</view>
+  <view class="research-copy reveal-block delay-1">
+    <view class="section-kicker">AI Print Lab</view>
+    <view class="headline">{{analysisMessages[activeAnalysisIndex].title}}</view>
+    <view class="muted research-file">{{session ? session.filename : 'AI 正在理解你的表格结构'}}</view>
+    <view class="analysis-detail">{{analysisMessages[activeAnalysisIndex].detail}}</view>
+    <view class="analysis-badges">
+      <view
+        wx:for="{{analysisMessages}}"
+        wx:key="badge"
+        class="analysis-badge {{activeAnalysisIndex === index ? 'is-active' : ''}}"
+      >
+        {{item.badge}}
+      </view>
+    </view>
   </view>
 
-  <view class="study-stage">
+  <view class="study-stage reveal-block delay-2">
+    <view class="stage-glow glow-a"></view>
+    <view class="stage-glow glow-b"></view>
+    <view class="scan-ring ring-a"></view>
+    <view class="scan-ring ring-b"></view>
     <view class="float-file file-a">X</view>
     <view class="float-file file-b">X</view>
     <view class="float-file file-c">表</view>
+    <view class="stage-note stage-note-left">
+      <view class="stage-note-label">当前扫描</view>
+      <view class="stage-note-value">{{analysisMessages[activeAnalysisIndex].focus}}</view>
+    </view>
+    <view class="stage-note stage-note-right">
+      <view class="stage-note-label">预估产出</view>
+      <view class="stage-note-value">优化 Excel / PDF</view>
+    </view>
     <view class="desk"></view>
     <view class="mascot">
       <view class="hood-star"></view>
@@ -22,30 +45,39 @@
     </view>
   </view>
 
-  <view class="soft-panel progress-card">
+  <view class="soft-panel progress-card reveal-block delay-3">
     <view class="between-row">
       <view class="section-title">解析进度</view>
-      <view>{{progress}}%</view>
+      <view class="glass-tag progress-status">{{ready ? '已完成' : 'AI 处理中'}}</view>
     </view>
+    <view class="progress-number">{{progress}}%</view>
     <view class="track"><view class="fill" style="width: {{progress}}%;"></view></view>
-    <view wx:for="{{steps}}" wx:key="label" class="step-row">
+    <view class="progress-summary">
+      <view wx:for="{{progressHighlights}}" wx:key="*this" class="summary-pill">{{item}}</view>
+    </view>
+    <view
+      wx:for="{{steps}}"
+      wx:key="label"
+      class="step-row {{item.done ? 'done-row' : ''}}"
+    >
       <view class="step-check {{item.done ? 'done' : ''}}">{{item.done ? '✓' : '·'}}</view>
       <view class="step-label">{{item.label}}</view>
-      <view class="step-state">{{item.done ? '✓' : '◌'}}</view>
+      <view class="step-state">{{item.done ? '✓' : '○'}}</view>
     </view>
   </view>
 
-  <view wx:if="{{ready}}" class="soft-panel sheet-card">
+  <view wx:if="{{ready}}" class="soft-panel sheet-card reveal-block delay-4">
     <view class="between-row">
       <view class="section-title">选择要优化的 Sheet</view>
       <view class="muted">{{selectedSheetIds.length}} 个已选</view>
     </view>
+    <view class="sheet-intro">先勾选真正需要打印的工作表，后续结果页会基于这些 Sheet 生成优化方案。</view>
     <checkbox-group bindchange="onSheetChange">
       <view wx:for="{{session.sheets}}" wx:key="id">
         <label class="sheet-row">
           <checkbox value="{{item.id}}" checked="{{item.checked}}" />
           <view class="sheet-copy">
-            <view>{{item.name}}</view>
+            <view class="sheet-name">{{item.name}}</view>
             <view class="muted">{{item.rows}} 行 · {{item.columns}} 列</view>
           </view>
         </label>
@@ -58,8 +90,8 @@
     </checkbox-group>
   </view>
 
-  <view class="tip">小贴士：星星人正在努力节省纸张中~</view>
-  <button class="primary-button report-button" bindtap="seeReport" disabled="{{!ready}}">
+  <view class="tip reveal-block delay-5">{{footerHint}}</view>
+  <button class="primary-button report-button reveal-block delay-5" bindtap="seeReport" disabled="{{!ready}}">
     {{ready ? '查看分析结果' : '解析中...'}}
   </button>
 </view>

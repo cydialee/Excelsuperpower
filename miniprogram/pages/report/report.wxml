@@ -1,16 +1,24 @@
-<view class="page-shell report-page">
-  <view class="nav-row">
-    <view class="back-link" bindtap="goBack">‹</view>
+<view class="page-shell report-page {{pageReady ? 'page-entered' : ''}}">
+  <view class="nav-row reveal-block">
+    <view class="back-link" bindtap="goBack">&lt;</view>
     <view class="page-title">AI 分析地图</view>
     <view></view>
   </view>
 
-  <view class="report-title">AI 分析完成!</view>
-  <view class="report-subtitle">
-    {{session ? session.filename : '当前工作簿'}} · 发现 {{snapshot.opportunities.length}} 个优化机会
+  <view class="report-intro reveal-block delay-1">
+    <view class="section-kicker">Insight Map</view>
+    <view class="report-title">AI 分析完成，可以开始优化了</view>
+    <view class="report-subtitle">
+      {{session ? session.filename : '当前工作簿'}} · 发现 {{snapshot.opportunities.length}} 个优化机会
+    </view>
+    <view class="report-tags">
+      <view wx:for="{{reportTags}}" wx:key="*this" class="report-tag">{{item}}</view>
+    </view>
   </view>
 
-  <view class="map-stage">
+  <view class="map-stage reveal-block delay-2">
+    <view class="map-glow map-glow-left"></view>
+    <view class="map-glow map-glow-right"></view>
     <view class="hill"></view>
     <view class="fountain"><view></view></view>
     <view class="map-helper left"></view>
@@ -21,13 +29,16 @@
     </view>
   </view>
 
-  <view class="soft-panel health-card">
-    <view class="section-title">打印健康度</view>
+  <view class="soft-panel health-card reveal-block delay-3">
+    <view class="between-row">
+      <view class="section-title">打印健康度</view>
+      <view class="glass-tag">建议继续优化</view>
+    </view>
     <view class="health-grid">
-      <view>
+      <view class="score-panel">
         <text class="score">{{snapshot.score}}</text>
         <text class="score-total">/100</text>
-        <view class="score-stars">★★★★☆</view>
+        <view class="score-stars">★☆★☆★</view>
       </view>
       <view class="metrics">
         <view wx:for="{{snapshot.metrics}}" wx:key="label" class="metric-row">

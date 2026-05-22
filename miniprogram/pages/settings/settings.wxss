@@ -60,7 +60,7 @@
   width: 128rpx;
   height: 84rpx;
   border-radius: 42rpx 62rpx 28rpx 28rpx;
-  background: linear-gradient(135deg, #ff6f91, #f7c85e);
+  background: linear-gradient(135deg, #42b8b4, #f4c95d);
 }
 
 .setting-card {
@@ -105,7 +105,7 @@
 
 .segmented .active,
 .paper-row .active {
-  background: #ff6f91;
+  background: #42b8b4;
   color: #fff;
 }
 

@@ -19,7 +19,7 @@
 .switch-row .active {
   padding: 14rpx;
   border-radius: 999rpx;
-  background: #ff6f91;
+  background: #42b8b4;
   color: #ffffff;
 }
 
@@ -66,7 +66,7 @@
   border-radius: 10rpx;
   background:
     linear-gradient(90deg, transparent 0 18%, rgba(243, 189, 183, 0.8) 18% 20%, transparent 20%),
-    repeating-linear-gradient(0deg, #fff 0 17rpx, #f6ddd7 17rpx 19rpx);
+    repeating-linear-gradient(0deg, #fff 0 17rpx, #eadcc0 17rpx 19rpx);
 }
 
 .before view {
@@ -121,7 +121,7 @@
   padding: 18rpx;
   border: 2rpx solid #ead7d2;
   border-radius: 18rpx;
-  background: #fffdfa;
+  background: #fffdf3;
   vertical-align: top;
   white-space: normal;
 }

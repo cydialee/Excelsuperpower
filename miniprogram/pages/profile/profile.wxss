@@ -10,7 +10,7 @@
   height: 136rpx;
   border-radius: 50%;
   background: #f7c85e;
-  box-shadow: inset 0 0 0 10rpx #ff91a7;
+  box-shadow: inset 0 0 0 10rpx #42b8b4;
 }
 
 .avatar view {
@@ -56,7 +56,7 @@
   width: 62%;
   height: 100%;
   border-radius: inherit;
-  background: #ff6f91;
+  background: #42b8b4;
 }
 
 .achievement-panel {
@@ -85,7 +85,7 @@
 }
 
 .badge.rose {
-  background: #ff91a7;
+  background: #f48c80;
 }
 
 .menu-panel {

@@ -14,7 +14,7 @@
 }
 
 .filter.active {
-  background: #ff6f91;
+  background: #42b8b4;
   color: #ffffff;
 }
 
@@ -30,12 +30,12 @@
 }
 
 .plan-card.selected {
-  border-color: #ff9bb1;
-  background: rgba(255, 248, 249, 0.98);
+  border-color: #42b8b4;
+  background: rgba(236, 251, 245, 0.98);
 }
 
 .plan-title {
-  color: #ff5f84;
+  color: #25837f;
   font-weight: 700;
 }
 
@@ -43,7 +43,7 @@
   width: 40rpx;
   height: 40rpx;
   border-radius: 50%;
-  background: #ff6f91;
+  background: #42b8b4;
   color: #fff;
   line-height: 40rpx;
   text-align: center;
@@ -72,14 +72,14 @@
   padding: 14rpx;
   border: 2rpx solid #ecd8d4;
   border-radius: 16rpx;
-  background: #fffdfa;
+  background: #fffdf3;
 }
 
 .paper-preview view {
   height: 58rpx;
   margin-bottom: 10rpx;
   border: 2rpx solid #f0d8d4;
-  background: repeating-linear-gradient(0deg, #fff 0 10rpx, #f6d6d0 10rpx 12rpx);
+  background: repeating-linear-gradient(0deg, #fff 0 10rpx, #eadcc0 10rpx 12rpx);
 }
 
 .paper-preview view:last-child {

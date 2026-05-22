@@ -23,8 +23,8 @@
 }
 
 .category.active {
-  background: #ffd9df;
-  color: #ff5f84;
+  background: #d7eff8;
+  color: #25837f;
 }
 
 .template-grid {
@@ -53,7 +53,7 @@
 }
 
 .template-sheet.pink {
-  background-color: #ff9ab0;
+  background-color: #f48c80;
 }
 
 .template-sheet.blue {

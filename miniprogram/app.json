@@ -12,15 +12,15 @@
     "pages/profile/profile"
   ],
   "window": {
-    "navigationBarTitleText": "PrintMind",
-    "navigationBarBackgroundColor": "#FFF7F3",
+    "navigationBarTitleText": "表格美化打印",
+    "navigationBarBackgroundColor": "#FFF6D8",
     "navigationBarTextStyle": "black",
-    "backgroundColor": "#FFF7F3"
+    "backgroundColor": "#FFF6D8"
   },
   "tabBar": {
-    "color": "#9A8188",
-    "selectedColor": "#FF6F91",
-    "backgroundColor": "#FFF8F5",
+    "color": "#7B8B80",
+    "selectedColor": "#25837F",
+    "backgroundColor": "#FFFDF3",
     "borderStyle": "white",
     "list": [
       {

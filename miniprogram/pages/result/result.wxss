@@ -73,7 +73,7 @@
 }
 
 .download-action {
-  color: #ff6f91;
+  color: #25837f;
   font-weight: 700;
 }
 

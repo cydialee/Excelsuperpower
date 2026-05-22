@@ -1,1111 +1,4042 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="zh-CN">
 <head>
-<<<<<<< HEAD
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PrintMind Excel 打印助手</title>
+  <title>Excel 鏅鸿兘鎵撳嵃宸ヤ綔鍙?/title>
+  <link rel="icon" href="data:,">
   <style>
     :root {
-      --bg: #fff6f3;
-      --paper: #fffdfb;
-      --ink: #553d48;
-      --muted: #9b7f89;
-      --pink: #ff6f91;
-      --pink-soft: #ffd7e0;
-      --green: #3fa679;
-      --gold: #f7c458;
-      --sky: #8bc8ef;
-      --line: #efd9d7;
-      --shadow: 0 22px 62px rgba(154, 98, 117, .16);
+      --bg: #f4f7fb;
+      --panel: rgba(255, 255, 255, 0.92);
+      --panel-strong: #ffffff;
+      --ink: #102033;
+      --muted: #6b7b8f;
+      --line: #dce5ef;
+      --line-soft: #edf2f7;
+      --blue: #246bfe;
+      --blue-soft: #eff5ff;
+      --mint: #19c6a7;
+      --mint-soft: #e9fbf7;
+      --orange: #ff9f43;
+      --orange-soft: #fff4e8;
+      --red: #ff5c72;
+      --shadow: 0 18px 45px rgba(31, 52, 89, 0.1);
+      --shadow-soft: 0 8px 24px rgba(31, 52, 89, 0.08);
+      --rail: 86px;
     }
-    * { box-sizing: border-box; letter-spacing: 0; }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
     body {
       margin: 0;
+      font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
       color: var(--ink);
       background:
-        radial-gradient(circle at 8% 2%, rgba(255, 187, 210, .52), transparent 27rem),
-        radial-gradient(circle at 92% 4%, rgba(247, 196, 88, .24), transparent 20rem),
+        radial-gradient(circle at 20% 8%, #eaf5ff 0, transparent 30%),
+        radial-gradient(circle at 84% 12%, #e8fff9 0, transparent 28%),
         var(--bg);
-      font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
     }
-    button, input { font: inherit; }
-    button { cursor: pointer; }
-    .shell {
-      display: grid;
-      grid-template-columns: minmax(300px, 420px) 392px;
-      gap: clamp(18px, 5vw, 86px);
-      align-items: center;
-      justify-content: center;
+
+    button, input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
       min-height: 100vh;
-      padding: 28px;
+      display: grid;
+      grid-template-columns: var(--rail) minmax(0, 1fr);
     }
-    .intro { max-width: 410px; }
-    .intro h1 { margin: 12px 0; font-size: clamp(38px, 5vw, 68px); }
-    .intro p { color: #775b66; font-size: 17px; line-height: 1.8; }
-    .pill-row, .metric-row, .plan-tabs, .chips, .bottom-actions { display: flex; gap: 9px; }
-    .pill, .chip {
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: rgba(255, 253, 251, .82);
-      color: var(--muted);
-      padding: 9px 13px;
+
+    .rail {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 14px 10px;
+      border-right: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.86);
+      backdrop-filter: blur(18px);
+      box-shadow: 8px 0 32px rgba(37, 58, 91, 0.06);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      z-index: 20;
     }
-    .pill-row { flex-wrap: wrap; margin-top: 20px; }
-    .phone {
-      position: relative;
-      width: 392px;
-      max-width: calc(100vw - 22px);
-      height: min(864px, calc(100vh - 26px));
-      overflow: hidden;
-      border: 10px solid #fffaf7;
-      border-radius: 40px;
-      background:
-        radial-gradient(circle at 8% 0%, rgba(255, 191, 210, .58), transparent 11rem),
-        radial-gradient(circle at 96% 1%, rgba(247, 196, 88, .2), transparent 10rem),
-        var(--bg);
-      box-shadow: var(--shadow);
-    }
-    .screen { height: 100%; overflow-y: auto; padding: 20px 18px 92px; }
-    .view.hidden, .hidden { display: none; }
-    .brand, .between, .sheet-row, .task, .download { display: flex; align-items: center; }
-    .brand { gap: 10px; margin-bottom: 26px; }
-    .between { justify-content: space-between; gap: 10px; }
-    .mark, .excel, .avatar, .ok {
+
+    .logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 18px;
+      background: linear-gradient(145deg, #1cc9aa, #246bfe);
+      color: #fff;
       display: grid;
       place-items: center;
-      color: white;
+      box-shadow: 0 14px 28px rgba(36, 107, 254, 0.25);
       font-weight: 800;
-    }
-    .mark { width: 30px; height: 30px; border-radius: 10px; background: var(--pink); }
-    .excel { width: 30px; height: 30px; flex: none; border-radius: 9px; background: var(--green); }
-    .star { width: 13px; height: 13px; margin-left: auto; border-radius: 4px; background: var(--gold); transform: rotate(45deg); box-shadow: 0 0 0 5px rgba(247, 196, 88, .16); }
-    h2, h3, p { margin: 0; }
-    .muted { color: var(--muted); }
-    .small { font-size: 12px; }
-    .section-title { margin: 18px 2px 11px; font-weight: 800; }
-    .panel {
-      border: 1px solid var(--line);
-      border-radius: 24px;
-      background: rgba(255, 253, 251, .93);
-      box-shadow: 0 14px 32px rgba(154, 98, 117, .09);
-    }
-    .hero h2 { color: #7b4054; font-size: 36px; line-height: 1.1; }
-    .hero p { margin-top: 7px; }
-    .stage {
-      position: relative;
-      height: 214px;
-      margin: 14px 0 12px;
-      overflow: hidden;
-      border-radius: 28px;
-      background: linear-gradient(135deg, rgba(255, 227, 235, .8), rgba(255, 247, 224, .88));
-    }
-    .paper {
-      position: absolute;
-      top: 54px;
-      width: 148px;
-      height: 124px;
-      border-radius: 18px;
-      opacity: .95;
-    }
-    .paper.one { left: 9px; background: #da8cc1; transform: rotate(-11deg); }
-    .paper.two { left: 104px; background: #57ade0; }
-    .paper.three { right: 12px; background: #53aa7d; transform: rotate(13deg); }
-    .promo {
-      position: absolute;
-      inset: 88px 26px 20px;
-      padding: 18px;
-      border: 1px solid rgba(255,255,255,.62);
-      border-radius: 22px;
-      color: white;
-      background: linear-gradient(135deg, rgba(209, 139, 204, .92), rgba(69, 174, 185, .92));
-      backdrop-filter: blur(6px);
-      transition: transform .45s ease, opacity .45s ease;
-    }
-    .promo h3 { font-size: 17px; }
-    .promo p { margin-top: 5px; color: rgba(255,255,255,.9); font-size: 12px; }
-    .play {
-      width: 0;
-      height: 0;
-      margin: 16px auto 0;
-      border-top: 22px solid transparent;
-      border-bottom: 22px solid transparent;
-      border-left: 30px solid rgba(255,255,255,.86);
-    }
-    .dots { position: absolute; right: 18px; bottom: 12px; display: flex; gap: 5px; }
-    .dots i { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,.5); }
-    .dots i.active { width: 18px; border-radius: 99px; background: white; }
-    .upload {
-      position: relative;
-      display: block;
-      padding: 20px 16px;
-      text-align: center;
-    }
-    .upload input { position: absolute; width: 1px; height: 1px; opacity: 0; }
-    .upload strong { display: block; font-size: 17px; }
-    .recent { padding: 7px 14px; }
-    .task, .sheet-row { gap: 10px; min-height: 48px; border-bottom: 1px solid #f3e5e3; font-size: 13px; }
-    .task:last-child, .sheet-row:last-child { border-bottom: 0; }
-    .task span:last-child { margin-left: auto; color: var(--muted); }
-    .analysis { margin-top: 13px; padding: 14px; }
-    .track { height: 8px; margin: 10px 0; overflow: hidden; border-radius: 999px; background: #f7e2e8; }
-    .fill { height: 100%; width: 100%; border-radius: inherit; background: linear-gradient(90deg, #ffb3c2, var(--pink)); }
-    .sheet-list { padding: 7px 13px; }
-    .sheet-row input { accent-color: var(--pink); }
-    .sheet-copy { min-width: 0; }
-    .preview-cells {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 3px;
-      margin: -2px 0 9px 39px;
-      font-size: 10px;
-    }
-    .preview-cells span, .paper-cell {
-      overflow: hidden;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
-    .preview-cells span { padding: 4px; border-radius: 5px; background: #fff1ee; }
-    .map {
-      position: relative;
-      min-height: 212px;
-      margin-top: 13px;
-      overflow: hidden;
-      background:
-        radial-gradient(circle at 53% 46%, #ffe07d 0 18px, transparent 19px),
-        radial-gradient(circle at 24% 25%, #b7df9a 0 34px, transparent 35px),
-        radial-gradient(circle at 77% 28%, #ff9d8f 0 31px, transparent 32px),
-        radial-gradient(circle at 76% 78%, #9fd7b7 0 36px, transparent 37px),
-        #e8f2d1;
-    }
-    .map h3 { padding: 14px; text-align: center; }
-    .risk { position: absolute; max-width: 112px; padding: 8px; border: 1px solid var(--line); border-radius: 14px; background: white; font-size: 11px; }
-    .risk.one { top: 49px; left: 12px; }
-    .risk.two { top: 47px; right: 10px; }
-    .risk.three { bottom: 18px; left: 18px; }
-    .risk.four { right: 12px; bottom: 23px; }
-    .health { margin-top: 12px; padding: 15px; }
-    .score { color: var(--pink); font-size: 42px; font-weight: 800; }
-    .plan-tabs { overflow-x: auto; margin: 13px 0; }
-    .chip { flex: none; padding: 8px 12px; border: 0; }
-    .chip.active { color: white; background: var(--pink); }
-    .plan-window { position: relative; min-height: 250px; }
-    .plan-card {
-      position: absolute;
-      inset: 0;
-      padding: 16px;
-      opacity: 0;
-      transform: translateX(28px) scale(.96);
-      pointer-events: none;
-      transition: opacity .4s ease, transform .4s ease;
-    }
-    .plan-card.active { opacity: 1; transform: translateX(0) scale(1); pointer-events: auto; }
-    .plan-card h3 { color: var(--pink); font-size: 18px; }
-    .plan-grid { display: grid; grid-template-columns: 1fr 100px; gap: 10px; align-items: center; min-height: 146px; margin-top: 13px; }
-    .thumb, .mini-page {
-      border: 1px solid #ead5d2;
-      background:
-        linear-gradient(90deg, transparent 0 24%, rgba(237, 195, 188, .75) 24% 25%, transparent 25%),
-        repeating-linear-gradient(0deg, white 0 13px, #f5ddd8 13px 15px);
-    }
-    .thumb { height: 128px; border-radius: 15px; }
-    .compare-toggle { margin: 14px auto; width: 290px; padding: 7px; border-radius: 999px; background: rgba(255,253,251,.86); text-align: center; }
-    .compare-slider { position: relative; min-height: 246px; }
-    .compare-card {
-      position: absolute;
-      inset: 0;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      opacity: 0;
-      transform: translateY(12px);
-      transition: opacity .4s ease, transform .4s ease;
-    }
-    .compare-card.active { opacity: 1; transform: translateY(0); }
-    .compare-col { min-height: 230px; padding: 13px; text-align: center; }
-    .compare-col.after { border-color: #d7e5c5; background: rgba(240, 250, 235, .96); }
-    .page-stack { display: grid; gap: 8px; margin: 13px 0; }
-    .before .page-stack { grid-template-columns: 1fr 1fr; }
-    .mini-page { height: 68px; border-radius: 9px; }
-    .paper-rail { display: flex; gap: 11px; overflow-x: auto; padding-bottom: 3px; }
-    .print-page {
-      flex: 0 0 286px;
-      min-height: 300px;
-      padding: 13px;
-      border: 1px solid #ead7d2;
-      border-radius: 18px;
-      background: white;
-      box-shadow: 0 10px 22px rgba(112, 85, 91, .08);
-    }
-    .paper-grid { margin-top: 9px; overflow: hidden; border-radius: 9px; }
-    .paper-row { display: flex; min-height: 18px; }
-    .paper-cell { flex: 1 0 42px; padding: 3px; border: 1px solid #f0dfdb; font-size: 9px; }
-    .paper-row:first-child .paper-cell { color: white; background: #5b9a78; }
-    .settings { padding: 14px; }
-    .switches { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 9px 0; }
-    .switches button {
-      min-height: 38px;
-      border: 0;
-      border-radius: 13px;
-      color: var(--muted);
-      background: #fff1ed;
-    }
-    .switches button.active { color: white; background: var(--pink); }
-    .checks { display: grid; gap: 8px; margin-top: 10px; font-size: 13px; }
-    .checks label { display: flex; justify-content: space-between; }
-    .btn {
-      min-height: 50px;
-      border: 0;
-      border-radius: 28px;
-      color: white;
-      background: linear-gradient(135deg, #ff7b99, #ff678a);
-      box-shadow: 0 13px 24px rgba(255, 111, 145, .23);
-      font-weight: 800;
-    }
-    .wide { width: 100%; margin-top: 13px; }
-    .ghost { color: var(--pink); border: 1px solid var(--line); background: white; box-shadow: none; }
-    .result { margin-top: 13px; padding: 16px; }
-    .ok { width: 56px; height: 56px; margin: 0 auto 10px; border-radius: 50%; background: var(--green); font-size: 28px; }
-    .download { justify-content: space-between; min-height: 40px; border-top: 1px solid #f1e2df; font-size: 13px; }
-    .download a { color: var(--pink); font-weight: 800; text-decoration: none; }
-    .template-grid, .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-    .template { min-height: 126px; padding: 12px; }
-    .template-art { height: 62px; margin-bottom: 9px; border-radius: 14px; background: repeating-linear-gradient(0deg, rgba(255,255,255,.75) 0 12px, transparent 12px 17px), var(--green); }
-    .template:nth-child(2n) .template-art { background-color: #fb8ea7; }
-    .template:nth-child(3n) .template-art { background-color: #74bfe4; }
-    .batch, .profile { margin-top: 12px; padding: 15px; }
-    .avatar { width: 62px; height: 62px; border-radius: 50%; background: linear-gradient(135deg, #ff7b99, var(--gold)); }
-    .stat-grid { grid-template-columns: repeat(3, 1fr); margin-top: 13px; text-align: center; font-size: 12px; }
-    .stat { padding: 10px 4px; border-radius: 14px; background: #fff1ed; }
-    .menu { display: flex; justify-content: space-between; min-height: 38px; border-top: 1px solid #f1e2df; line-height: 38px; font-size: 13px; }
-    .tabbar {
-      position: absolute;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      height: 70px;
-      border-top: 1px solid var(--line);
-      background: rgba(255, 251, 248, .96);
-    }
-    .tabbar button { border: 0; color: #9e818b; background: transparent; font-size: 11px; }
-    .tabbar b { display: block; color: var(--pink); font-size: 18px; }
-    @media (max-width: 860px) {
-      .shell { grid-template-columns: 1fr; padding: 14px; }
-      .intro { display: none; }
-      .phone { justify-self: center; }
-=======
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Excelsuperpower MVP Preview</title>
-  <style>
-    :root {
-      --brand: #176b87;
-      --brand-dark: #0f4c5c;
-      --ink: #102a43;
-      --muted: #637381;
-      --line: #d9e4ea;
-      --paper: #ffffff;
-      --bg: #edf3f6;
-      --soft: #eef8fb;
-      --good: #1f8a70;
-      --warn: #c98200;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #dceef3 0%, #f7fafc 48%, #e9f5ef 100%);
-      color: var(--ink);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
-    }
-
-    .stage {
-      display: grid;
-      grid-template-columns: minmax(280px, 390px) minmax(360px, 560px);
-      gap: 42px;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      padding: 42px;
-    }
-
-    .phone {
-      width: 390px;
-      max-width: calc(100vw - 32px);
-      height: 812px;
-      max-height: calc(100vh - 32px);
-      overflow: hidden;
-      border: 10px solid #17202a;
-      border-radius: 34px;
-      background: var(--bg);
-      box-shadow: 0 28px 80px rgba(16, 42, 67, 0.22);
-    }
-
-    .statusbar {
-      height: 30px;
-      background: #17202a;
-    }
-
-    .nav {
-      height: 52px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--brand);
-      color: #fff;
-      font-size: 17px;
-      font-weight: 700;
-    }
-
-    .screen {
-      height: calc(100% - 82px);
-      overflow-y: auto;
-      padding: 16px;
-    }
-
-    .hero {
-      padding: 8px 2px 16px;
-    }
-
-    .title {
-      margin: 0;
-      font-size: 27px;
-      line-height: 1.2;
-      font-weight: 800;
-    }
-
-    .subtitle {
-      margin: 8px 0 0;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.6;
-    }
-
-    .panel {
-      margin-bottom: 14px;
-      padding: 16px;
-      background: var(--paper);
-      border: 1px solid rgba(217, 228, 234, 0.78);
-      border-radius: 8px;
-      box-shadow: 0 8px 24px rgba(16, 42, 67, 0.08);
-    }
-
-    .section-title {
-      margin-bottom: 12px;
-      font-size: 16px;
-      font-weight: 800;
-    }
-
-    .button {
-      width: 100%;
-      height: 44px;
-      border: 0;
-      border-radius: 8px;
-      background: var(--brand);
-      color: #fff;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .button:active {
-      background: var(--brand-dark);
-    }
-
-    .file {
-      display: none;
-      margin-top: 12px;
-      padding: 10px;
-      border-radius: 8px;
-      background: #f6fafc;
-      color: var(--muted);
       font-size: 13px;
-      word-break: break-all;
+      text-align: center;
+      line-height: 1.15;
     }
 
-    .sheet-row {
-      display: flex;
-      gap: 10px;
-      align-items: center;
-      padding: 12px 0;
-      border-bottom: 1px solid #eef2f5;
-    }
-
-    .sheet-row:last-child {
-      border-bottom: 0;
-    }
-
-    .checkbox {
-      width: 18px;
-      height: 18px;
-      accent-color: var(--brand);
-    }
-
-    .sheet-name {
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    .sheet-meta,
-    .plan-desc,
-    .diagnosis,
-    .caption {
-      margin-top: 5px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.5;
-    }
-
-    .plan {
-      display: block;
+    .rail-tools {
       width: 100%;
-      margin-bottom: 10px;
-      padding: 12px;
-      text-align: left;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #fff;
-      color: var(--ink);
-      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 8px;
     }
 
-    .plan:last-child {
-      margin-bottom: 0;
+    .rail-btn {
+      position: relative;
+      width: 100%;
+      min-height: 56px;
+      border: 0;
+      background: transparent;
+      border-radius: 18px;
+      color: #5e7188;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .25s ease, background .25s ease, color .25s ease;
     }
 
-    .plan.active {
-      border-color: var(--brand);
-      background: var(--soft);
+    .rail-btn svg {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
-    .plan-name {
-      font-size: 14px;
-      font-weight: 800;
+    .rail-btn .label {
+      position: absolute;
+      left: 68px;
+      top: 50%;
+      transform: translateY(-50%) translateX(-8px);
+      opacity: 0;
+      pointer-events: none;
+      white-space: nowrap;
+      background: #12233a;
+      color: #fff;
+      border-radius: 12px;
+      padding: 8px 12px;
+      font-size: 12px;
+      box-shadow: var(--shadow-soft);
+      transition: .2s ease;
     }
 
-    .diagnosis {
-      padding: 12px;
-      border-radius: 8px;
-      background: #fff8e8;
-      color: #6f5100;
+    .rail-btn:hover .label {
+      opacity: 1;
+      transform: translateY(-50%) translateX(0);
     }
 
-    .result {
-      display: none;
+    .rail-btn.active {
+      background: linear-gradient(145deg, #eff8ff, #e9fbf7);
+      color: var(--blue);
+      transform: translateX(10px);
+      box-shadow: 0 16px 28px rgba(36, 107, 254, 0.16);
     }
 
-    .download-row {
+    .rail-btn.active::before {
+      content: "";
+      position: absolute;
+      left: -9px;
+      width: 5px;
+      height: 30px;
+      border-radius: 999px;
+      background: linear-gradient(var(--mint), var(--blue));
+    }
+
+    .main {
+      min-width: 0;
+      display: grid;
+      grid-template-rows: 72px 60px 1fr;
+    }
+
+    .topbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px 0;
-      font-size: 13px;
-      border-bottom: 1px solid #eef2f5;
+      gap: 18px;
+      padding: 0 22px;
+      border-bottom: 1px solid rgba(220, 229, 239, .75);
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(14px);
     }
 
-    .download-row:last-child {
-      border-bottom: 0;
+    .title-block {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
     }
 
-    .mini-button {
-      padding: 6px 10px;
+    .title-block h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 900;
+      letter-spacing: .2px;
+    }
+
+    .title-block p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 720px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      height: 34px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: var(--mint-soft);
+      color: #087b67;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .status-pill.warn {
+      background: var(--orange-soft);
+      color: #a45b00;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--mint);
+      box-shadow: 0 0 0 5px rgba(25, 198, 167, .14);
+    }
+
+    .status-pill.warn .status-dot {
+      background: var(--orange);
+      box-shadow: 0 0 0 5px rgba(255, 159, 67, .14);
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .search {
+      width: 250px;
+      height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #fff;
+      padding: 0 14px;
+      color: var(--muted);
+      outline: none;
+    }
+
+    .btn {
+      min-height: 38px;
       border: 0;
-      border-radius: 6px;
-      background: #e7f3f6;
-      color: var(--brand-dark);
+      border-radius: 14px;
+      padding: 0 14px;
+      font-size: 13px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform .2s ease;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, var(--blue), #5b8cff);
+      color: #fff;
+      box-shadow: 0 10px 22px rgba(36, 107, 254, .2);
+    }
+
+    .btn.ghost {
+      background: #fff;
+      border: 1px solid var(--line);
+      color: #40536b;
+    }
+
+    .btn.warn {
+      background: linear-gradient(135deg, #ffb25f, #ff8d4b);
+      color: #fff;
+    }
+
+    .module-tabs {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 22px;
+      border-bottom: 1px solid rgba(220, 229, 239, .75);
+      background: rgba(248, 251, 255, .72);
+      overflow-x: auto;
+    }
+
+    .step-tab {
+      height: 38px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: #4f6178;
+      border-radius: 14px;
+      padding: 0 14px;
+      font-weight: 800;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .step-tab .num {
+      width: 20px;
+      height: 20px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: #f1f5f9;
+      color: #71839a;
+      font-size: 11px;
+    }
+
+    .step-tab.active {
+      background: linear-gradient(135deg, #f0f7ff, #eafff9);
+      border-color: #bfeee5;
+      color: #0e665a;
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(25, 198, 167, .13);
+    }
+
+    .step-tab.active .num {
+      background: linear-gradient(135deg, var(--mint), var(--blue));
+      color: #fff;
+    }
+
+    .workspace {
+      min-height: 0;
+      padding: 16px;
+      overflow: auto;
+    }
+
+    .stage {
+      display: none;
+      height: 100%;
+      animation: fadeIn .3s ease;
+    }
+
+    .stage.active {
+      display: block;
+    }
+
+    .stage-grid > .card,
+    .stage-grid.wide > .card {
+      opacity: 0;
+      transform: translateY(20px) scale(.986);
+    }
+
+    .stage.active .card {
+      opacity: 1;
+      transform: none;
+      animation: stageCardIn .62s cubic-bezier(.22, 1, .36, 1) both;
+    }
+
+    .stage.active .card:nth-child(2) {
+      animation-delay: .08s;
+    }
+
+    .stage-grid {
+      display: grid;
+      grid-template-columns: minmax(420px, 47%) minmax(540px, 53%);
+      gap: 16px;
+      min-height: calc(100vh - 180px);
+    }
+
+    .stage-grid.wide {
+      grid-template-columns: minmax(520px, 42%) minmax(640px, 58%);
+    }
+
+    .card {
+      min-width: 0;
+      background: var(--panel);
+      border: 1px solid rgba(220, 229, 239, .9);
+      border-radius: 24px;
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-head {
+      min-height: 58px;
+      padding: 0 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--line-soft);
+      background: rgba(255, 255, 255, .72);
+    }
+
+    .card-head h2 {
+      margin: 0;
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .card-head .mini {
+      font-size: 12px;
+      color: var(--muted);
       font-weight: 700;
+    }
+
+    .card-body {
+      padding: 16px;
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+    }
+
+    .upload-box {
+      position: relative;
+      min-height: 250px;
+      border: 2px dashed #b8d7ee;
+      border-radius: 26px;
+      background: linear-gradient(145deg, #f8fcff, #f1fff8);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 12px;
+      overflow: hidden;
+    }
+
+    .upload-box::before {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: conic-gradient(from 0deg, transparent, #e8fff9, transparent, #eef5ff, transparent);
+      opacity: .75;
+      animation: spin 9s linear infinite;
+    }
+
+    .upload-box > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .upload-box input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
       cursor: pointer;
     }
 
-    .sidebar {
-      padding: 8px 0;
-    }
-
-    .eyebrow {
-      color: var(--brand-dark);
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: 0;
-    }
-
-    .sidebar h1 {
-      margin: 12px 0 14px;
-      font-size: 42px;
-      line-height: 1.12;
-      letter-spacing: 0;
-    }
-
-    .sidebar p {
-      margin: 0 0 20px;
-      color: #3d4f5c;
-      font-size: 17px;
-      line-height: 1.75;
-    }
-
-    .flow {
-      display: grid;
-      gap: 10px;
-      margin-top: 24px;
-    }
-
-    .flow-item {
-      display: grid;
-      grid-template-columns: 34px 1fr;
-      gap: 12px;
-      align-items: start;
-      padding: 14px;
-      border: 1px solid rgba(217, 228, 234, 0.9);
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.72);
-    }
-
-    .num {
+    .upload-icon {
+      width: 74px;
+      height: 74px;
+      border-radius: 24px;
+      background: #fff;
       display: grid;
       place-items: center;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .upload-icon svg {
       width: 34px;
       height: 34px;
-      border-radius: 50%;
-      background: var(--brand);
-      color: #fff;
-      font-weight: 800;
+      stroke: var(--blue);
+      fill: none;
+      stroke-width: 1.8;
     }
 
-    .flow-title {
-      font-weight: 800;
+    .upload-box h3 {
+      margin: 0;
+      font-size: 21px;
     }
 
-    .flow-text {
-      margin-top: 4px;
+    .upload-box p {
+      margin: 0;
       color: var(--muted);
-      font-size: 14px;
-      line-height: 1.55;
-    }
-
-    .tag-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 20px;
-    }
-
-    .tag {
-      padding: 7px 10px;
-      border-radius: 999px;
-      background: #fff;
-      color: var(--brand-dark);
       font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .status-text {
+      margin-top: 4px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+    }
+
+    .status-text.ok {
+      color: #087b67;
+    }
+
+    .status-text.error {
+      color: #bd2d42;
+    }
+
+    .status-text.warn {
+      color: #a45b00;
+    }
+
+    .meta-grid,
+    .insight-grid,
+    .export-grid {
+      display: grid;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .action-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .hero-panel {
+      margin-top: 14px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: linear-gradient(145deg, #f6fbff, #f0fff9);
+      padding: 14px;
+    }
+
+    .hero-panel h3 {
+      margin: 0 0 8px;
+      font-size: 15px;
+    }
+
+    .hero-panel p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .quick-print-panel {
+      margin-top: 14px;
+      border: 1px solid rgba(25, 198, 167, .24);
+      border-radius: 22px;
+      padding: 16px;
+      background:
+        radial-gradient(circle at top right, rgba(36, 107, 254, .14), transparent 32%),
+        linear-gradient(145deg, #effcf9, #f4f9ff 58%, #ffffff);
+      box-shadow: 0 18px 34px rgba(25, 198, 167, .08);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .quick-print-panel::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 10%, rgba(255,255,255,.45) 32%, transparent 54%);
+      transform: translateX(-48%);
+      animation: quickPrintBeam 3.4s linear infinite;
+      pointer-events: none;
+    }
+
+    .quick-print-panel h3,
+    .quick-print-panel p,
+    .quick-print-panel .hero-inline,
+    .quick-print-panel .action-row {
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-inline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .input-line {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .input-line input {
+      min-width: 180px;
+      height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 0 12px;
+      background: #fff;
+      color: var(--ink);
       font-weight: 700;
     }
 
-    @media (max-width: 860px) {
-      .stage {
+    .selector-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .selector-summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .sheet-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0 12px;
+      background: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      color: #40536b;
+      box-shadow: 0 6px 18px rgba(31, 52, 89, .05);
+    }
+
+    .sheet-pill strong {
+      color: var(--ink);
+    }
+
+    .sheet-pill.active {
+      border-color: rgba(25, 198, 167, .34);
+      background: linear-gradient(135deg, #effcf9, #f4f9ff);
+      color: #0a7764;
+    }
+
+    .inline-select {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 46px;
+      padding: 0 8px 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, .92);
+      box-shadow: 0 10px 26px rgba(31, 52, 89, .06);
+    }
+
+    .inline-select span {
+      font-size: 12px;
+      font-weight: 800;
+      color: #52657d;
+      white-space: nowrap;
+    }
+
+    .inline-select select {
+      min-width: 200px;
+      height: 34px;
+      border: 0;
+      background: transparent;
+      color: var(--ink);
+      font-weight: 900;
+      outline: none;
+    }
+
+    .preview-rail {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .preview-rail button {
+      min-width: 150px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 10px 12px;
+      background: #fff;
+      text-align: left;
+    }
+
+    .preview-rail button.active {
+      border-color: var(--mint);
+      background: var(--mint-soft);
+      box-shadow: 0 8px 18px rgba(25, 198, 167, .12);
+    }
+
+    .parse-progress {
+      margin: 14px 0 16px;
+      border: 1px solid rgba(16, 32, 51, .08);
+      border-radius: 22px;
+      padding: 16px 18px;
+      background:
+        radial-gradient(circle at top right, rgba(36, 107, 254, .12), transparent 38%),
+        linear-gradient(145deg, #0f1d31, #18304e 58%, #1e4f7d);
+      color: #f6fbff;
+      box-shadow: 0 18px 40px rgba(15, 29, 49, .18);
+    }
+
+    .parse-progress-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .parse-progress-head strong {
+      display: block;
+      font-size: 16px;
+    }
+
+    .parse-progress-head span {
+      display: block;
+      margin-top: 4px;
+      color: rgba(236, 246, 255, .78);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .parse-progress-value {
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: -.04em;
+      color: #fff5dd;
+    }
+
+    .parse-track {
+      position: relative;
+      height: 14px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(255, 255, 255, .14);
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, .18);
+    }
+
+    .parse-fill {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 0;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #5af1d6, #6fb5ff 52%, #ffd166);
+      box-shadow: 0 0 18px rgba(111, 181, 255, .38);
+      transition: width .35s ease;
+    }
+
+    .parse-fill::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 15%, rgba(255,255,255,.55) 35%, transparent 55%);
+      transform: translateX(-42%);
+      animation: parseBeam 2.2s linear infinite;
+    }
+
+    .parse-steps {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .parse-step {
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 16px;
+      padding: 10px 12px;
+      background: rgba(255, 255, 255, .08);
+    }
+
+    .parse-step b,
+    .parse-step span {
+      display: block;
+    }
+
+    .parse-step b {
+      margin-bottom: 4px;
+      font-size: 12px;
+    }
+
+    .parse-step span {
+      color: rgba(240, 247, 255, .76);
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    .parse-step.active {
+      background: rgba(255, 255, 255, .18);
+      border-color: rgba(111, 181, 255, .42);
+    }
+
+    .parse-step.done {
+      background: rgba(90, 241, 214, .16);
+      border-color: rgba(90, 241, 214, .4);
+    }
+
+    .parse-step.warn {
+      background: rgba(255, 181, 95, .18);
+      border-color: rgba(255, 159, 67, .42);
+    }
+
+    .page-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line-soft);
+      background: linear-gradient(180deg, #fff, #f8fbff);
+    }
+
+    .page-chip {
+      min-width: 152px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 10px 12px;
+      background: linear-gradient(180deg, #ffffff, #f8fbff);
+      text-align: left;
+      box-shadow: 0 12px 24px rgba(31, 52, 89, .06);
+      transition: transform .24s ease, box-shadow .24s ease, border-color .24s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .page-chip::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto;
+      height: 4px;
+      background: linear-gradient(90deg, rgba(25, 198, 167, .82), rgba(36, 107, 254, .92));
+      opacity: .22;
+    }
+
+    .page-chip:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 28px rgba(31, 52, 89, .1);
+    }
+
+    .page-chip b,
+    .page-chip span {
+      display: block;
+    }
+
+    .page-chip b {
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+
+    .page-chip span {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .page-chip.active {
+      border-color: var(--blue);
+      background: #edf5ff;
+      box-shadow: 0 10px 24px rgba(36, 107, 254, .14);
+    }
+
+    .page-strip.compact {
+      padding: 10px 0 14px;
+      border-bottom: 0;
+      background: transparent;
+    }
+
+    .page-strip.compact .page-chip {
+      min-width: 132px;
+    }
+
+    @keyframes parseBeam {
+      from { transform: translateX(-42%); }
+      to { transform: translateX(120%); }
+    }
+
+    @keyframes quickPrintBeam {
+      from { transform: translateX(-48%); }
+      to { transform: translateX(122%); }
+    }
+
+    .meta-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .export-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .meta-card,
+    .export-card,
+    .insight-card {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fff;
+      padding: 14px;
+    }
+
+    .meta-card strong,
+    .insight-card strong {
+      display: block;
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .meta-card span,
+    .insight-card span,
+    .muted {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .sheet-strip,
+    .range-sheet-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .sheet-chip,
+    .range-sheet-chip {
+      min-width: 146px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 10px 12px;
+      background: #fff;
+      text-align: left;
+    }
+
+    .sheet-chip.active,
+    .range-sheet-chip.active {
+      border-color: var(--mint);
+      background: var(--mint-soft);
+      box-shadow: 0 8px 18px rgba(25, 198, 167, .12);
+    }
+
+    .sheet-chip b,
+    .range-sheet-chip b {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .sheet-chip span,
+    .range-sheet-chip span {
+      font-size: 12px;
+      color: var(--muted);
+      display: block;
+      line-height: 1.6;
+    }
+
+    .sheet-list,
+    .config-list,
+    .issue-list,
+    .download-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .sheet-row,
+    .config-row,
+    .issue-item,
+    .download-item {
+      border: 1px solid var(--line-soft);
+      border-radius: 16px;
+      background: #fbfdff;
+      padding: 12px 14px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .sheet-row input {
+      accent-color: var(--mint);
+      width: 18px;
+      height: 18px;
+    }
+
+    .sheet-row b,
+    .config-row b,
+    .issue-item b,
+    .download-item b {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+
+    .sheet-row p,
+    .config-row p,
+    .issue-item p,
+    .download-item p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .pill,
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .pill.blue,
+    .tag.blue {
+      background: var(--blue-soft);
+      color: #2964c9;
+    }
+
+    .pill.green,
+    .tag.green {
+      background: var(--mint-soft);
+      color: #087b67;
+    }
+
+    .pill.orange,
+    .tag.orange {
+      background: var(--orange-soft);
+      color: #a45b00;
+    }
+
+    .pill.red,
+    .tag.red {
+      background: #fff0f2;
+      color: #bd2d42;
+    }
+
+    .range-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .range-box {
+      min-width: 140px;
+      height: 40px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      padding: 0 12px;
+      background: #fff;
+      color: var(--ink);
+      font-weight: 800;
+    }
+
+    .range-badge {
+      background: #102033;
+      color: #fff;
+      border-radius: 14px;
+      padding: 9px 12px;
+      font-size: 13px;
+      font-weight: 900;
+      box-shadow: 0 10px 20px rgba(16, 32, 51, .15);
+    }
+
+    .grid-wrap,
+    .preview-stage {
+      min-height: 0;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: #fff;
+      overflow: auto;
+    }
+
+    .grid-wrap {
+      max-height: 600px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.5);
+    }
+
+    .preview-stage.detail-stage {
+      min-height: 540px;
+      background:
+        radial-gradient(circle at top right, rgba(36, 107, 254, .06), transparent 26%),
+        linear-gradient(180deg, #ffffff, #f7fbff);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.5), 0 18px 36px rgba(31, 52, 89, .08);
+    }
+
+    .detail-preview-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px 12px;
+      border-bottom: 1px solid var(--line-soft);
+      background: rgba(255, 255, 255, .84);
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      backdrop-filter: blur(12px);
+    }
+
+    .detail-preview-head b,
+    .detail-preview-head span {
+      display: block;
+    }
+
+    .detail-preview-head b {
+      font-size: 14px;
+    }
+
+    .detail-preview-head span {
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    #stage-area .stage-grid.wide {
+      grid-template-columns: minmax(640px, 56%) minmax(440px, 44%);
+    }
+
+    #stage-area .grid-wrap {
+      max-height: 680px;
+    }
+
+    table {
+      border-collapse: separate;
+      border-spacing: 0;
+      min-width: 100%;
+    }
+
+    .excel-grid th,
+    .excel-grid td,
+    .preview-table th,
+    .preview-table td {
+      border-right: 1px solid #dfe7f0;
+      border-bottom: 1px solid #dfe7f0;
+      padding: 8px 10px;
+      height: 34px;
+      white-space: nowrap;
+      font-size: 13px;
+      background: #fff;
+      position: relative;
+    }
+
+    .excel-grid th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: #eef5fb;
+      color: #485d75;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .excel-grid .row-head {
+      position: sticky;
+      left: 0;
+      z-index: 3;
+      background: #f3f7fb;
+      color: #63758c;
+      font-weight: 800;
+      text-align: center;
+      min-width: 48px;
+    }
+
+    .excel-grid .corner {
+      left: 0;
+      z-index: 4;
+      background: #e7eff7;
+    }
+
+    .excel-grid td {
+      cursor: crosshair;
+    }
+
+    .excel-grid td.selected {
+      background: #e8fff8;
+      outline: 2px solid rgba(25, 198, 167, .65);
+      outline-offset: -2px;
+    }
+
+    .excel-grid td.anchor {
+      box-shadow: inset 0 0 0 2px rgba(36, 107, 254, .25);
+    }
+
+    .excel-grid td.warn,
+    .preview-table td.warn {
+      background: #fff9ee;
+      color: #a45b00;
+    }
+
+    .preview-card {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .preview-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--line-soft);
+      background: linear-gradient(180deg, #fff, #f9fbfe);
+    }
+
+    .preview-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .preview-stats span {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: #fff;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #40536b;
+    }
+
+    .paper-wrap {
+      flex: 1;
+      min-height: 0;
+      padding: 20px;
+      overflow: auto;
+      background:
+        radial-gradient(circle at top, rgba(255, 255, 255, .82), transparent 38%),
+        linear-gradient(180deg, #eef3f9 0%, #e5ebf3 100%);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      position: relative;
+    }
+
+    .paper-wrap::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at top, rgba(255, 255, 255, .7), transparent 45%),
+        linear-gradient(180deg, rgba(255,255,255,.32), transparent 24%);
+      pointer-events: none;
+    }
+
+    #stage-settings .paper-wrap {
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 12px;
+    }
+
+    #stage-settings .sheet-strip,
+    #stage-settings .page-strip {
+      width: min(96%, 860px);
+      margin-bottom: 0;
+    }
+
+    .paper-shell {
+      position: relative;
+      flex: 0 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .paper {
+      width: 1120px;
+      min-height: 790px;
+      background: #fff;
+      border: 1px solid #e7edf5;
+      border-radius: 10px;
+      box-shadow: 0 22px 55px rgba(16, 32, 51, .22);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform-origin: top center;
+      animation: none;
+    }
+
+    .paper.portrait {
+      width: 820px;
+      min-height: 1160px;
+    }
+
+    .paper-head,
+    .paper-foot {
+      padding: 12px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .paper-head {
+      border-bottom: 1px solid #dfe6ef;
+    }
+
+    .paper-head h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .paper-head span,
+    .paper-foot span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .paper-foot {
+      border-top: 1px solid #edf1f6;
+      font-size: 11px;
+      margin-top: auto;
+    }
+
+    .paper-content {
+      padding: 16px;
+      overflow: hidden;
+    }
+
+    .preview-table {
+      border-collapse: collapse;
+      width: 100%;
+      table-layout: fixed;
+    }
+
+    .preview-table th {
+      background: #eaf4ff;
+      color: #24384f;
+      font-weight: 900;
+      text-align: left;
+    }
+
+    .paper .preview-table th,
+    .paper .preview-table td {
+      padding: 4px 6px;
+      min-height: 22px;
+      height: auto;
+      font-size: 10px;
+      line-height: 1.35;
+      white-space: normal;
+      overflow-wrap: anywhere;
+      vertical-align: top;
+    }
+
+    .paper .preview-table th {
+      text-align: center;
+    }
+
+    .preview-table td.money {
+      color: #076c5b;
+      font-weight: 900;
+    }
+
+    .control-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .setting-group {
+      border: 1px solid var(--line-soft);
+      border-radius: 18px;
+      padding: 13px;
+      background: #fff;
+    }
+
+    .setting-group h3 {
+      margin: 0 0 10px;
+      font-size: 13px;
+    }
+
+    .option-list,
+    .toggle-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .export-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .export-card::after {
+      content: "";
+      position: absolute;
+      inset: auto -24px -30px auto;
+      width: 120px;
+      height: 120px;
+      border-radius: 999px;
+      background: radial-gradient(circle, rgba(36, 107, 254, .08), transparent 70%);
+      pointer-events: none;
+    }
+
+    .status-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .status-card-head b {
+      font-size: 15px;
+    }
+
+    .export-callout {
+      margin-top: 14px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: linear-gradient(145deg, #f8fcff, #f4fffb);
+      padding: 14px;
+    }
+
+    .export-callout b {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    .export-callout p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .option,
+    .toggle {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 999px;
+      padding: 8px 11px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #50647c;
+    }
+
+    .option.active,
+    .toggle.active {
+      background: var(--blue-soft);
+      border-color: #8ab1ff;
+      color: #1f5fd8;
+      box-shadow: 0 8px 18px rgba(36, 107, 254, .1);
+    }
+
+    .plan-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .plan-card {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: #fff;
+      padding: 14px;
+      text-align: left;
+      transition: transform .22s ease, box-shadow .22s ease;
+    }
+
+    .plan-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .plan-card.active {
+      border-color: var(--mint);
+      background: linear-gradient(145deg, #f1fff9, #f4f8ff);
+    }
+
+    .plan-card b {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+
+    .plan-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .plan-card .tag {
+      margin-bottom: 10px;
+    }
+
+    .comparison {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .compare-box {
+      min-height: 0;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: #fff;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .compare-box h3 {
+      margin: 0;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line-soft);
+      font-size: 14px;
+    }
+
+    .compare-body {
+      flex: 1;
+      min-height: 0;
+      padding: 14px;
+      overflow: auto;
+      background: #f5f8fc;
+    }
+
+    .mini-paper {
+      min-height: 390px;
+      border-radius: 10px;
+      background: #fff;
+      padding: 12px;
+      box-shadow: 0 10px 25px rgba(16, 32, 51, .14);
+    }
+
+    .download-item a {
+      color: var(--blue);
+      font-weight: 800;
+      text-decoration: none;
+    }
+
+    .download-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .action-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid #9bbcff;
+      background: #edf4ff;
+      color: #1f5fd8;
+      font-size: 12px;
+      font-weight: 900;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .action-link.ghost {
+      border-color: var(--line);
+      background: #fff;
+      color: #445872;
+    }
+
+    .empty-state {
+      border: 1px dashed var(--line);
+      border-radius: 18px;
+      background: #fff;
+      padding: 24px;
+      text-align: center;
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .toast {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      background: #102033;
+      color: #fff;
+      border-radius: 16px;
+      padding: 13px 16px;
+      box-shadow: var(--shadow);
+      font-size: 13px;
+      font-weight: 800;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: .25s ease;
+      z-index: 99;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes stageCardIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(.986);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    @keyframes paperFloat {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-4px);
+      }
+    }
+
+    @media (max-width: 1360px) {
+      .stage-grid,
+      .stage-grid.wide {
         grid-template-columns: 1fr;
-        padding: 18px;
+      }
+    }
+
+    @media (max-width: 960px) {
+      .app {
+        grid-template-columns: 1fr;
       }
 
-      .sidebar {
-        order: -1;
+      .rail {
+        position: static;
+        height: auto;
+        width: 100%;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+        flex-direction: row;
+        justify-content: space-between;
+        overflow: auto;
       }
 
-      .sidebar h1 {
-        font-size: 30px;
+      .rail-tools {
+        flex-direction: row;
+        width: auto;
       }
 
-      .phone {
-        justify-self: center;
+      .rail-btn.active {
+        transform: none;
       }
->>>>>>> 0a421774928d224ab073103df35ad86eab590b9e
+
+      .rail-btn.active::before {
+        display: none;
+      }
+
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 14px 16px;
+      }
+
+      .module-tabs,
+      .workspace {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      .meta-grid,
+      .export-grid,
+      .control-grid,
+      .plan-grid,
+      .comparison {
+        grid-template-columns: 1fr;
+      }
+
+      .search {
+        display: none;
+      }
+
+      .parse-steps {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .inline-select {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .inline-select select,
+      .selector-summary {
+        min-width: 0;
+        width: 100%;
+      }
+
+      #stage-settings .sheet-strip,
+      #stage-settings .page-strip {
+        width: 100%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important;
+        scroll-behavior: auto !important;
+      }
+
+      .paper {
+        animation: none !important;
+      }
     }
   </style>
 </head>
 <body>
-<<<<<<< HEAD
-  <main class="shell">
-    <aside class="intro">
-      <span class="pill">Executable MVP</span>
-      <h1>PrintMind</h1>
-      <p>上传 Excel 后读取真实 Sheet，先看打印风险和分页模拟，再选择优化方案，最后下载已经设置打印区域、重复表头与页面缩放的 Excel 和可打印 PDF。</p>
-      <div class="pill-row">
-        <span class="pill">真实 Sheet 解析</span>
-        <span class="pill">生成前分页预览</span>
-        <span class="pill">优化 XLSX</span>
-        <span class="pill">打印 PDF</span>
+  <div class="app">
+    <aside class="rail">
+      <div class="logo">EX<br>AI</div>
+      <div class="rail-tools">
+        <button class="rail-btn active" data-stage="upload" type="button">
+          <svg viewBox="0 0 24 24"><path d="M12 16V4"></path><path d="m7 9 5-5 5 5"></path><path d="M5 20h14"></path></svg>
+          <span class="label">涓婁紶瑙ｆ瀽</span>
+        </button>
+        <button class="rail-btn" data-stage="sheets" type="button">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"></rect><path d="M8 4v16"></path><path d="M3 10h18"></path></svg>
+          <span class="label">閫夋嫨 Sheet</span>
+        </button>
+        <button class="rail-btn" data-stage="area" type="button">
+          <svg viewBox="0 0 24 24"><path d="M4 9V4h5"></path><path d="M20 9V4h-5"></path><path d="M4 15v5h5"></path><path d="M20 15v5h-5"></path></svg>
+          <span class="label">鎵撳嵃鍖哄煙</span>
+        </button>
+        <button class="rail-btn" data-stage="settings" type="button">
+          <svg viewBox="0 0 24 24"><path d="M12 3v4"></path><path d="M12 17v4"></path><path d="M3 12h4"></path><path d="M17 12h4"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          <span class="label">鎵撳嵃璁剧疆</span>
+        </button>
+        <button class="rail-btn" data-stage="ai" type="button">
+          <svg viewBox="0 0 24 24"><path d="M12 3 7 12h5l-1 9 6-11h-5z"></path></svg>
+          <span class="label">AI 鎺ㄨ崘</span>
+        </button>
+        <button class="rail-btn" data-stage="export" type="button">
+          <svg viewBox="0 0 24 24"><path d="M12 4v12"></path><path d="m7 11 5 5 5-5"></path><path d="M5 20h14"></path></svg>
+          <span class="label">瀵煎嚭缁撴灉</span>
+        </button>
       </div>
     </aside>
-    <section class="phone">
-      <div class="screen">
-        <header class="brand">
-          <div class="mark">P</div>
-          <div><b>PrintMind</b><p class="muted small">AI 打印助手</p></div>
-          <div class="star"></div>
-        </header>
 
-        <section id="workbenchView" class="view">
-          <div class="hero"><h2>PrintMind</h2><p>Excel 优化打印工作台</p></div>
-          <div class="stage">
-            <div class="paper one"></div><div class="paper two"></div><div class="paper three"></div>
-            <article id="promo" class="promo"></article>
-            <div id="promoDots" class="dots"></div>
+    <main class="main">
+      <header class="topbar">
+        <div class="title-block">
+          <div>
+            <h1>Excel 鏅鸿兘鎵撳嵃宸ヤ綔鍙?/h1>
+            <p id="topSummary">涓婁紶 Excel 鍚庨€夋嫨 Sheet銆佹閫夋墦鍗板尯鍩燂紝鍐嶇敓鎴愮湡瀹炲垎椤甸瑙堝拰瀵煎嚭缁撴灉銆?/p>
           </div>
-          <label class="upload panel">
-            <input id="fileInput" type="file" accept=".xlsx,.xlsm">
-            <strong>拖拽或选择 Excel 文件</strong>
-            <p class="muted">支持 .xlsx / .xlsm，上传后立即生成打印诊断</p>
-          </label>
-          <div class="section-title between"><span>最近文件</span><button class="chip" data-go="template">模板场景</button></div>
-          <div class="panel recent">
-            <div class="task"><span class="excel">X</span><span>销售数据总表_2024.xlsx</span><span>14:30</span></div>
-            <div class="task"><span class="excel">X</span><span>财务报表_季度汇总.xlsx</span><span>09:12</span></div>
-            <div class="task"><span class="excel">X</span><span>库存管理明细_5月.xlsx</span><span>05-14</span></div>
+          <div class="status-pill" id="topStatus">
+            <span class="status-dot"></span>
+            <span id="topStatusText">绛夊緟涓婁紶 Excel</span>
           </div>
-          <section id="analysisBlock" class="hidden">
-            <div class="panel analysis">
-              <div class="between"><b id="workbookName"></b><span id="uploadState" class="muted">解析完成</span></div>
-              <div class="track"><div class="fill"></div></div>
-              <p class="small muted">读取数据区域、Sheet 与打印风险后，可以继续切换方案。</p>
-            </div>
-            <div class="section-title">选择要打印的 Sheet</div>
-            <div id="sheetList" class="panel sheet-list"></div>
-            <div class="panel map">
-              <h3>AI 分析地图</h3>
-              <span class="risk one">表头未重复<br><b>分页会丢上下文</b></span>
-              <span class="risk two">列宽较窄<br><b>推荐横向页</b></span>
-              <span class="risk three">打印区域<br><b>自动收敛数据区</b></span>
-              <span class="risk four">冻结首行<br><b>便于校对</b></span>
-            </div>
-            <div class="panel health between">
-              <div><b class="score">72</b><span>/100</span><p class="muted small">打印健康度</p></div>
-              <button class="btn" data-go="plan">查看优化方案</button>
-            </div>
-          </section>
-        </section>
+        </div>
 
-        <section id="planView" class="view hidden">
-          <div class="hero between"><div><h2>方案推荐</h2><p>动态比较打印策略</p></div><button class="chip" data-go="workbench">返回上传</button></div>
-          <div class="plan-tabs"><button class="chip active">推荐方案</button><button class="chip">节省优先</button><button class="chip">效果优先</button><button class="chip">自定义</button></div>
-          <div id="planWindow" class="plan-window"></div>
-          <div class="bottom-actions"><button id="prevPlan" class="btn ghost">上一方案</button><button id="nextPlan" class="btn" style="flex:1">应用并预览</button></div>
-          <div class="compare-toggle">原始效果　VS　<b>优化后效果</b></div>
-          <div id="compareSlider" class="compare-slider"></div>
-          <div class="section-title between"><span>生成前真实分页模拟</span><span id="pageCount" class="muted small">请先上传 Excel</span></div>
-          <div id="pageRail" class="paper-rail"></div>
-          <div class="section-title">打印设置</div>
-          <div class="panel settings">
-            <p class="small muted">打印方向</p>
-            <div class="switches"><button class="orientation" data-value="portrait">纵向</button><button class="orientation active" data-value="landscape">横向</button></div>
-            <div class="checks">
-              <label>适配一页宽 <input id="fit" type="checkbox" checked></label>
-              <label>重复表头 <input id="header" type="checkbox" checked></label>
-              <label>冻结首行 <input id="freeze" type="checkbox" checked></label>
-            </div>
-          </div>
-          <button id="generate" class="btn wide">生成优化 Excel 与 PDF</button>
-          <section id="result" class="panel result hidden"></section>
-        </section>
+        <div class="actions">
+          <input class="search" placeholder="鎼滅储 Sheet / 鑼冨洿 / 瀵煎嚭缁撴灉">
+          <button class="btn ghost" id="previewRefresh" type="button">鍒锋柊棰勮</button>
+          <button class="btn primary" id="jumpExport" type="button">涓€閿壒閲忔墦鍗?/button>
+        </div>
+      </header>
 
-        <section id="templateView" class="view hidden">
-          <div class="hero"><h2>模板乐园</h2><p>按业务场景快速选择打印配置</p></div>
-          <div class="chips"><button class="chip active">全部</button><button class="chip">财务</button><button class="chip">销售</button><button class="chip">行政</button></div>
-          <div class="section-title">场景模板</div>
-          <div class="template-grid">
-            <article class="panel template"><div class="template-art"></div><b>财务报表</b><p class="muted small">总账、费用、利润表</p></article>
-            <article class="panel template"><div class="template-art"></div><b>销售清单</b><p class="muted small">报价单、订单、出库</p></article>
-            <article class="panel template"><div class="template-art"></div><b>库存台账</b><p class="muted small">明细分页与表头</p></article>
-            <article class="panel template"><div class="template-art"></div><b>培训签到</b><p class="muted small">横向名单打印</p></article>
-            <article class="panel template"><div class="template-art"></div><b>工资考勤</b><p class="muted small">隐私列与汇总页</p></article>
-            <article class="panel template"><div class="template-art"></div><b>学校成绩</b><p class="muted small">班级分组打印</p></article>
-          </div>
-          <div class="panel batch">
-            <div class="between"><b>批量任务舱</b><span class="muted">3 个文件待处理</span></div>
-            <div class="task"><span class="excel">X</span><span>销售数据分析_2024.xlsx</span><span>分析完成</span></div>
-            <div class="task"><span class="excel">X</span><span>财务报表_季度汇总.xlsx</span><span>优化中</span></div>
-            <div class="task"><span class="excel">X</span><span>库存管理明细_5月.xlsx</span><span>等待中</span></div>
-          </div>
-        </section>
-
-        <section id="profileView" class="view hidden">
-          <div class="hero"><h2>我的星球</h2><p>文件、方案与节纸记录</p></div>
-          <div class="panel profile">
-            <div class="between"><div class="avatar">Lee</div><div style="flex:1"><b>Lee</b><p class="muted small">星球居民 Lv.3</p></div><span class="chip">1280/2000</span></div>
-            <div class="stat-grid"><div class="stat">优化文件<br><b>28</b></div><div class="stat">节省纸张<br><b>316</b></div><div class="stat">批量打印<br><b>12</b></div></div>
-          </div>
-          <div class="panel profile">
-            <div class="menu"><span>我的方案</span><span>12 ›</span></div>
-            <div class="menu"><span>我的模板</span><span>8 ›</span></div>
-            <div class="menu"><span>打印记录</span><span>156 ›</span></div>
-            <div class="menu"><span>节纸报告</span><span>¥48.60 ›</span></div>
-            <div class="menu"><span>设置中心</span><span>›</span></div>
-          </div>
-        </section>
-      </div>
-      <nav class="tabbar">
-        <button data-view="workbench"><b>⌂</b>工作台</button>
-        <button data-view="plan"><b>▣</b>方案中心</button>
-        <button data-view="template"><b>▦</b>模板乐园</button>
-        <button data-view="profile"><b>◉</b>我的星球</button>
+      <nav class="module-tabs">
+        <button class="step-tab active" data-stage="upload" type="button"><span class="num">1</span>涓婁紶瑙ｆ瀽</button>
+        <button class="step-tab" data-stage="sheets" type="button"><span class="num">2</span>閫夋嫨 Sheet</button>
+        <button class="step-tab" data-stage="area" type="button"><span class="num">3</span>鎵撳嵃鍖哄煙</button>
+        <button class="step-tab" data-stage="settings" type="button"><span class="num">4</span>鎵撳嵃璁剧疆</button>
+        <button class="step-tab" data-stage="ai" type="button"><span class="num">5</span>AI 鎺ㄨ崘</button>
+        <button class="step-tab" data-stage="export" type="button"><span class="num">6</span>瀵煎嚭缁撴灉</button>
       </nav>
-    </section>
-  </main>
+
+      <section class="workspace">
+        <div class="stage active" id="stage-upload">
+          <div class="stage-grid wide">
+            <article class="card">
+              <div class="card-head">
+                <h2>涓婁紶涓庤嚜鍔ㄨ瘑鍒?/h2>
+                <span class="mini">鏀寔 `.xlsx` / `.xlsm`</span>
+              </div>
+              <div class="card-body">
+                <label class="upload-box" for="fileInput">
+                  <input id="fileInput" type="file" accept=".xlsx,.xlsm">
+                  <div class="upload-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 16V4"></path><path d="m7 9 5-5 5 5"></path><path d="M5 20h14"></path></svg>
+                  </div>
+                  <h3>鎷栨嫿 Excel 鍒拌繖閲岋紝鎴栫偣鍑讳笂浼?/h3>
+                  <p>涓婁紶鍚庝細鑷姩瑙ｆ瀽鍙 Sheet銆佽瘑鍒暟鎹尯鍩熴€佽鍙栭瑙堝崟鍏冩牸锛屽苟涓烘瘡涓?Sheet 鍒濆鍖栨墦鍗拌寖鍥淬€?/p>
+                </label>
+                <div class="status-text" id="uploadState">杩樻病鏈変笂浼犳枃浠躲€?/div>
+
+                <div class="parse-progress" id="uploadProgressCard">
+                  <div class="parse-progress-head">
+                    <div>
+                      <strong id="uploadProgressTitle">绛夊緟寮€濮嬭В鏋?/strong>
+                      <span id="uploadProgressDetail">涓婁紶鍚庝細渚濇瀹屾垚浼犺緭銆佽瘑鍒?Sheet銆佽鍙栨牸寮忓拰鐢熸垚棣栬疆鍒嗛〉棰勮銆?/span>
+                    </div>
+                    <div class="parse-progress-value" id="uploadProgressValue">0%</div>
+                  </div>
+                  <div class="parse-track">
+                    <div class="parse-fill" id="uploadProgressFill"></div>
+                  </div>
+                  <div class="parse-steps" id="uploadProgressSteps"></div>
+                </div>
+
+                <div class="meta-grid">
+                  <div class="meta-card">
+                    <strong id="metaSheets">0</strong>
+                    <span>宸茶瘑鍒彲瑙?Sheet 鏁伴噺</span>
+                  </div>
+                  <div class="meta-card">
+                    <strong id="metaSelected">0</strong>
+                    <span>褰撳墠宸查€変腑鎵撳嵃 Sheet</span>
+                  </div>
+                  <div class="meta-card">
+                    <strong id="metaPages">0</strong>
+                    <span>浼樺寲鍚庨璁℃€婚〉鏁?/span>
+                  </div>
+                </div>
+
+                <div class="hero-panel" id="batchHeroPanel"></div>
+                <div id="excelQuickPrintPanel"></div>
+                <div class="config-list" id="uploadTargetList"></div>
+              </div>
+            </article>
+
+            <article class="card preview-card">
+              <div class="card-head">
+                <h2>宸ヤ綔绨块瑙?/h2>
+                <span class="mini">鍏堢湅涓婁紶缁撴灉锛屽啀杩涘叆鍖哄煙閫夋嫨</span>
+              </div>
+              <div class="preview-toolbar">
+                <div class="preview-stats" id="uploadPreviewStats">
+                  <span>绛夊緟涓婁紶</span>
+                  <span>鏃犲垎椤垫暟鎹?/span>
+                </div>
+                <button class="btn ghost" id="jumpArea" type="button">鍘婚€夋墦鍗板尯鍩?/button>
+              </div>
+              <div class="card-body" style="border-bottom:1px solid var(--line-soft)">
+                <div class="selector-bar">
+                  <label class="inline-select">
+                    <span>棰勮 Sheet</span>
+                    <select id="uploadPreviewSelect"></select>
+                  </label>
+                  <div class="selector-summary" id="uploadSheetRail"></div>
+                </div>
+                <div class="page-strip compact" id="uploadPageRail"></div>
+              </div>
+              <div class="paper-wrap" data-paper-wrap="upload">
+                <div class="paper-shell" data-paper-shell="upload">
+                  <div class="paper" id="uploadPaper" data-paper-scope="upload">
+                  <div class="paper-head">
+                    <h3 id="uploadPreviewTitle">涓婁紶鍚庢樉绀洪涓?Sheet</h3>
+                    <span id="uploadPreviewSub">棰勮鍙栬嚜 Excel 宸茶В鏋愭暟鎹?/span>
+                  </div>
+                  <div class="paper-content">
+                    <table class="preview-table" id="uploadPreviewTable"></table>
+                  </div>
+                  <div class="paper-foot">
+                    <span id="uploadPreviewFoot">灏氭湭閫夋嫨鎵撳嵃鍖哄煙</span>
+                    <span id="uploadPreviewWarn">鏀寔鐪熷疄 Excel 鏂囦欢娴嬭瘯</span>
+                  </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="stage" id="stage-sheets">
+          <div class="stage-grid">
+            <article class="card">
+              <div class="card-head">
+                <h2>Sheet 閫夋嫨涓庤寖鍥寸姸鎬?/h2>
+                <span class="mini">姣忎釜 Sheet 鑷甫榛樿鎵撳嵃鑼冨洿</span>
+              </div>
+              <div class="card-body">
+                <div class="config-list" id="batchMatchPanel"></div>
+                <div class="action-row">
+                  <button class="btn primary" id="matchAndSelect" type="button">鍖归厤骞跺嬀閫夊悓绫?Sheet</button>
+                  <button class="btn ghost" id="applyBatchRange" type="button">灏嗗綋鍓嶈寖鍥存壒閲忓簲鐢ㄥ埌鍖归厤 Sheet</button>
+                </div>
+                <div class="sheet-list" id="sheetList"></div>
+              </div>
+            </article>
+
+            <article class="card preview-card">
+              <div class="card-head">
+                <h2>褰撳墠 Sheet 璇︽儏</h2>
+                <span class="mini">鍒囨崲鍙充晶棰勮涓庨棶棰樿瘖鏂?/span>
+              </div>
+              <div class="preview-toolbar">
+                <div class="preview-stats" id="sheetDetailStats"></div>
+                <button class="btn primary" id="sheetToArea" type="button">缂栬緫鎵撳嵃鍖哄煙</button>
+              </div>
+              <div class="card-body">
+                <div class="sheet-strip" id="sheetIssueTags"></div>
+                <div class="insight-grid">
+                  <div class="insight-card">
+                    <strong id="sheetDetailRange">A1:A1</strong>
+                    <span>褰撳墠鐢熸晥鎵撳嵃鑼冨洿</span>
+                  </div>
+                <div class="insight-card">
+                  <strong id="sheetDetailSize">0 x 0</strong>
+                  <span>璇嗗埆鍑虹殑琛屽垪瑙勬ā</span>
+                </div>
+                  <div class="insight-card">
+                    <strong id="sheetDetailOrientation">妯悜</strong>
+                    <span>鎺ㄨ崘绾稿紶鏂瑰悜</span>
+                  </div>
+                </div>
+                <div class="page-strip compact" id="sheetDetailPageRail"></div>
+                <div class="preview-stage detail-stage" style="margin-top:14px">
+                  <div class="detail-preview-head">
+                    <div>
+                      <b id="sheetDetailPreviewTitle">褰撳墠 Sheet 鎵撳嵃棰勮</b>
+                      <span id="sheetDetailPreviewMeta">浼樺厛鏄剧ず鍚庣鐢熸垚鐨勫垎椤电粨鏋?/span>
+                    </div>
+                    <span class="tag blue" id="sheetDetailPreviewMode">鍒嗛〉棰勮</span>
+                  </div>
+                  <table class="preview-table" id="sheetDetailPreview"></table>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="stage" id="stage-area">
+          <div class="stage-grid wide">
+            <article class="card">
+              <div class="card-head">
+                <h2>鐩存帴鍦ㄨ〃鏍间腑妗嗛€夋墦鍗板尯鍩?/h2>
+                <span class="mini">鏀寔鎷栨嫿妗嗛€変笌鎵嬪姩杈撳叆 A1 鑼冨洿</span>
+              </div>
+              <div class="card-body">
+                <div class="selector-bar">
+                  <label class="inline-select">
+                    <span>褰撳墠 Sheet</span>
+                    <select id="rangeSheetSelect"></select>
+                  </label>
+                  <div class="selector-summary" id="rangeSheetStrip"></div>
+                </div>
+                <div class="range-controls">
+                  <span class="range-badge" id="activeRangeLabel">A1:A1</span>
+                  <input class="range-box" id="manualRangeInput" placeholder="渚嬪 B3:H42">
+                  <button class="btn ghost" id="applyRange" type="button">搴旂敤鑼冨洿</button>
+                  <button class="btn ghost" id="resetRange" type="button">鎭㈠榛樿</button>
+                  <button class="btn ghost" id="applyBatchRangeInline" type="button">鎵归噺濂楃敤鍒板尮閰?Sheet</button>
+                  <button class="btn primary" id="syncRangePreview" type="button">鍚屾鍒嗛〉棰勮</button>
+                </div>
+                <div class="status-text" id="rangeHint">鍏堥€夋嫨涓€涓?Sheet锛屽啀鎷栨嫿琛ㄦ牸鍖哄煙銆?/div>
+                <div class="grid-wrap" id="gridWrap">
+                  <table class="excel-grid" id="rangeGrid"></table>
+                </div>
+              </div>
+            </article>
+
+            <article class="card preview-card">
+              <div class="card-head">
+                <h2>褰撳墠鑼冨洿瀹炴椂棰勮</h2>
+                <span class="mini">鍙充晶鍚屾灞曠ず灞€閮ㄨ〃鏍间笌鍒嗛〉缁撴灉</span>
+              </div>
+              <div class="preview-toolbar">
+                <div class="preview-stats" id="areaPreviewStats"></div>
+                <button class="btn ghost" id="jumpSettings" type="button">缁х画璁剧疆鎵撳嵃鏂瑰紡</button>
+              </div>
+              <div class="page-strip" id="areaPageRail"></div>
+              <div class="paper-wrap" data-paper-wrap="area">
+                <div class="paper-shell" data-paper-shell="area">
+                  <div class="paper" id="areaPaper" data-paper-scope="area">
+                  <div class="paper-head">
+                    <h3 id="areaPreviewTitle">鎵撳嵃鍖哄煙棰勮</h3>
+                    <span id="areaPreviewSub">鍚屾棣栦釜鍒嗛〉鐗囨</span>
+                  </div>
+                  <div class="paper-content">
+                    <table class="preview-table" id="areaPreviewTable"></table>
+                  </div>
+                  <div class="paper-foot">
+                    <span id="areaPreviewFoot">鑼冨洿灏氭湭璋冩暣</span>
+                    <span id="areaPreviewPageInfo">鍒嗛〉鏁版嵁寰呯敓鎴?/span>
+                  </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card-body" style="border-top:1px solid var(--line-soft)">
+                <div class="issue-list" id="formulaWarningList"></div>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="stage" id="stage-settings">
+          <div class="stage-grid">
+            <article class="card">
+              <div class="card-head">
+                <h2>鎵撳嵃璁剧疆</h2>
+                <span class="mini">鎷熷悎鏂瑰紡涓庣増寮忚缃垎寮€鎺у埗</span>
+              </div>
+              <div class="card-body">
+                <div class="control-grid">
+                  <div class="setting-group">
+                    <h3>缂╂斁鏂瑰紡</h3>
+                    <div class="option-list" id="fitModeOptions"></div>
+                  </div>
+                  <div class="setting-group">
+                    <h3>绾稿紶鏂瑰悜</h3>
+                    <div class="option-list" id="orientationOptions"></div>
+                  </div>
+                  <div class="setting-group">
+                    <h3>杈硅窛</h3>
+                    <div class="option-list" id="marginOptions"></div>
+                  </div>
+                  <div class="setting-group">
+                    <h3>瀵煎嚭澧炲己</h3>
+                    <div class="toggle-list" id="toggleOptions"></div>
+                  </div>
+                  <div class="setting-group">
+                    <h3>闀挎枃鏈垪鑷姩鎹㈣</h3>
+                    <div class="toggle-list">
+                      <button class="toggle" id="wrapLongTextToggle" type="button">鍚敤闀挎枃鏈垪鎹㈣</button>
+                    </div>
+                    <div class="input-line">
+                      <input id="wrapColumnsInput" placeholder="渚嬪 H 鎴?H:I锛岀暀绌哄垯鑷姩璇嗗埆">
+                      <button class="btn ghost" id="applyWrapColumns" type="button">搴旂敤鍒楄缃?/button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+
+            <article class="card preview-card">
+              <div class="card-head">
+                <h2>鍒嗛〉妯℃嫙棰勮</h2>
+                <span class="mini">鐢卞悗绔寜褰撳墠鐩爣 Sheet 涓庢墦鍗拌寖鍥寸敓鎴?/span>
+              </div>
+              <div class="preview-toolbar">
+                <div class="preview-stats" id="settingsPreviewStats"></div>
+                <button class="btn primary" id="jumpAi" type="button">鏌ョ湅 AI 鎺ㄨ崘</button>
+              </div>
+              <div class="paper-wrap" data-paper-wrap="settings">
+                <div class="sheet-strip" id="settingsSheetStrip"></div>
+                <div class="page-strip" id="settingsPageRail"></div>
+                <div class="paper-shell" data-paper-shell="settings">
+                  <div class="paper" id="settingsPaper" data-paper-scope="settings">
+                  <div class="paper-head">
+                    <h3 id="settingsPreviewTitle">绛夊緟鍒嗛〉棰勮</h3>
+                    <span id="settingsPreviewSub">鍒囨崲璁剧疆鍚庡彲閲嶆柊鐢熸垚</span>
+                  </div>
+                  <div class="paper-content">
+                    <table class="preview-table" id="settingsPreviewTable"></table>
+                  </div>
+                  <div class="paper-foot">
+                    <span id="settingsPreviewFoot">褰撳墠鎷熷悎妯″紡灏氭湭搴旂敤</span>
+                    <span id="settingsPreviewPage">鏆傛棤椤电爜</span>
+                  </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="stage" id="stage-ai">
+          <div class="stage-grid">
+            <article class="card">
+              <div class="card-head">
+                <h2>AI 椋庨櫓璇婃柇涓庢柟妗堥€夋嫨</h2>
+                <span class="mini">鍏嶈垂鍩虹鐗堥粯璁ゅ惎鐢ㄥ畨鍏ㄧ編鍖?/span>
+              </div>
+              <div class="card-body">
+                <div class="issue-list" id="aiIssueList"></div>
+                <div class="plan-grid" id="aiPlanGrid" style="margin-top:14px"></div>
+              </div>
+            </article>
+
+            <article class="card">
+              <div class="card-head">
+                <h2>浼樺寲鍓嶅悗瀵规瘮</h2>
+                <span class="mini">椤垫暟銆佽寖鍥淬€佽〃澶撮噸澶嶄笌棰勮鐗囨瀵规瘮</span>
+              </div>
+              <div class="card-body">
+                <div class="comparison">
+                  <div class="compare-box">
+                    <h3>浼樺寲鍓?/h3>
+                    <div class="compare-body">
+                      <div class="mini-paper">
+                        <table class="preview-table" id="compareBeforeTable"></table>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="compare-box">
+                    <h3>浼樺寲鍚?/h3>
+                    <div class="compare-body">
+                      <div class="mini-paper">
+                        <table class="preview-table" id="compareAfterTable"></table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+
+        <div class="stage" id="stage-export">
+          <div class="stage-grid">
+            <article class="card">
+              <div class="card-head">
+                <h2>瀵煎嚭鎵撳嵃鍖?/h2>
+                <span class="mini">杈撳嚭浼樺寲鍚庣殑 Excel 鍜屽彲鎵撳嵃 PDF</span>
+              </div>
+              <div class="card-body">
+                <div class="export-grid">
+                  <div class="export-card" id="exportCardExcel">
+                    <div class="status-card-head">
+                      <b>浼樺寲 Excel</b>
+                      <span class="tag green" id="exportCardExcelTag">鎺ㄨ崘</span>
+                    </div>
+                    <p class="muted" id="exportCardExcelDesc">鍐欏洖鎵撳嵃鍖哄煙銆佸垎椤佃缃拰鍩虹缇庡寲锛屼繚鐣欏彲缂栬緫琛ㄦ牸銆?/p>
+                  </div>
+                  <div class="export-card" id="exportCardMacro">
+                    <div class="status-card-head">
+                      <b>VBA 鎵归噺鎵撳嵃 Excel</b>
+                      <span class="tag blue" id="exportCardMacroTag">鍙€?/span>
+                    </div>
+                    <p class="muted" id="exportCardMacroDesc">瀵煎嚭甯︿竴閿墦鍗板畯 `.xlsm`锛岀敤浜庢墦寮€鍚庣洿鎺ユ墦鍗版湰娆℃墍閫?Sheet銆?/p>
+                  </div>
+                  <div class="export-card" id="exportCardPdf">
+                    <div class="status-card-head">
+                      <b>鎵撳嵃 PDF</b>
+                      <span class="tag blue" id="exportCardPdfTag">鏍″</span>
+                    </div>
+                    <p class="muted" id="exportCardPdfDesc">鎸夌収褰撳墠閫変腑鐨?Sheet 涓庤寖鍥村鍑猴紝渚夸簬鐩存帴妫€楠屾墦鍗版晥鏋溿€?/p>
+                  </div>
+                </div>
+                <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+                  <button class="btn primary" id="exportButton" type="button">鐢熸垚鎵归噺鎵撳嵃鏂囦欢</button>
+                  <button class="btn ghost" id="backToUpload" type="button">閲嶆柊涓婁紶鏂囦欢</button>
+                </div>
+                <div class="export-callout" id="exportSummaryCallout">
+                  <b>瀵煎嚭璇存槑</b>
+                  <p>瀵煎嚭鍓嶄細鍏堟鏌ュ綋鍓嶇幆澧冭兘鍚︾敓鎴愬畯鐗?Excel銆傚鏋滃畯鑳藉姏涓嶅彲鐢紝绯荤粺浼氫紭鍏堜繚鐣欎紭鍖?Excel 鍜屾墦鍗?PDF 涓ょ缁撴灉銆?/p>
+                </div>
+                <div class="status-text" id="downloadStatus" style="margin-top:14px;">瀵煎嚭瀹屾垚鍚庯紝杩欓噷浼氬睍绀轰笅杞藉叆鍙ｃ€?/div>
+                <div class="config-list" id="downloadWarningList" style="margin-top:14px;"></div>
+                <div class="download-list" id="downloadList" style="margin-top:14px;"></div>
+                <div class="config-list" id="exportTargetList" style="margin-top:14px;"></div>
+              </div>
+            </article>
+
+            <article class="card preview-card">
+              <div class="card-head">
+                <h2>鏈€缁堟墦鍗板寘棰勮</h2>
+                <span class="mini">瀵煎嚭鍓嶆渶鍚庣‘璁?Sheet銆佽寖鍥翠笌椤垫暟</span>
+              </div>
+              <div class="preview-toolbar">
+                <div class="preview-stats" id="exportPreviewStats"></div>
+                <button class="btn warn" id="exportFromTop" type="button">绔嬪嵆瀵煎嚭</button>
+              </div>
+              <div class="paper-wrap" data-paper-wrap="export">
+                <div class="paper-shell" data-paper-shell="export">
+                  <div class="paper" id="exportPaper" data-paper-scope="export">
+                  <div class="paper-head">
+                    <h3 id="exportPreviewTitle">鎵撳嵃鍖呮€昏</h3>
+                    <span id="exportPreviewSub">褰撳墠閰嶇疆浼氱敤浜庣湡瀹炲鍑?/span>
+                  </div>
+                  <div class="paper-content">
+                    <table class="preview-table" id="exportPreviewTable"></table>
+                  </div>
+                  <div class="paper-foot">
+                    <span id="exportPreviewFoot">绛夊緟瀵煎嚭</span>
+                    <span id="exportPreviewPage">杈撳嚭鏂囦欢灏氭湭鐢熸垚</span>
+                  </div>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
   <script>
-    const promos = [
-      ["智能优化打印方案", "上传后自动读 Sheet 与数据区域"],
-      ["真实分页预览", "生成前看见每一页会装下什么"],
-      ["批量打印任务", "方案、模板、输出文件在一个流里"]
-    ];
-    const compareSlides = [
-      { title: "分页收敛", before: 8, after: 4 },
-      { title: "表头重复", before: 6, after: 4 },
-      { title: "宽表横向", before: 10, after: 5 }
-    ];
-    const fallbackPlans = [
-      { id: "landscape", name: "横向明细版", description: "宽表一页宽，重复标题行。", fitToWidth: 1, repeatHeader: true, freezeTopRow: true },
-      { id: "compact", name: "节纸紧凑版", description: "缩小页边距，减少分页。", fitToWidth: 1, repeatHeader: true, freezeTopRow: true },
-      { id: "split", name: "阅读拆分页", description: "列很多时按宽度拆页。", fitToWidth: 2, repeatHeader: true, freezeTopRow: true },
-      { id: "standard", name: "正式归档版", description: "纵向优先，适合汇总表。", fitToWidth: 1, repeatHeader: true, freezeTopRow: true }
-    ];
-    const state = {
-      file: null,
-      workbookId: "",
-      sheets: [],
-      plans: fallbackPlans,
-      planIndex: 0,
-      preview: null,
-      orientation: "landscape"
-    };
     const $ = (id) => document.getElementById(id);
-    const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
 
-    function showView(name) {
-      document.querySelectorAll(".view").forEach((view) => view.classList.toggle("hidden", view.id !== `${name}View`));
-      document.querySelectorAll("[data-view]").forEach((button) => button.classList.toggle("active", button.dataset.view === name));
-    }
-    document.querySelectorAll("[data-view]").forEach((button) => button.onclick = () => showView(button.dataset.view));
-    document.querySelectorAll("[data-go]").forEach((button) => button.onclick = () => showView(button.dataset.go));
+    const FIT_MODE_LABELS = {
+      singlePage: "整表一页",
+      fitRows: "所有行压一页",
+      fitColumns: "所有列压一页"
+    };
 
-    let promoIndex = 0;
-    function renderPromo() {
-      $("promo").innerHTML = `<h3>${promos[promoIndex][0]}</h3><p>${promos[promoIndex][1]}</p><div class="play"></div>`;
-      $("promoDots").innerHTML = promos.map((_, index) => `<i class="${index === promoIndex ? "active" : ""}"></i>`).join("");
+    const ORIENTATION_LABELS = {
+      portrait: "绾靛悜",
+      landscape: "妯悜"
+    };
+
+    const DEFAULT_PRINT_SETTINGS = {
+      id: "fit-columns",
+      orientation: "landscape",
+      fitMode: "fitColumns",
+      fitToWidth: 1,
+      fitToHeight: 0,
+      repeatHeader: true,
+      freezeTopRow: true,
+      margin: "normal",
+      beautify: true,
+      showGridLines: false,
+      wrapLongText: false,
+      wrapTextColumns: "",
+      horizontalCenter: false,
+      verticalCenter: false
+    };
+
+    const state = {
+      stage: "upload",
+      workbookId: "",
+      workbookName: "",
+      sheets: [],
+      plans: [],
+      activePlanId: "",
+      preview: null,
+      downloads: [],
+      exportWarnings: [],
+      sheetSettingsByName: {},
+      dragging: false,
+      dragOrigin: null,
+      uploadStage: "idle",
+      pendingWorkbookName: "",
+      previewUi: {
+        settingsSheetName: "",
+        settingsPageBySheet: {},
+        areaPageBySheet: {},
+        uploadPageBySheet: {},
+        detailPageBySheet: {}
+      },
+      settings: { ...DEFAULT_PRINT_SETTINGS },
+      batch: {
+        baseSheetName: "",
+        lastAppliedCount: 0
+      }
+    };
+
+    function esc(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
     }
-    setInterval(() => { promoIndex = (promoIndex + 1) % promos.length; renderPromo(); }, 2600);
+
+    function apiUrl(path) {
+      if (/^https?:/i.test(path)) return path;
+      return new URL(path, window.location.origin).toString();
+    }
+
+    function downloadFileName(url) {
+      const clean = String(url || "").split("?")[0].split("#")[0];
+      const raw = clean.slice(clean.lastIndexOf("/") + 1) || "download";
+      try {
+        return decodeURIComponent(raw);
+      } catch {
+        return raw;
+      }
+    }
+
+    function cloneSettings(settings = DEFAULT_PRINT_SETTINGS) {
+      return {
+        ...DEFAULT_PRINT_SETTINGS,
+        ...(settings || {})
+      };
+    }
+
+    function settingsSheetName() {
+      return state.previewUi.settingsSheetName || state.activeSheetName || state.sheets[0]?.name || "";
+    }
+
+    function ensureSheetSettings(sheetName, fallback = null) {
+      if (!sheetName) return cloneSettings(fallback || state.settings);
+      if (!state.sheetSettingsByName[sheetName]) {
+        state.sheetSettingsByName[sheetName] = cloneSettings(fallback || state.settings);
+      }
+      return state.sheetSettingsByName[sheetName];
+    }
+
+    function sheetSettings(sheetOrName, fallback = null) {
+      const sheetName = typeof sheetOrName === "string" ? sheetOrName : sheetOrName?.name;
+      return ensureSheetSettings(sheetName, fallback);
+    }
+
+    function syncUiSettingsFromSheet(sheetName = settingsSheetName()) {
+      state.settings = cloneSettings(ensureSheetSettings(sheetName));
+      state.activePlanId = state.settings.id || state.activePlanId || DEFAULT_PRINT_SETTINGS.id;
+      return state.settings;
+    }
+
+    function commitUiSettingsToSheet(sheetName = settingsSheetName()) {
+      if (!sheetName) return;
+      state.sheetSettingsByName[sheetName] = cloneSettings(state.settings);
+      state.activePlanId = state.settings.id || state.activePlanId || DEFAULT_PRINT_SETTINGS.id;
+    }
+
+    function showToast(message) {
+      const toast = $("toast");
+      toast.textContent = message;
+      toast.classList.add("show");
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => toast.classList.remove("show"), 1600);
+    }
+
+    function reportClientIssue(scope, error) {
+      const message = `${scope}: ${error?.message || error}`;
+      console.error("[Excelsuperpower UI]", message, error);
+      window.__excelsuperpowerLastClientIssue = message;
+      return message;
+    }
+
+    function previewOrientation(scope = "") {
+      if (scope === "upload") {
+        const sheet = previewSheetForName(previewSheetForUpload()?.name);
+        return sheet?.plan?.orientation || sheetSettings(previewSheetForUpload())?.orientation || "portrait";
+      }
+      if (scope === "area") {
+        const sheet = previewSheetForName(activeSheet()?.name);
+        return sheet?.plan?.orientation || sheetSettings(activeSheet())?.orientation || "portrait";
+      }
+      if (scope === "settings") {
+        const sheet = settingsPreviewSheet();
+        return sheet?.plan?.orientation || sheetSettings(settingsSheetName())?.orientation || "portrait";
+      }
+      if (scope === "export") {
+        const first = selectedSheets()[0];
+        const sheet = previewSheetForName(first?.name);
+        return sheet?.plan?.orientation || sheetSettings(first)?.orientation || "portrait";
+      }
+      return state.preview?.plan?.orientation || state.settings.orientation || "portrait";
+    }
+
+    function syncPaperLayouts() {
+      document.querySelectorAll("[data-paper-shell]").forEach((shell) => {
+        const scope = shell.dataset.paperShell || "";
+        const wrap = shell.closest("[data-paper-wrap]");
+        const paper = shell.querySelector("[data-paper-scope]");
+        if (!wrap || !paper) return;
+
+        const portrait = previewOrientation(scope) === "portrait";
+        const baseWidth = portrait ? 820 : 1120;
+        const baseMinHeight = portrait ? 1160 : 790;
+
+        paper.classList.toggle("portrait", portrait);
+        paper.style.width = `${baseWidth}px`;
+        paper.style.minHeight = `${baseMinHeight}px`;
+        paper.style.transform = "translateX(-50%) scale(1)";
+
+        const availableWidth = Math.max(280, wrap.clientWidth - 40);
+        const availableHeight = Math.max(320, wrap.clientHeight - (scope === "settings" ? 160 : 32));
+        const naturalHeight = Math.max(baseMinHeight, paper.scrollHeight);
+        const scale = Math.min(1, availableWidth / baseWidth, availableHeight / naturalHeight);
+
+        shell.style.width = `${Math.max(260, Math.round(baseWidth * scale))}px`;
+        shell.style.height = `${Math.max(280, Math.round(naturalHeight * scale))}px`;
+        paper.style.transform = `translateX(-50%) scale(${scale})`;
+      });
+    }
+
+    function schedulePaperLayouts() {
+      cancelAnimationFrame(window.__paperLayoutFrame || 0);
+      window.__paperLayoutFrame = requestAnimationFrame(() => syncPaperLayouts());
+    }
+
+    async function fetchJson(path, options = {}, timeoutMs = 60000) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        const response = await fetch(apiUrl(path), {
+          ...options,
+          signal: controller.signal,
+        });
+        const payload = await response.json();
+        if (!response.ok) throw new Error(payload.error || "璇锋眰澶辫触");
+        return payload;
+      } catch (error) {
+        if (error?.name === "AbortError") {
+          throw new Error("鏈湴鏈嶅姟鍝嶅簲瓒呮椂");
+        }
+        throw error;
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    function triggerDirectDownload(url, filename = "") {
+      const anchor = document.createElement("a");
+      anchor.href = url;
+      anchor.download = filename;
+      anchor.rel = "noreferrer";
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+    }
+
+    async function ensureBackendReady() {
+      await fetchJson("/api/health", {}, 2500);
+    }
+
+    function colToIndex(label) {
+      return label.toUpperCase().split("").reduce((sum, char) => sum * 26 + (char.charCodeAt(0) - 64), 0);
+    }
+
+    function indexToCol(number) {
+      let current = number;
+      let text = "";
+      while (current > 0) {
+        const remain = (current - 1) % 26;
+        text = String.fromCharCode(65 + remain) + text;
+        current = Math.floor((current - 1) / 26);
+      }
+      return text;
+    }
+
+    function parseRange(value) {
+      const match = /^([A-Za-z]{1,3})(\d+)(?::([A-Za-z]{1,3})(\d+))?$/.exec((value || "").replace(/\$/g, "").trim());
+      if (!match) return null;
+      const col1 = colToIndex(match[1]);
+      const row1 = Number(match[2]);
+      const col2 = colToIndex(match[3] || match[1]);
+      const row2 = Number(match[4] || match[2]);
+      return {
+        minRow: Math.min(row1, row2),
+        minCol: Math.min(col1, col2),
+        maxRow: Math.max(row1, row2),
+        maxCol: Math.max(col1, col2)
+      };
+    }
+
+    function formatRange(bounds) {
+      if (!bounds) return "";
+      return `${indexToCol(bounds.minCol)}${bounds.minRow}:${indexToCol(bounds.maxCol)}${bounds.maxRow}`;
+    }
+
+    function intersects(a, b) {
+      return !(a.maxRow < b.minRow || b.maxRow < a.minRow || a.maxCol < b.minCol || b.maxCol < a.minCol);
+    }
+
+    function contains(outer, inner) {
+      return outer.minRow <= inner.minRow &&
+        outer.minCol <= inner.minCol &&
+        outer.maxRow >= inner.maxRow &&
+        outer.maxCol >= inner.maxCol;
+    }
+
+    function unionBounds(a, b) {
+      return {
+        minRow: Math.min(a.minRow, b.minRow),
+        minCol: Math.min(a.minCol, b.minCol),
+        maxRow: Math.max(a.maxRow, b.maxRow),
+        maxCol: Math.max(a.maxCol, b.maxCol)
+      };
+    }
+
+    function expandSelectionForMerges(bounds, regions) {
+      let current = { ...bounds };
+      let changed = true;
+      while (changed) {
+        changed = false;
+        for (const region of regions || []) {
+          const area = {
+            minRow: region.startRow,
+            minCol: region.startCol,
+            maxRow: region.endRow,
+            maxCol: region.endCol
+          };
+          if (intersects(current, area) && !contains(current, area)) {
+            current = unionBounds(current, area);
+            changed = true;
+          }
+        }
+      }
+      return current;
+    }
 
     function selectedSheets() {
       return state.sheets.filter((sheet) => sheet.checked);
     }
-    function activePlan() {
-      return state.plans[state.planIndex] || fallbackPlans[0];
-    }
-    function planPayload() {
-      const plan = activePlan();
-      return {
-        ...plan,
-        orientation: state.orientation,
-        fitToWidth: $("fit").checked ? 1 : (plan.fitToWidth || 1),
-        repeatHeader: $("header").checked,
-        freezeTopRow: $("freeze").checked
-      };
-    }
-    function renderSheets() {
-      $("sheetList").innerHTML = state.sheets.map((sheet) => `
-        <label class="sheet-row"><input type="checkbox" data-sheet="${esc(sheet.name)}" ${sheet.checked ? "checked" : ""}><span class="excel">X</span><span class="sheet-copy">${esc(sheet.name)}<br><i class="muted small">${esc(sheet.range)} · ${sheet.rows} 行 · ${sheet.columns} 列</i></span></label>
-        <div class="preview-cells">${(sheet.preview || []).slice(0, 2).flat().slice(0, 8).map((cell) => `<span>${esc(cell)}</span>`).join("")}</div>
-      `).join("");
-      document.querySelectorAll("[data-sheet]").forEach((checkbox) => checkbox.onchange = () => {
-        const sheet = state.sheets.find((item) => item.name === checkbox.dataset.sheet);
-        sheet.checked = checkbox.checked;
-        requestPrintPreview();
-      });
-    }
-    function renderPlans() {
-      $("planWindow").innerHTML = state.plans.map((plan, index) => `
-        <article class="panel plan-card ${index === state.planIndex ? "active" : ""}" data-plan="${index}">
-          <div class="between"><h3>方案 ${String.fromCharCode(65 + index)}　${esc(plan.name)}</h3><span class="chip">${index === 0 ? "推荐" : "可选"}</span></div>
-          <div class="plan-grid"><div>${esc(plan.description)}<p class="muted small">宽度适配 ${plan.fitToWidth || 1} 页 · 重复表头 ${plan.repeatHeader ? "开启" : "可选"}</p><p style="color:var(--gold)">★★★★☆</p></div><div class="thumb"></div></div>
-        </article>
-      `).join("");
-      document.querySelectorAll("[data-plan]").forEach((card) => card.onclick = () => selectPlan(Number(card.dataset.plan)));
-    }
-    function selectPlan(index, loadPreview = true) {
-      state.planIndex = (index + state.plans.length) % state.plans.length;
-      renderPlans();
-      if (loadPreview) requestPrintPreview();
-    }
-    $("prevPlan").onclick = () => selectPlan(state.planIndex - 1);
-    $("nextPlan").onclick = () => { selectPlan(state.planIndex + 1); $("pageRail").scrollIntoView({ behavior: "smooth", block: "nearest" }); };
-    setInterval(() => {
-      if (!$("planView").classList.contains("hidden") && state.plans.length) selectPlan(state.planIndex + 1, Boolean(state.workbookId));
-    }, 4300);
 
-    let compareIndex = 0;
-    function renderCompare() {
-      const source = state.preview || {};
-      $("compareSlider").innerHTML = compareSlides.map((slide, index) => `
-        <article class="compare-card ${index === compareIndex ? "active" : ""}">
-          <div class="panel compare-col before"><b>原始效果 · ${slide.title}</b><div class="page-stack"><i class="mini-page"></i><i class="mini-page"></i><i class="mini-page"></i><i class="mini-page"></i></div><p>共 ${source.originalPageCount || slide.before} 页</p></div>
-          <div class="panel compare-col after"><b>优化后效果</b><div class="page-stack"><i class="mini-page"></i><i class="mini-page"></i></div><p>共 ${source.optimizedPageCount || slide.after} 页</p></div>
-        </article>
-      `).join("");
+    function presetPrintAreaSheets() {
+      return state.sheets.filter((sheet) => sheet.hasNativePrintArea && sheet.nativePrintArea);
     }
-    setInterval(() => { compareIndex = (compareIndex + 1) % compareSlides.length; renderCompare(); }, 3300);
-    function renderPages() {
-      if (!state.preview) {
-        $("pageRail").innerHTML = `<div class="panel print-page"><b>等待 Excel 数据</b><p class="muted small">上传后这里会按方案展示真实 Sheet 分页片段。</p></div>`;
-        $("pageCount").textContent = "请先上传 Excel";
-        renderCompare();
+
+    function hasExcelQuickPrint() {
+      return presetPrintAreaSheets().length > 0;
+    }
+
+    function rangeSourceLabel(source) {
+      if (source === "manual") return "鎵嬪姩璋冩暣";
+      if (source === "batch") return "鎵归噺缁ф壙";
+      if (source === "excel") return "Excel ???";
+      return "鑷姩璇嗗埆";
+    }
+
+    function previewSheets() {
+      return state.preview?.sheets || [];
+    }
+
+    function clampPageNumber(value, total) {
+      if (!total) return 1;
+      return Math.min(Math.max(Number(value) || 1, 1), total);
+    }
+
+    function previewSheetForName(name) {
+      return previewSheets().find((sheet) => sheet.name === name) || null;
+    }
+
+    function ensurePreviewUiState() {
+      const sheets = previewSheets();
+      const settingsSheet = previewSheetForName(state.previewUi.settingsSheetName);
+      if (!settingsSheet) {
+        state.previewUi.settingsSheetName = previewSheetForName(activeSheet()?.name)?.name || sheets[0]?.name || "";
+      }
+      for (const sheet of sheets) {
+        state.previewUi.settingsPageBySheet[sheet.name] = clampPageNumber(state.previewUi.settingsPageBySheet[sheet.name], sheet.pages?.length || 1);
+        state.previewUi.areaPageBySheet[sheet.name] = clampPageNumber(state.previewUi.areaPageBySheet[sheet.name], sheet.pages?.length || 1);
+        state.previewUi.uploadPageBySheet[sheet.name] = clampPageNumber(state.previewUi.uploadPageBySheet[sheet.name], sheet.pages?.length || 1);
+        state.previewUi.detailPageBySheet[sheet.name] = clampPageNumber(state.previewUi.detailPageBySheet[sheet.name], sheet.pages?.length || 1);
+      }
+    }
+
+    function settingsPreviewSheet() {
+      ensurePreviewUiState();
+      return previewSheetForName(state.previewUi.settingsSheetName) || null;
+    }
+
+    function previewPageMap(scope) {
+      if (scope === "settings") return state.previewUi.settingsPageBySheet;
+      if (scope === "area") return state.previewUi.areaPageBySheet;
+      if (scope === "upload") return state.previewUi.uploadPageBySheet;
+      if (scope === "detail") return state.previewUi.detailPageBySheet;
+      return state.previewUi.settingsPageBySheet;
+    }
+
+    function previewPageFor(sheet, scope) {
+      if (!sheet) return null;
+      const map = previewPageMap(scope);
+      const pageNumber = clampPageNumber(map[sheet.name], sheet.pages?.length || 1);
+      map[sheet.name] = pageNumber;
+      return sheet.pages?.[pageNumber - 1] || null;
+    }
+
+    function renderPageRail(targetId, sheet, scope) {
+      const rail = $(targetId);
+      if (!sheet?.pages?.length) {
+        rail.innerHTML = "";
         return;
       }
-      const pages = state.preview.sheets.flatMap((sheet) => sheet.pages.map((page) => ({ ...page, sheet: sheet.name })));
-      $("pageCount").textContent = `${state.preview.originalPageCount} 页压缩为 ${state.preview.optimizedPageCount} 页`;
-      $("pageRail").innerHTML = pages.map((page) => `
-        <article class="print-page"><b>${esc(page.sheet)} · 第 ${page.number} 页</b><p class="muted small">行 ${page.rowRange} · 列 ${page.columnRange}${page.hasRepeatedHeader ? " · 重复表头" : ""}</p><div class="paper-grid">${page.rows.map((row) => `<div class="paper-row">${row.map((cell) => `<span class="paper-cell">${esc(cell)}</span>`).join("")}</div>`).join("")}</div></article>
+      const page = previewPageFor(sheet, scope);
+      rail.innerHTML = sheet.pages.map((item) => `
+        <button class="page-chip ${item.number === page?.number ? "active" : ""}" type="button" data-preview-scope="${scope}" data-preview-sheet="${esc(sheet.name)}" data-preview-page="${item.number}">
+          <b>绗?${item.number} 椤?/b>
+          <span>${esc(item.rowRange)} 璺?${esc(item.columnRange)}</span>
+          <span>${item.hasRepeatedHeader ? "閲嶅琛ㄥご" : "鍘熷棣栧睆"}</span>
+        </button>
       `).join("");
-      renderCompare();
     }
-    async function requestPrintPreview() {
-      if (!state.workbookId || !selectedSheets().length) return renderPages();
-      $("pageCount").textContent = "正在生成分页预览...";
-      const response = await fetch("/api/preview-plan", {
+
+    function normalizeToken(value) {
+      return String(value || "").trim().toLowerCase();
+    }
+
+    function headerFingerprint(sheet) {
+      const preview = sheet?.preview || [];
+      if (!preview.length) return [];
+      const candidates = preview
+        .slice(0, 4)
+        .map((row) => row.map(normalizeToken).filter(Boolean))
+        .filter((row) => row.length);
+      if (!candidates.length) return [];
+      candidates.sort((a, b) => b.length - a.length);
+      return candidates[0];
+    }
+
+    function similarityScore(baseSheet, targetSheet) {
+      if (!baseSheet || !targetSheet || baseSheet.name === targetSheet.name) return 0;
+      const baseHeader = headerFingerprint(baseSheet);
+      const targetHeader = headerFingerprint(targetSheet);
+      const headerMatchCount = baseHeader.filter((item, index) => item && item === targetHeader[index]).length;
+      const headerScore = Math.min(1, headerMatchCount / Math.max(1, Math.max(baseHeader.length, targetHeader.length)));
+      const columnScore = 1 - Math.min(1, Math.abs((baseSheet.columns || 0) - (targetSheet.columns || 0)) / Math.max(1, baseSheet.columns || 1));
+      const rowScore = 1 - Math.min(1, Math.abs((baseSheet.rows || 0) - (targetSheet.rows || 0)) / Math.max(12, baseSheet.rows || 1));
+      const orientationBonus = baseSheet.recommendedOrientation === targetSheet.recommendedOrientation ? 0.12 : 0;
+      return headerScore * 0.5 + columnScore * 0.28 + rowScore * 0.1 + orientationBonus;
+    }
+
+    function matchedSheetsFor(baseSheet, threshold = 0.72) {
+      return state.sheets
+        .map((sheet) => ({ sheet, score: similarityScore(baseSheet, sheet) }))
+        .filter((item) => item.score >= threshold)
+        .sort((a, b) => b.score - a.score);
+    }
+
+    function batchBaseSheet() {
+      return state.sheets.find((sheet) => sheet.name === state.batch.baseSheetName) || activeSheet();
+    }
+
+    function batchSummary() {
+      const base = batchBaseSheet();
+      if (!base) return { base: null, matches: [], selectedMatches: [] };
+      const matches = matchedSheetsFor(base);
+      const selectedMatches = matches.filter(({ sheet }) => sheet.checked);
+      return { base, matches, selectedMatches };
+    }
+
+    function initialCheckedNames(sheets) {
+      const base = sheets[0];
+      if (!base) return new Set();
+      const picks = new Set([base.name]);
+      for (const { sheet } of sheets
+        .map((sheet) => ({ sheet, score: similarityScore(base, sheet) }))
+        .filter((item) => item.score >= 0.72)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 4)) {
+        picks.add(sheet.name);
+      }
+      if (picks.size === 1 && sheets[1]) picks.add(sheets[1].name);
+      return picks;
+    }
+
+    function cloneRangeToSheet(baseSheet, targetSheet) {
+      const baseRange = parseRange(baseSheet.printRange);
+      const baseAuto = parseRange(baseSheet.autoRange);
+      const targetAuto = parseRange(targetSheet.autoRange);
+      if (!baseRange || !baseAuto || !targetAuto) return false;
+      const offsetTop = baseRange.minRow - baseAuto.minRow;
+      const offsetLeft = baseRange.minCol - baseAuto.minCol;
+      const height = baseRange.maxRow - baseRange.minRow;
+      const width = baseRange.maxCol - baseRange.minCol;
+      let next = {
+        minRow: targetAuto.minRow + offsetTop,
+        minCol: targetAuto.minCol + offsetLeft,
+        maxRow: targetAuto.minRow + offsetTop + height,
+        maxCol: targetAuto.minCol + offsetLeft + width
+      };
+      next = {
+        minRow: Math.max(targetAuto.minRow, next.minRow),
+        minCol: Math.max(targetAuto.minCol, next.minCol),
+        maxRow: Math.min(targetAuto.maxRow, next.maxRow),
+        maxCol: Math.min(targetAuto.maxCol, next.maxCol)
+      };
+      if (next.maxRow < next.minRow || next.maxCol < next.minCol) return false;
+      targetSheet.printRange = formatRange(next);
+      targetSheet.rangeSource = "batch";
+      targetSheet.checked = true;
+      return true;
+    }
+
+    function autoSelectMatchingSheets() {
+      const base = batchBaseSheet();
+      if (!base) return 0;
+      base.checked = true;
+      const matches = matchedSheetsFor(base);
+      matches.forEach(({ sheet }) => { sheet.checked = true; });
+      state.batch.baseSheetName = base.name;
+      state.batch.lastAppliedCount = matches.length;
+      if (!state.activeSheetName) state.activeSheetName = base.name;
+      return matches.length;
+    }
+
+    function applyCurrentRangeToMatches() {
+      const base = batchBaseSheet();
+      if (!base) return 0;
+      let count = 0;
+      for (const { sheet } of matchedSheetsFor(base)) {
+        if (cloneRangeToSheet(base, sheet)) count += 1;
+      }
+      state.batch.baseSheetName = base.name;
+      state.batch.lastAppliedCount = count;
+      return count;
+    }
+
+    async function runBatchSelection() {
+      const count = autoSelectMatchingSheets();
+      renderAll();
+      await refreshPreview();
+      showToast(count ? `宸插尮閰嶅苟鍕鹃€?${count} 涓悓绫?Sheet` : "娌℃湁鎵惧埌瓒冲鐩镐技鐨?Sheet");
+    }
+
+    async function runBatchRangeApply() {
+      const count = applyCurrentRangeToMatches();
+      renderAll();
+      await refreshPreview();
+      showToast(count ? `宸叉妸褰撳墠鑼冨洿鎵归噺搴旂敤鍒?${count} 涓?Sheet` : "娌℃湁鎵惧埌鍙互缁ф壙褰撳墠鑼冨洿鐨勫尮閰?Sheet");
+    }
+
+    function selectPresetPrintAreaSheets() {
+      const presetSheets = presetPrintAreaSheets();
+      if (!presetSheets.length) return 0;
+      const presetNames = new Set(presetSheets.map((sheet) => sheet.name));
+      state.sheets.forEach((sheet) => {
+        sheet.checked = presetNames.has(sheet.name);
+      });
+      state.activeSheetName = presetSheets[0].name;
+      state.batch.baseSheetName = presetSheets[0].name;
+      return presetSheets.length;
+    }
+
+    async function runExcelQuickPrint() {
+      const count = selectPresetPrintAreaSheets();
+      if (!count) {
+        setStage("export");
+        return;
+      }
+      renderAll();
+      setStage("export");
+      setDownloadStatus(`宸插垏鎹负 ${count} 涓€淓xcel 鍘熸墦鍗板尯鍩熲€?Sheet锛屾鍦ㄧ敓鎴愭壒閲忔墦鍗版枃浠?..`);
+      await exportResults();
+    }
+
+    function selectedTargets() {
+      return selectedSheets().map((sheet) => ({
+        sheet: sheet.name,
+        range: sheet.printRange,
+        rangeSource: sheet.rangeSource || "auto",
+        plan: cloneSettings(sheetSettings(sheet))
+      }));
+    }
+
+    function activeSheet() {
+      const selected = selectedSheets();
+      const current = state.sheets.find((sheet) => sheet.name === state.activeSheetName);
+      if (current) {
+        if (!state.batch.baseSheetName) state.batch.baseSheetName = current.name;
+        return current;
+      }
+      if (selected[0]) {
+        state.activeSheetName = selected[0].name;
+        if (!state.batch.baseSheetName) state.batch.baseSheetName = selected[0].name;
+        return selected[0];
+      }
+      if (state.sheets[0]) {
+        state.activeSheetName = state.sheets[0].name;
+        if (!state.batch.baseSheetName) state.batch.baseSheetName = state.sheets[0].name;
+        return state.sheets[0];
+      }
+      return null;
+    }
+
+    function activePlan() {
+      const currentId = state.settings.id || state.activePlanId;
+      return state.plans.find((plan) => plan.id === currentId) || state.plans[0] || null;
+    }
+
+    function planPayload() {
+      return cloneSettings(state.settings);
+    }
+
+    function setStage(stage) {
+      state.stage = stage;
+      document.querySelectorAll(".stage").forEach((item) => item.classList.remove("active"));
+      document.querySelectorAll("[data-stage]").forEach((button) => button.classList.toggle("active", button.dataset.stage === stage));
+      $(`stage-${stage}`).classList.add("active");
+      if (stage === "settings") {
+        if (!state.previewUi.settingsSheetName) {
+          state.previewUi.settingsSheetName = state.activeSheetName || state.sheets[0]?.name || "";
+        }
+        syncUiSettingsFromSheet(state.previewUi.settingsSheetName);
+      }
+      if (stage === "area") {
+        loadSheetGrid().catch((error) => setDownloadStatus(explainNetworkError(error), "error"));
+      }
+    }
+
+    function setTopStatus(message, warn = false) {
+      $("topStatusText").textContent = message;
+      $("topStatus").classList.toggle("warn", warn);
+    }
+
+    function setUploadStatus(message, type = "") {
+      $("uploadState").className = `status-text ${type}`;
+      $("uploadState").textContent = message;
+    }
+
+    function setDownloadStatus(message, type = "") {
+      $("downloadStatus").className = `status-text ${type}`;
+      $("downloadStatus").innerHTML = message;
+    }
+
+    function applyPlan(plan, sheetName = settingsSheetName()) {
+      if (!plan) return;
+      syncUiSettingsFromSheet(sheetName);
+      state.settings = {
+        ...state.settings,
+        id: plan.id || state.settings.id,
+        orientation: plan.orientation || state.settings.orientation,
+        fitMode: plan.fitMode || state.settings.fitMode,
+        fitToWidth: plan.fitToWidth ?? state.settings.fitToWidth,
+        fitToHeight: plan.fitToHeight ?? state.settings.fitToHeight,
+        repeatHeader: plan.repeatHeader ?? state.settings.repeatHeader,
+        freezeTopRow: plan.freezeTopRow ?? state.settings.freezeTopRow,
+        margin: plan.margin || state.settings.margin,
+        beautify: plan.beautify ?? state.settings.beautify,
+        showGridLines: plan.showGridLines ?? state.settings.showGridLines,
+        wrapLongText: plan.wrapLongText ?? state.settings.wrapLongText,
+        wrapTextColumns: plan.wrapTextColumns ?? state.settings.wrapTextColumns
+      };
+      commitUiSettingsToSheet(sheetName);
+    }
+
+    function uploadProgressModel() {
+      if (state.uploadStage === "error") {
+        return {
+          title: "上传未完成",
+          detail: "文件上传或解析过程中中断，修复提示后可以重新上传。",
+          value: 12,
+          steps: [
+            { label: "文件上传", detail: "需重试", status: "warn" },
+            { label: "结构识别", detail: "未开始", status: "" },
+            { label: "格式读取", detail: "未开始", status: "" },
+            { label: "分页预热", detail: "未开始", status: "" }
+          ]
+        };
+      }
+      if (state.uploadStage === "uploading") {
+        return {
+          title: "正在上传并打开工作簿",
+          detail: `${state.pendingWorkbookName || "Excel 文件"} 已进入处理队列，马上开始识别 Sheet 和打印范围。`,
+          value: 24,
+          steps: [
+            { label: "文件上传", detail: "传输中", status: "active" },
+            { label: "结构识别", detail: "等待服务端", status: "" },
+            { label: "格式读取", detail: "待开始", status: "" },
+            { label: "分页预热", detail: "待开始", status: "" }
+          ]
+        };
+      }
+      if (state.uploadStage === "analyzing") {
+        return {
+          title: "正在识别 Sheet 与打印区域",
+          detail: `${state.workbookName || "Excel 文件"} 已上传完成，正在整理可见 Sheet、原打印区域和预览网格。`,
+          value: 56,
+          steps: [
+            { label: "文件上传", detail: "已完成", status: "done" },
+            { label: "结构识别", detail: `${state.sheets.length || 0} 个 Sheet`, status: "active" },
+            { label: "格式读取", detail: "处理中", status: "" },
+            { label: "分页预热", detail: "待开始", status: "" }
+          ]
+        };
+      }
+      if (state.uploadStage === "previewing") {
+        return {
+          title: "首轮分页预览生成中",
+          detail: `${state.workbookName} 已完成 Sheet 与打印区域识别，正在同步后端分页结果。`,
+          value: 84,
+          steps: [
+            { label: "文件上传", detail: "已完成", status: "done" },
+            { label: "结构识别", detail: `${state.sheets.length} 个 Sheet`, status: "done" },
+            { label: "格式读取", detail: "预览数据已载入", status: "done" },
+            { label: "分页预热", detail: "正在生成", status: "active" }
+          ]
+        };
+      }
+      if (state.uploadStage === "preview-error") {
+        return {
+          title: "分页预览暂未完成",
+          detail: `${state.workbookName} 已解析成功，但首轮分页预览还没拉取到。你可以刷新预览，或者直接按 Excel 原打印区域一键批量打印。`,
+          value: 88,
+          steps: [
+            { label: "文件上传", detail: "已完成", status: "done" },
+            { label: "结构识别", detail: `${state.sheets.length} 个 Sheet`, status: "done" },
+            { label: "格式读取", detail: "已完成", status: "done" },
+            { label: "分页预热", detail: "待重试", status: "warn" }
+          ]
+        };
+      }
+      if (!state.workbookName) {
+        return {
+          title: "等待开始解析",
+          detail: "上传后会依次完成传输、识别 Sheet、读取格式和生成首轮分页预览。",
+          value: 0,
+          steps: [
+            { label: "文件上传", detail: "等待文件", status: "active" },
+            { label: "结构识别", detail: "待开始", status: "" },
+            { label: "格式读取", detail: "待开始", status: "" },
+            { label: "分页预热", detail: "待开始", status: "" }
+          ]
+        };
+      }
+      return {
+        title: "解析完成，可以继续调分页和打印设置",
+        detail: `${state.workbookName} 已完成首轮分页模拟，后续每次调整都会同步刷新预览。`,
+        value: 100,
+        steps: [
+          { label: "文件上传", detail: "已完成", status: "done" },
+          { label: "结构识别", detail: `${state.sheets.length} 个 Sheet`, status: "done" },
+          { label: "格式读取", detail: "预览格式已保留", status: "done" },
+          { label: "分页预热", detail: `${state.preview?.optimizedPageCount || 0} 页`, status: "done" }
+        ]
+      };
+    }
+
+    function previewSheetForUpload() {
+      return activeSheet() || state.sheets[0] || null;
+    }
+
+    async function loadSheetGrid(sheetName = activeSheet()?.name) {
+      const sheet = state.sheets.find((item) => item.name === sheetName);
+      if (!state.workbookId || !sheet || sheet.grid || sheet.loadingGrid) return;
+      sheet.loadingGrid = true;
+      renderAll();
+      try {
+        const payload = await fetchJson(`/api/workbooks/${state.workbookId}?sheet=${encodeURIComponent(sheetName)}`, {}, 120000);
+        const detail = payload.sheet || {};
+        sheet.grid = detail.grid || sheet.grid;
+        sheet.preview = detail.preview || sheet.preview;
+        sheet.issues = detail.issues || sheet.issues;
+        sheet.rows = detail.rows || sheet.rows;
+        sheet.columns = detail.columns || sheet.columns;
+        sheet.mergedRegions = detail.mergedRegions || sheet.mergedRegions;
+        sheet.recommendedOrientation = detail.recommendedOrientation || sheet.recommendedOrientation;
+      } finally {
+        sheet.loadingGrid = false;
+        renderAll();
+      }
+    }
+
+    function renderTableFromRows(targetId, rows) {
+      const table = $(targetId);
+      if (!rows || !rows.length) {
+        table.innerHTML = `<tbody><tr><td class="muted">鏆傛棤鍙樉绀烘暟鎹?/td></tr></tbody>`;
+        return;
+      }
+      const head = rows[0] || [];
+      const body = rows.slice(1);
+      table.innerHTML = `
+        <thead><tr>${head.map((cell) => `<th>${esc(cell)}</th>`).join("")}</tr></thead>
+        <tbody>${body.map((row) => `<tr>${row.map((cell) => `<td>${esc(cell)}</td>`).join("")}</tr>`).join("")}</tbody>
+      `;
+    }
+
+    function sheetCellLookup(sheet) {
+      const map = new Map();
+      for (const row of sheet?.grid?.cells || []) {
+        for (const cell of row) {
+          map.set(`${cell.row}:${cell.col}`, cell);
+        }
+      }
+      return map;
+    }
+
+    function rangeRowsFromGrid(sheet, bounds, maxRows = 14) {
+      if (!sheet || !sheet.grid) return [];
+      const map = sheetCellLookup(sheet);
+      const rows = [];
+      const endRow = Math.min(bounds.maxRow, bounds.minRow + maxRows - 1, sheet.grid.endRow);
+      for (let row = bounds.minRow; row <= endRow; row += 1) {
+        const current = [];
+        for (let col = bounds.minCol; col <= Math.min(bounds.maxCol, sheet.grid.endCol); col += 1) {
+          const cell = map.get(`${row}:${col}`);
+          if (!cell || cell.hiddenByMerge) continue;
+          current.push(cell);
+        }
+        rows.push(current);
+      }
+      return rows;
+    }
+
+    function renderTableFromCells(targetId, sheet, bounds, maxRows = 14) {
+      const table = $(targetId);
+      if (!sheet || !bounds) {
+        table.innerHTML = `<tbody><tr><td class="muted">涓婁紶鍚庢樉绀洪€変腑鑼冨洿</td></tr></tbody>`;
+        return;
+      }
+      const rows = rangeRowsFromGrid(sheet, bounds, maxRows);
+      if (!rows.length) {
+        table.innerHTML = `<tbody><tr><td class="muted">褰撳墠鑼冨洿瓒呭嚭鍓嶇棰勮缃戞牸锛岃鎵嬪姩鍚屾鍚庢煡鐪嬪垎椤甸瑙堛€?/td></tr></tbody>`;
+        return;
+      }
+      const header = rows[0];
+      const body = rows.slice(1);
+      table.innerHTML = `
+        <thead><tr>${header.map((cell) => `<th colspan="${cell.colSpan || 1}" rowspan="${cell.rowSpan || 1}">${esc(cell.display)}</th>`).join("")}</tr></thead>
+        <tbody>${body.map((row) => `<tr>${row.map((cell) => `<td class="${cell.missingCachedValue ? "warn" : ""}" colspan="${cell.colSpan || 1}" rowspan="${cell.rowSpan || 1}">${esc(cell.display)}</td>`).join("")}</tr>`).join("")}</tbody>
+      `;
+    }
+
+    function updateTopSummary() {
+      const current = activeSheet();
+      const selected = selectedSheets();
+      const batch = batchSummary();
+      if (!state.workbookName) {
+        $("topSummary").textContent = "上传 Excel 后先选择样板 Sheet，再批量匹配同结构页面，统一生成打印包。";
+        setTopStatus("等待上传 Excel", false);
+        return;
+      }
+      const sheetPart = current ? `当前 Sheet：${current.name}` : "尚未选择 Sheet";
+      const rangePart = current ? `范围：${current.printRange}` : "范围待确认";
+      const batchPart = batch.base ? `批量匹配：${batch.matches.length} 个候选` : "批量匹配待识别";
+      $("topSummary").textContent = `${state.workbookName} · 已选 ${selected.length} 个 Sheet · ${sheetPart} · ${rangePart} · ${batchPart}`;
+      if (state.preview) {
+        setTopStatus(`预览已同步 · 预计 ${state.preview.optimizedPageCount} 页`, false);
+      } else {
+        setTopStatus("文件已上传，等待生成分页预览", true);
+      }
+    }
+
+    function renderUploadSection() {
+      const progress = uploadProgressModel();
+      $("uploadProgressTitle").textContent = progress.title;
+      $("uploadProgressDetail").textContent = progress.detail;
+      $("uploadProgressValue").textContent = `${progress.value}%`;
+      $("uploadProgressFill").style.width = `${progress.value}%`;
+      $("uploadProgressSteps").innerHTML = progress.steps.map((step) => `
+        <div class="parse-step ${step.status}">
+          <b>${esc(step.label)}</b>
+          <span>${esc(step.detail)}</span>
+        </div>
+      `).join("");
+
+      $("metaSheets").textContent = String(state.sheets.length);
+      $("metaSelected").textContent = String(selectedSheets().length);
+      $("metaPages").textContent = String(state.preview?.optimizedPageCount || 0);
+      const batch = batchSummary();
+      const presetSheets = presetPrintAreaSheets();
+      $("jumpExport").textContent = presetSheets.length
+        ? `按原打印区域批量打印${presetSheets.length ? `（${presetSheets.length} 个 Sheet）` : ""}`
+        : "一键批量打印";
+      $("batchHeroPanel").innerHTML = batch.base ? `
+        <h3>鎵归噺鎵撳嵃娴佺▼宸插氨缁?/h3>
+        <p>浠?<strong>${esc(batch.base.name)}</strong> 浣滀负鏍锋澘 Sheet锛岀郴缁熷凡鎵惧埌 <strong>${batch.matches.length}</strong> 涓悓缁撴瀯鍊欓€夈€備綘鍙互鍏堣皟濂戒竴涓寖鍥达紝鍐嶆壒閲忓鐢ㄥ埌鏁存壒 Sheet銆?/p>
+        <div class="hero-inline">
+          <span class="pill blue">宸插嬀閫?${selectedSheets().length} 涓?Sheet</span>
+          <span class="pill green">鍖归厤鍊欓€?${batch.matches.length} 涓?/span>
+          <span class="pill orange">鏈€杩戞壒閲忓簲鐢?${state.batch.lastAppliedCount} 涓?/span>
+        </div>
+      ` : `
+        <h3>涓婁紶鍚庝細鑷姩杩涘叆鎵归噺璇嗗埆妯″紡</h3>
+        <p>绯荤粺浼氫紭鍏堣瘑鍒粨鏋勭浉杩戠殑 Sheet锛屽府鍔╀綘鍏堥厤缃竴涓牱鏉匡紝鍐嶆妸鑼冨洿鍜岃缃鐢ㄥ埌鏁存湰宸ヤ綔绨裤€?/p>
+      `;
+      $("excelQuickPrintPanel").innerHTML = presetSheets.length ? `
+        <div class="quick-print-panel">
+          <h3>宸叉娴嬪埌 Excel 鍘熸墦鍗板尯鍩?/h3>
+          <p>褰撳墠宸ヤ綔绨块噷鏈?<strong>${presetSheets.length}</strong> 涓?Sheet 宸插湪 Excel 涓缃ソ鎵撳嵃鍖哄煙銆備綘鍙互璺宠繃鎵嬪姩妗嗛€夛紝鐩存帴鎸夊師鑼冨洿鐢熸垚鎵归噺鎵撳嵃鏂囦欢銆?/p>
+          <div class="hero-inline">
+            <span class="pill green">宸茶瘑鍒師鑼冨洿 ${presetSheets.length} 涓?/span>
+            <span class="pill blue">${presetSheets.map((sheet) => esc(sheet.name)).slice(0, 3).join("、")}${presetSheets.length > 3 ? ` 等 ${presetSheets.length} 个` : ""}</span>
+            <span class="pill orange">${state.uploadStage === "preview-error" ? "分页预览待重试" : "可直接导出"}</span>
+          </div>
+          <div class="action-row">
+            <button class="btn primary" id="excelQuickPrint" type="button">鎸?Excel 鍘熸墦鍗板尯鍩熶竴閿壒閲忔墦鍗?/button>
+            <button class="btn ghost" id="excelQuickInspect" type="button">鍏堟煡鐪嬭繖浜?Sheet</button>
+          </div>
+        </div>
+      ` : `
+        <div class="quick-print-panel" style="background:linear-gradient(145deg,#f7fbff,#f8fffd); border-style:dashed;">
+          <h3>褰撳墠鏈娴嬪埌 Excel 鍘熸墦鍗板尯鍩?/h3>
+          <p>杩欎唤宸ヤ綔绨跨殑鍙 Sheet 鐩墠閮芥槸鎸夊唴瀹硅嚜鍔ㄨ瘑鍒寖鍥淬€備綘鐜板湪鐪嬪埌鐨?A1:AN55 / A1:H6 杩欑被鍊硷紝鏉ヨ嚜绯荤粺璇嗗埆缁撴灉锛屼笉鏄?Excel 宸蹭繚瀛樼殑鎵撳嵃鍖哄煙銆?/p>
+          <div class="hero-inline">
+            <span class="pill blue">鑷姩璇嗗埆鑼冨洿 ${state.sheets.length} 涓?/span>
+            <span class="pill orange">鍙户缁墜鍔ㄥ井璋?/span>
+          </div>
+        </div>
+      `;
+
+      const list = selectedTargets();
+      $("uploadTargetList").innerHTML = list.length ? list.map((target) => `
+        <div class="config-row">
+          <div>
+            <b>${esc(target.sheet)}</b>
+            <p>褰撳墠鎵撳嵃鍖哄煙 ${esc(target.range)} 路 鏉ユ簮 ${rangeSourceLabel(target.rangeSource)}</p>
+          </div>
+          <span class="pill ${target.rangeSource === "manual" ? "orange" : target.rangeSource === "batch" ? "blue" : "green"}">${target.rangeSource === "manual" ? "已调整" : target.rangeSource === "batch" ? "批量套用" : target.rangeSource === "excel" ? "Excel 原范围" : "默认范围"}</span>
+        </div>
+      `).join("") : `<div class="empty-state">杩樻病鏈夐€変腑浠讳綍 Sheet銆備笂浼犲悗榛樿浼氬嬀閫夊墠涓や釜鍙 Sheet銆?/div>`;
+
+      const sheet = previewSheetForUpload();
+      const previewSheet = previewSheetForName(sheet?.name);
+      const previewPage = previewPageFor(previewSheet, "upload");
+      $("uploadPreviewSelect").innerHTML = state.sheets.length
+        ? state.sheets.map((item) => `<option value="${esc(item.name)}" ${item.name === sheet?.name ? "selected" : ""}>${esc(item.name)}</option>`).join("")
+        : `<option value="">鏆傛棤 Sheet</option>`;
+      $("uploadSheetRail").innerHTML = sheet ? `
+        <span class="sheet-pill active"><strong>${esc(sheet.name)}</strong> 褰撳墠棰勮</span>
+        <span class="sheet-pill">${sheet.checked ? "宸插姞鍏ユ墦鍗板寘" : "鏈姞鍏ユ墦鍗板寘"}</span>
+        <span class="sheet-pill">${sheet.rows} 琛?/ ${sheet.columns} 鍒?/span>
+        <span class="sheet-pill">${rangeSourceLabel(sheet.rangeSource)}</span>
+        <span class="sheet-pill">${previewSheet?.optimizedPageCount || 0} 椤甸浼?/span>
+      ` : `<span class="sheet-pill">绛夊緟涓婁紶宸ヤ綔绨?/span>`;
+      renderPageRail("uploadPageRail", previewSheet, "upload");
+      if (!sheet) {
+        $("uploadPreviewTitle").textContent = "涓婁紶鍚庢樉绀洪涓?Sheet";
+        $("uploadPreviewSub").textContent = "上传 Excel 后会在这里显示首个 Sheet 的分页预览";
+        $("uploadPreviewStats").innerHTML = `<span>绛夊緟涓婁紶</span><span>鏃犲垎椤垫暟鎹?/span>`;
+        $("uploadPreviewFoot").textContent = "灏氭湭閫夋嫨鎵撳嵃鍖哄煙";
+        $("uploadPreviewWarn").textContent = "鏀寔鐪熷疄 Excel 鏂囦欢娴嬭瘯";
+        $("uploadPageRail").innerHTML = "";
+        renderTableFromRows("uploadPreviewTable", []);
+        return;
+      }
+
+      $("uploadPreviewTitle").textContent = sheet.name;
+        $("uploadPreviewSub").textContent = `自动识别范围 ${sheet.autoRange}`;
+      $("uploadPreviewStats").innerHTML = `
+        <span>${esc(sheet.name)}</span>
+        <span>${sheet.rows} 琛?路 ${sheet.columns} 鍒?/span>
+        <span>${sheet.printRange}</span>
+        <span>${sheet.hasNativePrintArea ? `Excel 鍘熸墦鍗板尯鍩?${sheet.nativePrintArea}` : `鑷姩璇嗗埆鑼冨洿 ${sheet.autoRange}`}</span>
+        <span>${previewSheet?.optimizedPageCount || 0} 椤?/span>
+      `;
+      if (previewPage?.rows?.length) {
+        $("uploadPreviewSub").textContent = `自动识别范围 ${sheet.autoRange} · 第 ${previewPage.number} 页 · ${previewPage.rowRange} / ${previewPage.columnRange}`;
+        $("uploadPreviewFoot").textContent = `当前打印范围 ${sheet.printRange} · 已按当前分页方案生成整页预览`;
+        $("uploadPreviewWarn").textContent = `当前 Sheet 预计 ${previewSheet.optimizedPageCount} 页，可直接按每页行列范围核对分页结果。`;
+        renderTableFromRows("uploadPreviewTable", previewPage.rows || []);
+        return;
+      }
+
+      $("uploadPreviewFoot").textContent = `褰撳墠鎵撳嵃鑼冨洿 ${sheet.printRange}`;
+      $("uploadPreviewWarn").textContent = sheet.grid?.truncated
+        ? "当前网格为加速显示做了裁切，右侧仍会按完整打印范围生成预览。"
+        : "当前为原始网格预览，切换到打印设置后可继续查看整页效果。";
+      renderTableFromCells("uploadPreviewTable", sheet, parseRange(sheet.printRange), 12);
+    }
+
+    function renderSheetsStage() {
+      const batch = batchSummary();
+      $("batchMatchPanel").innerHTML = batch.base ? `
+        <div class="config-row">
+          <div>
+            <b>褰撳墠鎵归噺鏍锋澘锛?{esc(batch.base.name)}</b>
+            <p>绯荤粺宸茶瘑鍒?${batch.matches.length} 涓悓缁撴瀯 Sheet锛屽叾涓?${batch.selectedMatches.length} 涓凡鍔犲叆鏈鎵归噺鎵撳嵃銆?/p>
+          </div>
+          <span class="pill blue">鎵归噺妯″紡</span>
+        </div>
+      ` : `<div class="empty-state">鍏堜笂浼?Excel锛岀郴缁熶細鍦ㄨ繖閲屾帹鑽愬彲鎵归噺鍖归厤鐨?Sheet銆?/div>`;
+
+      $("sheetList").innerHTML = state.sheets.length ? state.sheets.map((sheet) => `
+        <label class="sheet-row">
+          <input type="checkbox" data-sheet-check="${esc(sheet.name)}" ${sheet.checked ? "checked" : ""}>
+          <div>
+            <b>${esc(sheet.name)}</b>
+            <p>${sheet.rows} 琛?路 ${sheet.columns} 鍒?路 榛樿鑼冨洿 ${esc(sheet.autoRange)} 路 褰撳墠鑼冨洿 ${esc(sheet.printRange)}</p>
+          </div>
+          <button class="btn ghost" type="button" data-sheet-focus="${esc(sheet.name)}">${sheet.name === batch.base?.name ? "褰撳墠鏍锋澘" : "鏌ョ湅"}</button>
+        </label>
+      `).join("") : `<div class="empty-state">鍏堜笂浼?Excel锛孲heet 鍒楄〃浼氳嚜鍔ㄦ樉绀哄湪杩欓噷銆?/div>`;
+
+      const sheet = activeSheet();
+      if (!sheet) {
+        $("sheetDetailStats").innerHTML = `<span>鏆傛棤 Sheet</span>`;
+        $("sheetIssueTags").innerHTML = "";
+        $("sheetDetailRange").textContent = "A1:A1";
+        $("sheetDetailSize").textContent = "0 x 0";
+        $("sheetDetailOrientation").textContent = "妯悜";
+        $("sheetDetailPreviewTitle").textContent = "褰撳墠 Sheet 鎵撳嵃棰勮";
+        $("sheetDetailPreviewMeta").textContent = "等待生成当前 Sheet 的分页预览";
+        $("sheetDetailPreviewMode").textContent = "分页预览";
+        $("sheetDetailPageRail").innerHTML = "";
+        renderTableFromRows("sheetDetailPreview", []);
+        return;
+      }
+
+      const previewSheet = previewSheetForName(sheet.name);
+      const previewPage = previewPageFor(previewSheet, "detail");
+      $("sheetDetailStats").innerHTML = `
+        <span>${sheet.name}</span>
+        <span>${sheet.rows} 琛?/span>
+        <span>${sheet.columns} 鍒?/span>
+        <span>${sheet.printRange}</span>
+        <span>${previewSheet?.optimizedPageCount || 0} 椤甸浼?/span>
+      `;
+      $("sheetIssueTags").innerHTML = (sheet.issues || []).length
+        ? sheet.issues.map((item) => `<span class="tag blue">${esc(item.label)}</span>`).join("")
+        : `<span class="tag green">褰撳墠 Sheet 鏈彂鐜版槑鏄炬墦鍗伴闄?/span>`;
+      $("sheetIssueTags").innerHTML += matchedSheetsFor(sheet).length
+        ? `<span class="tag orange">鍙壒閲忓尮閰?${matchedSheetsFor(sheet).length} 涓悓缁撴瀯 Sheet</span>`
+        : "";
+      $("sheetDetailRange").textContent = sheet.printRange;
+      $("sheetDetailSize").textContent = `${sheet.rows} x ${sheet.columns}`;
+      $("sheetDetailOrientation").textContent = ORIENTATION_LABELS[sheet.recommendedOrientation] || sheet.recommendedOrientation;
+      renderPageRail("sheetDetailPageRail", previewSheet, "detail");
+      if (previewPage?.rows?.length) {
+        $("sheetDetailPreviewTitle").textContent = `${sheet.name} · 第 ${previewPage.number} 页`;
+        $("sheetDetailPreviewMeta").textContent = `${previewPage.rowRange} / ${previewPage.columnRange} · 更接近最终打印效果`;
+        $("sheetDetailPreviewMode").textContent = "分页预览";
+        renderTableFromRows("sheetDetailPreview", previewPage.rows || []);
+        return;
+      }
+
+      $("sheetDetailPreviewTitle").textContent = `${sheet.name} · 表格概览`;
+      $("sheetDetailPreviewMeta").textContent = "当前尚未生成分页结果，先展示识别到的表格内容";
+      $("sheetDetailPreviewMode").textContent = "表格预览";
+      renderTableFromRows("sheetDetailPreview", sheet.preview || []);
+    }
+
+    function renderRangeSheetStrip() {
+      const selected = selectedSheets();
+      const batch = batchSummary();
+      const current = activeSheet();
+      $("rangeSheetSelect").innerHTML = selected.length
+        ? selected.map((sheet) => `<option value="${esc(sheet.name)}" ${sheet.name === current?.name ? "selected" : ""}>${esc(sheet.name)}</option>`).join("")
+        : `<option value="">暂无已选 Sheet</option>`;
+      $("rangeSheetStrip").innerHTML = selected.length ? `
+        <span class="sheet-pill active"><strong>${selected.length}</strong> 个已选 Sheet</span>
+        <span class="sheet-pill">${batch.matches.length ? `匹配候选 ${batch.matches.length} 个` : "暂无批量匹配"}</span>
+        <span class="sheet-pill">${current ? `当前范围 ${esc(current.printRange)}` : "等待选择范围"}</span>
+        <span class="sheet-pill">${current?.name === batch.base?.name ? "当前批量模板" : "独立编辑中"}</span>
+      ` : `<span class="sheet-pill">请先在上一步至少选中一个 Sheet</span>`;
+    }
+
+    function renderRangeGrid() {
+      const sheet = activeSheet();
+      const table = $("rangeGrid");
+      if (!sheet) {
+        table.innerHTML = `<tbody><tr><td class="muted">杩樻病鏈夊彲浠ョ紪杈戠殑琛ㄦ牸棰勮銆?/td></tr></tbody>`;
+        return;
+      }
+      if (sheet.loadingGrid) {
+        table.innerHTML = `<tbody><tr><td class="muted">姝ｅ湪鍔犺浇 ${esc(sheet.name)} 鐨勮〃鏍肩綉鏍硷紝璇风◢鍊?..</td></tr></tbody>`;
+        return;
+      }
+      if (!sheet.grid) {
+        table.innerHTML = `<tbody><tr><td class="muted">杩涘叆鎵撳嵃鍖哄煙鍚庝細鎸夐渶鍔犺浇杩欎釜 Sheet 鐨勮〃鏍肩綉鏍笺€?/td></tr></tbody>`;
+        return;
+      }
+
+      const columns = [];
+      for (let col = sheet.grid.startCol; col <= sheet.grid.endCol; col += 1) columns.push(col);
+      let html = `<thead><tr><th class="corner row-head"></th>${columns.map((col) => `<th>${indexToCol(col)}</th>`).join("")}</tr></thead><tbody>`;
+      for (const row of sheet.grid.cells) {
+        html += `<tr><th class="row-head">${row[0]?.row || ""}</th>`;
+        for (const cell of row) {
+          if (cell.hiddenByMerge) continue;
+          html += `<td
+            data-kind="cell"
+            data-row="${cell.row}"
+            data-col="${cell.col}"
+            data-end-row="${cell.row + (cell.rowSpan || 1) - 1}"
+            data-end-col="${cell.col + (cell.colSpan || 1) - 1}"
+            rowspan="${cell.rowSpan || 1}"
+            colspan="${cell.colSpan || 1}"
+            class="${cell.missingCachedValue ? "warn" : ""}"
+          >${esc(cell.display)}</td>`;
+        }
+        html += `</tr>`;
+      }
+      html += `</tbody>`;
+      table.innerHTML = html;
+
+      table.querySelectorAll('td[data-kind="cell"]').forEach((cell) => {
+        cell.addEventListener("mousedown", (event) => {
+          event.preventDefault();
+          state.dragging = true;
+          state.dragOrigin = cellDatasetBounds(cell);
+          updateSelectionFromBounds(state.dragOrigin, false);
+        });
+        cell.addEventListener("mouseenter", () => {
+          if (!state.dragging || !state.dragOrigin) return;
+          const current = cellDatasetBounds(cell);
+          const merged = expandSelectionForMerges(unionBounds(state.dragOrigin, current), sheet.grid.mergedRegions);
+          updateSelectionFromBounds(merged, false);
+        });
+      });
+      paintSelection();
+    }
+
+    function cellDatasetBounds(cell) {
+      return {
+        minRow: Number(cell.dataset.row),
+        minCol: Number(cell.dataset.col),
+        maxRow: Number(cell.dataset.endRow),
+        maxCol: Number(cell.dataset.endCol)
+      };
+    }
+
+    function updateSelectionFromBounds(bounds, syncRange = true) {
+      const sheet = activeSheet();
+      if (!sheet) return;
+      const expanded = expandSelectionForMerges(bounds, sheet.grid?.mergedRegions || []);
+      sheet.printRange = formatRange(expanded);
+      sheet.rangeSource = "manual";
+      $("activeRangeLabel").textContent = sheet.printRange;
+      $("manualRangeInput").value = sheet.printRange;
+      paintSelection();
+      renderAreaPreview();
+      if (syncRange) {
+        refreshPreview().catch((error) => setDownloadStatus(explainNetworkError(error), "error"));
+      }
+    }
+
+    function paintSelection() {
+      const sheet = activeSheet();
+      const current = parseRange(sheet?.printRange);
+      document.querySelectorAll('#rangeGrid td[data-kind="cell"]').forEach((cell) => {
+        const bounds = cellDatasetBounds(cell);
+        const selected = current && intersects(current, bounds);
+        cell.classList.toggle("selected", Boolean(selected));
+        cell.classList.toggle("anchor", Boolean(current && bounds.minRow === current.minRow && bounds.minCol === current.minCol));
+      });
+    }
+
+    function renderAreaPreview() {
+      const sheet = activeSheet();
+      const bounds = parseRange(sheet?.printRange);
+      $("activeRangeLabel").textContent = sheet?.printRange || "A1:A1";
+      $("manualRangeInput").value = sheet?.printRange || "";
+      if (!sheet || !bounds) {
+        $("rangeHint").textContent = "????? Sheet?????????";
+        $("areaPreviewStats").innerHTML = `<span>灏氭湭婵€娲昏寖鍥?/span>`;
+        $("areaPreviewTitle").textContent = "鎵撳嵃鍖哄煙棰勮";
+        $("areaPreviewSub").textContent = "绛夊緟鍒嗛〉棰勮";
+        $("areaPreviewFoot").textContent = "鑼冨洿灏氭湭璁剧疆";
+        $("areaPreviewPageInfo").textContent = "鏆傛棤鍒嗛〉鏁版嵁";
+        $("areaPageRail").innerHTML = "";
+        $("formulaWarningList").innerHTML = "";
+        renderTableFromRows("areaPreviewTable", []);
+        return;
+      }
+
+      const rowCount = bounds.maxRow - bounds.minRow + 1;
+      const colCount = bounds.maxCol - bounds.minCol + 1;
+      $("rangeHint").textContent = sheet.grid?.truncated
+        ? "前端网格为提速做了裁切，但同步后的分页预览仍会覆盖完整选区。"
+        : "可以直接拖拽蓝色边框，或输入 A1 范围后应用到当前 Sheet。";
+      $("areaPreviewStats").innerHTML = `
+        <span>${sheet.name}</span>
+        <span>${sheet.printRange}</span>
+        <span>${colCount} 鍒?/span>
+        <span>${rowCount} 琛?/span>
+      `;
+      $("areaPreviewTitle").textContent = sheet.name;
+
+      const previewSheet = previewSheetForName(sheet.name);
+      const previewPage = previewPageFor(previewSheet, "area");
+      renderPageRail("areaPageRail", previewSheet, "area");
+      $("areaPreviewPageInfo").textContent = previewSheet
+        ? `预计 ${previewSheet.optimizedPageCount} 页 · 当前第 ${previewPage?.number || 1} 页`
+        : "等待生成分页预览";
+
+      const warnings = previewSheet?.formulaWarnings || sheet.grid?.formulaWarnings || [];
+      $("formulaWarningList").innerHTML = warnings.length
+        ? warnings.map((item) => `
+            <div class="issue-item">
+              <div>
+                <b>${esc(item.cell || "鍏紡缂撳瓨鎻愰啋")}</b>
+                <p>${esc(item.message || "该区域包含公式缓存，建议先在 Excel 中重新计算并保存后再上传。")}</p>
+              </div>
+              <span class="pill orange">闇€妫€鏌?/span>
+            </div>
+          `).join("")
+        : `<div class="issue-item"><div><b>未发现公式缓存风险</b><p>如果 Excel 已保存缓存结果，右侧分页预览会直接显示对应值。</p></div><span class="pill green">正常</span></div>`;
+
+      if (previewPage?.rows?.length) {
+        $("areaPreviewSub").textContent = `${sheet.printRange} · 第 ${previewPage.number} 页 · ${previewPage.rowRange} / ${previewPage.columnRange}`;
+        $("areaPreviewFoot").textContent = `范围来源：${rangeSourceLabel(sheet.rangeSource)} · 已包含完整分页`;
+        renderTableFromRows("areaPreviewTable", previewPage.rows || []);
+        return;
+      }
+
+      $("areaPreviewSub").textContent = `当前范围 ${sheet.printRange}`;
+      $("areaPreviewFoot").textContent = `范围来源：${rangeSourceLabel(sheet.rangeSource)}`;
+      renderTableFromCells("areaPreviewTable", sheet, bounds, Math.max(12, rowCount));
+    }
+
+    function renderSettingsStage() {
+      const currentSettings = syncUiSettingsFromSheet(settingsSheetName());
+      const fitModes = [
+        ["singlePage", "整表一页"],
+        ["fitRows", "所有行压一页"],
+        ["fitColumns", "所有列压一页"]
+      ];
+      $("fitModeOptions").innerHTML = fitModes.map(([value, label]) => `
+        <button class="option ${currentSettings.fitMode === value ? "active" : ""}" type="button" data-setting="fitMode" data-value="${value}">${label}</button>
+      `).join("");
+      $("orientationOptions").innerHTML = [["portrait", "纵向"], ["landscape", "横向"]].map(([value, label]) => `
+        <button class="option ${currentSettings.orientation === value ? "active" : ""}" type="button" data-setting="orientation" data-value="${value}">${label}</button>
+      `).join("");
+      $("marginOptions").innerHTML = [["normal", "常规边距"], ["compact", "紧凑边距"]].map(([value, label]) => `
+        <button class="option ${currentSettings.margin === value ? "active" : ""}" type="button" data-setting="margin" data-value="${value}">${label}</button>
+      `).join("");
+      const toggles = [
+        ["repeatHeader", "重复表头"],
+        ["freezeTopRow", "冻结首行"],
+        ["beautify", "基础美化"],
+        ["showGridLines", "打印网格线"]
+      ];
+      $("toggleOptions").innerHTML = toggles.map(([key, label]) => `
+        <button class="toggle ${currentSettings[key] ? "active" : ""}" type="button" data-toggle="${key}">${label}</button>
+      `).join("");
+      $("wrapLongTextToggle").classList.toggle("active", Boolean(currentSettings.wrapLongText));
+      $("wrapColumnsInput").value = currentSettings.wrapTextColumns || "";
+
+      ensurePreviewUiState();
+      const sheets = previewSheets();
+      const sheet = settingsPreviewSheet();
+      $("settingsSheetStrip").innerHTML = sheets.map((item) => `
+        <button class="sheet-chip ${item.name === sheet?.name ? "active" : ""}" type="button" data-settings-sheet="${esc(item.name)}">
+          <b>${esc(item.name)}</b>
+          <span>${esc(item.range)}</span>
+          <span>${item.optimizedPageCount} 椤?/span>
+        </button>
+      `).join("");
+      renderPageRail("settingsPageRail", sheet, "settings");
+      $("settingsPaper").classList.toggle("portrait", currentSettings.orientation === "portrait");
+
+      $("settingsPreviewStats").innerHTML = state.preview
+        ? `
+          <span>宸查€?${state.preview.selectedSheetCount} 涓?Sheet</span>
+          <span>褰撳墠 Sheet ${sheet?.optimizedPageCount || 0} 椤?/span>
+          <span>鎬昏 ${state.preview.optimizedPageCount} 椤?/span>
+          <span>${FIT_MODE_LABELS[currentSettings.fitMode]}</span>
+          <span>${currentSettings.wrapLongText ? `自动换行列 ${currentSettings.wrapTextColumns || "自动识别"}` : "不启用长文本换行"}</span>
+        `
+        : `<span>绛夊緟鍒嗛〉棰勮</span>`;
+      if (!sheet) {
+        $("settingsPreviewTitle").textContent = "等待分页预览";
+        $("settingsPreviewSub").textContent = "修改当前 Sheet 的设置后会自动刷新";
+        $("settingsPreviewFoot").textContent = "请先生成预览，再调整本 Sheet 的打印参数";
+        $("settingsPreviewPage").textContent = "暂无页码";
+        $("settingsSheetStrip").innerHTML = "";
+        $("settingsPageRail").innerHTML = "";
+        renderTableFromRows("settingsPreviewTable", []);
+        return;
+      }
+
+      const page = previewPageFor(sheet, "settings");
+      $("settingsPreviewTitle").textContent = sheet.name;
+      $("settingsPreviewSub").textContent = `${sheet.range} · ${FIT_MODE_LABELS[currentSettings.fitMode]}`;
+      $("settingsPreviewFoot").textContent = `${ORIENTATION_LABELS[currentSettings.orientation]} · ${currentSettings.margin === "compact" ? "紧凑边距" : "常规边距"} · ${currentSettings.wrapLongText ? `换行列 ${currentSettings.wrapTextColumns || "自动识别"}` : "未启用长文本换行"}`;
+      $("settingsPreviewPage").textContent = `第 ${page?.number || 1} 页 / 共 ${sheet.optimizedPageCount} 页`;
+      renderTableFromRows("settingsPreviewTable", page?.rows || []);
+    }
+
+    function renderAiStage() {
+      const issues = selectedSheets().flatMap((sheet) => (sheet.issues || []).map((issue) => ({ sheet: sheet.name, label: issue.label })));
+      const currentPlanId = sheetSettings(activeSheet())?.id || state.activePlanId;
+      $("aiIssueList").innerHTML = issues.length ? issues.map((item) => `
+        <div class="issue-item">
+          <div>
+            <b>${esc(item.sheet)}</b>
+            <p>${esc(item.label)}</p>
+          </div>
+          <span class="pill blue">已识别</span>
+        </div>
+      `).join("") : `<div class="empty-state">当前选中的 Sheet 没有识别到明显打印风险。</div>`;
+
+      $("aiPlanGrid").innerHTML = state.plans.map((plan) => `
+        <button class="plan-card ${plan.id === currentPlanId ? "active" : ""}" type="button" data-plan-id="${plan.id}">
+          <span class="tag ${plan.id === currentPlanId ? "green" : "blue"}">${plan.id === currentPlanId ? "当前方案" : "可切换方案"}</span>
+          <b>${esc(plan.name)}</b>
+          <p>${esc(plan.description)}</p>
+        </button>
+      `).join("");
+
+      const active = activeSheet();
+      renderTableFromRows("compareBeforeTable", active?.preview || []);
+      const optimized = state.preview?.sheets?.find((item) => item.name === active?.name)?.pages?.[0]?.rows || [];
+      renderTableFromRows("compareAfterTable", optimized);
+    }
+
+    function renderExportStage() {
+      const batch = batchSummary();
+      const macroUnavailable = state.exportWarnings.some((message) => {
+        const text = String(message || "").toLowerCase();
+        return text.includes("vba") || text.includes("xlsm") || text.includes("excel");
+      });
+      $("exportTargetList").innerHTML = selectedTargets().length ? selectedTargets().map((target) => {
+        const previewSheet = state.preview?.sheets?.find((item) => item.name === target.sheet);
+        const targetPlan = target.plan || sheetSettings(target.sheet);
+        return `
+          <div class="config-row">
+            <div>
+              <b>${esc(target.sheet)}</b>
+              <p>${esc(target.range)} · ${previewSheet?.optimizedPageCount || 0} 页 · ${targetPlan.repeatHeader ? "重复表头" : "单次表头"} · ${target.rangeSource === "batch" ? "批量继承" : target.rangeSource === "excel" ? "Excel 原范围" : "单独配置"}</p>
+            </div>
+            <span class="pill green">宸茬撼鍏ュ鍑?/span>
+          </div>
+        `;
+      }).join("") : `<div class="empty-state">褰撳墠杩樻病鏈夊彲瀵煎嚭鐨?Sheet銆?/div>`;
+
+      $("downloadList").innerHTML = state.downloads.length ? state.downloads.map((item) => `
+        <div class="download-item">
+          <div>
+            <b>${esc(item.label)}</b>
+            <p>${esc(item.filename || downloadFileName(item.url))}</p>
+          </div>
+          <div class="download-actions">
+            <button class="btn primary" type="button" data-download-url="${esc(item.url)}" data-download-name="${esc(item.filename || downloadFileName(item.url))}">鐩存帴涓嬭浇</button>
+            <a class="action-link ghost" href="${esc(item.url)}" target="_blank" rel="noreferrer">鎵撳紑閾炬帴</a>
+          </div>
+        </div>
+      `).join("") : "";
+      $("downloadWarningList").innerHTML = state.exportWarnings.length ? state.exportWarnings.map((message) => `
+        <div class="issue-item">
+          <div>
+            <b>瀵煎嚭鎻愰啋</b>
+            <p>${esc(message)}</p>
+          </div>
+          <span class="pill orange">闇€澶勭悊</span>
+        </div>
+      `).join("") : "";
+
+      const selected = selectedTargets();
+      const settingsSamples = selected
+        .map((target) => target.plan || sheetSettings(target.sheet))
+        .filter(Boolean);
+      const mixedSettings = settingsSamples.length > 1 && settingsSamples.some((plan) =>
+        plan.fitMode !== settingsSamples[0].fitMode
+        || plan.orientation !== settingsSamples[0].orientation
+        || Boolean(plan.beautify) !== Boolean(settingsSamples[0].beautify)
+      );
+      const summaryPlan = settingsSamples[0] || state.settings;
+      $("exportPreviewStats").innerHTML = `
+        <span>${selectedSheets().length} 个 Sheet</span>
+        <span>${state.preview?.optimizedPageCount || 0} 页预估</span>
+        <span>${batch.matches.length ? `${batch.matches.length} 个批量匹配项` : "暂无批量匹配"}</span>
+        <span>${state.downloads.length ? "导出结果已生成" : "等待导出"}</span>
+        <span>${state.exportWarnings.length ? `${state.exportWarnings.length} 条提醒` : "无导出提醒"}</span>
+      `;
+      $("exportPreviewTitle").textContent = state.workbookName || "导出总览";
+      $("exportPreviewSub").textContent = mixedSettings
+        ? `已选择 ${selected.length} 个 Sheet，每个 Sheet 将按各自打印设置导出`
+        : `${FIT_MODE_LABELS[summaryPlan.fitMode]} · ${ORIENTATION_LABELS[summaryPlan.orientation]} · ${summaryPlan.beautify ? "启用基础美化" : "不做美化"} · 模板 ${batch.base ? batch.base.name : "未设置"}`;
+      $("exportPreviewFoot").textContent = selected.length
+        ? `当前模板将导出 ${selected.length} 个 Sheet`
+        : "等待选择导出对象";
+      $("exportPreviewPage").textContent = state.downloads.length ? "文件已生成" : "文件尚未生成";
+      $("exportSummaryCallout").innerHTML = macroUnavailable
+        ? `<b>瀹忕増 Excel 褰撳墠涓嶅彲鐢?/b><p>褰撳墠鐜鏃犳硶璋冪敤 Excel 妗岄潰瀹忔帴鍙ｆ椂锛岀郴缁熶細浼樺厛鐢熸垚鈥滀紭鍖?Excel鈥濆拰鈥滄墦鍗?PDF鈥濄€傝繖鏍蜂粛鐒惰兘淇濈暀鎵撳嵃鍖哄煙銆佸垎椤垫柟寮忓拰鏍″鎵€闇€鐨勬渶缁堥〉鏁般€?/p>`
+        : `<b>瀵煎嚭璇存槑</b><p>褰撳墠鐜鏀寔鎸夐厤缃鍑烘墦鍗扮粨鏋勩€備綘鍙互浼樺厛浣跨敤鈥滀紭鍖?Excel鈥濅繚瀛樻墦鍗拌缃紝鍐嶇敤鈥滄墦鍗?PDF鈥濆揩閫熸牳瀵归〉鏁帮紱濡傛灉瀹忔帴鍙ｅ彲鐢紝杩樹細闄勫甫鍙竴閿墦鍗扮殑 `.xlsm` 鏂囦欢銆?/p>`;
+      $("exportCardExcelTag").className = `tag ${state.downloads.length ? "green" : "blue"}`;
+      $("exportCardExcelTag").textContent = "鎺ㄨ崘";
+      $("exportCardExcelDesc").textContent = "保留打印区域、分页设置和版式，适合继续修改与归档。";
+      $("exportCardPdfTag").className = `tag ${state.downloads.length ? "green" : "blue"}`;
+      $("exportCardPdfTag").textContent = "鏍″";
+      $("exportCardPdfDesc").textContent = "直接输出可核对页数的 PDF，适合快速检查整页效果。";
+      $("exportCardMacroTag").className = `tag ${macroUnavailable ? "orange" : state.downloads.length ? "green" : "blue"}`;
+      $("exportCardMacroTag").textContent = macroUnavailable ? "受限" : "可用";
+      $("exportCardMacroDesc").textContent = macroUnavailable
+        ? "如果本机无法调用 Excel 桌面接口，会跳过宏版 `.xlsm`，并保留优化 Excel 与打印 PDF 两种输出。"
+        : "如本机支持 Excel 宏接口，可额外生成一键打印的 `.xlsm` 文件。";
+
+      const rows = [
+        ["工作表", "范围", "页数", "方向", "状态"],
+        ...selectedTargets().map((target) => {
+          const previewSheet = state.preview?.sheets?.find((item) => item.name === target.sheet);
+          return [
+            target.sheet,
+            target.range,
+            String(previewSheet?.optimizedPageCount || 0),
+            ORIENTATION_LABELS[(target.plan || sheetSettings(target.sheet)).orientation],
+            state.downloads.length ? "已导出" : "待导出"
+          ];
+        })
+      ];
+      renderTableFromRows("exportPreviewTable", rows.length > 1 ? rows : []);
+    }
+
+    function renderAll() {
+      const steps = [
+        ["top-summary", updateTopSummary],
+        ["upload-stage", renderUploadSection],
+        ["sheet-stage", renderSheetsStage],
+        ["range-strip", renderRangeSheetStrip],
+        ["range-grid", renderRangeGrid],
+        ["area-preview", renderAreaPreview],
+        ["settings-stage", renderSettingsStage],
+        ["ai-stage", renderAiStage],
+        ["export-stage", renderExportStage]
+      ];
+      const issues = [];
+      for (const [scope, renderStep] of steps) {
+        try {
+          renderStep();
+        } catch (error) {
+          issues.push(reportClientIssue(scope, error));
+        }
+      }
+      if (issues.length) {
+        setTopStatus(`界面局部渲染异常（${issues.length} 处），核心流程继续执行`, true);
+        if (state.uploadStage === "uploading" || state.uploadStage === "analyzing" || state.uploadStage === "previewing") {
+          setUploadStatus("界面有局部渲染异常，但后台处理仍在继续。请关注终端日志，或稍后刷新查看结果。", "warn");
+        }
+      }
+      schedulePaperLayouts();
+    }
+
+    async function refreshPreview() {
+      if (!state.workbookId || !selectedTargets().length) {
+        state.preview = null;
+        if (state.workbookName && state.uploadStage !== "uploading" && state.uploadStage !== "analyzing") {
+          state.uploadStage = "ready";
+        }
+        renderAll();
+        return;
+      }
+      setTopStatus("正在生成分页预览...", false);
+      const payload = await fetchJson("/api/preview-plan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ workbookId: state.workbookId, sheets: selectedSheets().map((sheet) => sheet.name), plan: planPayload() })
-      });
-      const payload = await response.json();
-      if (!response.ok) throw new Error(payload.error || "预览失败");
+        body: JSON.stringify({
+          workbookId: state.workbookId,
+          printTargets: selectedTargets(),
+          plan: planPayload()
+        })
+      }, 90000);
       state.preview = payload.preview;
-      renderPages();
+      if (["analyzing", "previewing", "preview-error"].includes(state.uploadStage)) {
+        state.uploadStage = "ready";
+      }
+      renderAll();
+      showToast("分页预览已同步");
     }
-    document.querySelectorAll(".orientation").forEach((button) => button.onclick = () => {
-      state.orientation = button.dataset.value;
-      document.querySelectorAll(".orientation").forEach((item) => item.classList.toggle("active", item === button));
-      requestPrintPreview().catch((error) => $("pageCount").textContent = error.message);
-    });
-    ["fit", "header", "freeze"].forEach((id) => $(id).onchange = () => requestPrintPreview().catch((error) => $("pageCount").textContent = error.message));
 
-    $("fileInput").onchange = async (event) => {
+    async function exportResults() {
+      if (!state.workbookId || !selectedTargets().length) {
+        setDownloadStatus("请先上传 Excel，并至少选中一个需要打印的 Sheet。", "error");
+        return;
+      }
+      setDownloadStatus("姝ｅ湪鐢熸垚瀵煎嚭鏂囦欢...");
+      const payload = await fetchJson("/api/optimize", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          workbookId: state.workbookId,
+          printTargets: selectedTargets(),
+          plan: planPayload()
+        })
+      }, 120000);
+      state.downloads = (payload.downloads || []).map((item) => ({
+        ...item,
+        filename: item.filename || downloadFileName(item.url),
+        url: item.url.startsWith("http") ? item.url : apiUrl(item.url)
+      }));
+      state.exportWarnings = payload.warnings || [];
+      state.preview = payload.preview || state.preview;
+      const statusType = state.exportWarnings.length ? "warn" : "ok";
+      const downloadTypes = state.downloads.map((item) => item.label).join(", ");
+      setDownloadStatus(
+        state.exportWarnings.length
+          ? `已生成 ${state.downloads.length} 个文件：${downloadTypes}。部分输出仍有提醒，请在下方查看。`
+          : `已生成 ${state.downloads.length} 个文件：${downloadTypes}。`,
+        statusType
+      );
+      renderAll();
+      setStage("export");
+      showToast("导出文件已就绪");
+    }
+
+    function explainNetworkError(error) {
+      if (location.protocol === "file:") {
+        return `${error.message}。请先用 python -m server.api 启动本地服务，再打开 http://127.0.0.1:4173/。`;
+      }
+      return `${error.message}。请确认本地 server.api 进程正在运行。`;
+    }
+
+    document.addEventListener("mouseup", () => {
+      if (!state.dragging) return;
+      state.dragging = false;
+      state.dragOrigin = null;
+      refreshPreview().catch((error) => setDownloadStatus(explainNetworkError(error), "error"));
+    });
+
+    document.addEventListener("click", async (event) => {
+      const button = event.target.closest("button");
+      if (!button) return;
+
+      if (button.dataset.downloadUrl) {
+        triggerDirectDownload(button.dataset.downloadUrl, button.dataset.downloadName || "");
+        showToast("下载已开始");
+        return;
+      }
+
+      if (button.id === "excelQuickPrint") {
+        try {
+          await runExcelQuickPrint();
+        } catch (error) {
+          setDownloadStatus(explainNetworkError(error), "error");
+        }
+        return;
+      }
+
+      if (button.id === "excelQuickInspect") {
+        const count = selectPresetPrintAreaSheets();
+        renderAll();
+        setStage("sheets");
+        try {
+          await refreshPreview();
+        } catch (error) {
+          setDownloadStatus(explainNetworkError(error), "error");
+        }
+        showToast(count ? `已切换到 ${count} 个 Excel 原打印区域 Sheet` : "当前没有检测到 Excel 原打印区域");
+        return;
+      }
+
+      if (button.dataset.stage) {
+        setStage(button.dataset.stage);
+        return;
+      }
+
+      if (button.dataset.sheetFocus) {
+        state.activeSheetName = button.dataset.sheetFocus;
+        state.batch.baseSheetName = button.dataset.sheetFocus;
+        renderAll();
+        return;
+      }
+
+      if (button.dataset.rangeSheet) {
+        state.activeSheetName = button.dataset.rangeSheet;
+        state.batch.baseSheetName = button.dataset.rangeSheet;
+        renderAll();
+        if (state.stage === "area") {
+          loadSheetGrid(button.dataset.rangeSheet).catch((error) => setDownloadStatus(explainNetworkError(error), "error"));
+        }
+        return;
+      }
+
+      if (button.dataset.settingsSheet) {
+        state.previewUi.settingsSheetName = button.dataset.settingsSheet;
+        syncUiSettingsFromSheet(button.dataset.settingsSheet);
+        renderAll();
+        return;
+      }
+
+      if (button.dataset.previewPage && button.dataset.previewSheet && button.dataset.previewScope) {
+        const scope = button.dataset.previewScope;
+        const map = previewPageMap(scope);
+        map[button.dataset.previewSheet] = Number(button.dataset.previewPage) || 1;
+        renderAll();
+        return;
+      }
+
+      if (button.dataset.planId) {
+        const plan = state.plans.find((item) => item.id === button.dataset.planId);
+        const targetSheetName = state.stage === "settings" ? settingsSheetName() : activeSheet()?.name;
+        applyPlan(plan, targetSheetName);
+        renderAll();
+        try {
+          await refreshPreview();
+        } catch (error) {
+          setDownloadStatus(explainNetworkError(error), "error");
+        }
+        return;
+      }
+
+      if (button.dataset.setting) {
+        const key = button.dataset.setting;
+        const value = button.dataset.value;
+        syncUiSettingsFromSheet(settingsSheetName());
+        state.settings[key] = value;
+        if (key === "fitMode") {
+          if (value === "singlePage") {
+            state.settings.fitToWidth = 1;
+            state.settings.fitToHeight = 1;
+          } else if (value === "fitRows") {
+            state.settings.fitToWidth = 0;
+            state.settings.fitToHeight = 1;
+          } else {
+            state.settings.fitToWidth = 1;
+            state.settings.fitToHeight = 0;
+          }
+        }
+        commitUiSettingsToSheet(settingsSheetName());
+        renderAll();
+        try {
+          await refreshPreview();
+        } catch (error) {
+          setDownloadStatus(explainNetworkError(error), "error");
+        }
+        return;
+      }
+
+      if (button.dataset.toggle) {
+        const key = button.dataset.toggle;
+        syncUiSettingsFromSheet(settingsSheetName());
+        state.settings[key] = !state.settings[key];
+        commitUiSettingsToSheet(settingsSheetName());
+        renderAll();
+        try {
+          await refreshPreview();
+        } catch (error) {
+          setDownloadStatus(explainNetworkError(error), "error");
+        }
+      }
+    });
+
+    document.addEventListener("change", async (event) => {
+      const input = event.target;
+      if (input instanceof HTMLSelectElement) {
+        if (input.id === "uploadPreviewSelect" || input.id === "rangeSheetSelect") {
+          state.activeSheetName = input.value;
+          state.batch.baseSheetName = input.value;
+          renderAll();
+          if (input.id === "rangeSheetSelect" && state.stage === "area") {
+            loadSheetGrid(input.value).catch((error) => setDownloadStatus(explainNetworkError(error), "error"));
+          }
+          return;
+        }
+      }
+      if (!(input instanceof HTMLInputElement)) return;
+      if (!input.dataset.sheetCheck) return;
+      const sheet = state.sheets.find((item) => item.name === input.dataset.sheetCheck);
+      if (!sheet) return;
+      sheet.checked = input.checked;
+      if (!selectedSheets().some((item) => item.name === state.activeSheetName)) {
+        state.activeSheetName = selectedSheets()[0]?.name || state.sheets[0]?.name || "";
+      }
+      renderAll();
+      try {
+        await refreshPreview();
+      } catch (error) {
+        setDownloadStatus(explainNetworkError(error), "error");
+      }
+    });
+
+    $("fileInput").addEventListener("change", async (event) => {
       const file = event.target.files[0];
       if (!file) return;
-      if (!/\.(xlsx|xlsm)$/i.test(file.name)) return alert("请选择 .xlsx 或 .xlsm 文件");
-      state.file = file;
-      $("analysisBlock").classList.remove("hidden");
-      $("workbookName").textContent = file.name;
-      $("uploadState").textContent = "上传解析中";
-      const body = new FormData();
-      body.append("file", file);
+      if (!/\.(xlsx|xlsm)$/i.test(file.name)) {
+        setUploadStatus("请选择 `.xlsx` 或 `.xlsm` 文件。", "error");
+        return;
+      }
+
       try {
-        const response = await fetch("/api/upload", { method: "POST", body });
-        const payload = await response.json();
-        if (!response.ok) throw new Error(payload.error || "上传失败");
+        await ensureBackendReady();
+      } catch (error) {
+        state.uploadStage = "error";
+        setUploadStatus(`本地服务未就绪。${explainNetworkError(error)}`, "error");
+        renderAll();
+        return;
+      }
+
+      setUploadStatus("正在上传并解析 Excel...");
+      setDownloadStatus("导出完成后，这里会显示下载入口。");
+      state.downloads = [];
+      state.exportWarnings = [];
+      state.uploadStage = "uploading";
+      state.pendingWorkbookName = file.name;
+      renderAll();
+      const form = new FormData();
+      form.append("file", file);
+
+      try {
+        console.info("[Excelsuperpower UI] upload:start", file.name, file.size);
+        const payload = await fetchJson("/api/upload", { method: "POST", body: form }, 120000);
+        console.info("[Excelsuperpower UI] upload:done", payload.workbookId, payload.sheetCount || 0);
+        const checkedNames = initialCheckedNames(payload.sheets || []);
         state.workbookId = payload.workbookId;
-        state.sheets = payload.sheets.map((sheet, index) => ({ ...sheet, checked: index < 2 }));
-        state.plans = payload.plans;
-        state.planIndex = 0;
-        $("uploadState").textContent = `${payload.sheetCount} 个 Sheet 已解析`;
-        renderSheets();
-        renderPlans();
-        await requestPrintPreview();
+        state.workbookName = payload.filename || file.name;
+        state.sheets = (payload.sheets || []).map((sheet) => ({
+          ...sheet,
+          checked: checkedNames.has(sheet.name)
+        }));
+        state.plans = payload.plans || [];
+        state.activeSheetName = state.sheets[0]?.name || "";
+        state.batch.baseSheetName = state.sheets[0]?.name || "";
+        state.batch.lastAppliedCount = Math.max(0, checkedNames.size - 1);
+        state.pendingWorkbookName = "";
+        state.uploadStage = "analyzing";
+        state.previewUi = { settingsSheetName: "", settingsPageBySheet: {}, areaPageBySheet: {}, uploadPageBySheet: {}, detailPageBySheet: {} };
+        state.sheetSettingsByName = Object.fromEntries(state.sheets.map((sheet) => [
+          sheet.name,
+          cloneSettings({ ...(state.plans[0] || DEFAULT_PRINT_SETTINGS), id: state.plans[0]?.id || DEFAULT_PRINT_SETTINGS.id })
+        ]));
+        syncUiSettingsFromSheet(state.activeSheetName);
+        state.preview = null;
+        setUploadStatus(`${state.workbookName} 解析完成，共识别 ${payload.sheetCount || state.sheets.length} 个可见 Sheet。`, "ok");
+        renderAll();
       } catch (error) {
-        $("uploadState").textContent = error.message;
+        reportClientIssue("upload-request", error);
+        state.uploadStage = "error";
+        state.pendingWorkbookName = "";
+        setUploadStatus(explainNetworkError(error), "error");
+        renderAll();
+        return;
       }
-    };
-    $("generate").onclick = async () => {
-      if (!state.workbookId || !selectedSheets().length) return alert("请先上传 Excel 并选择至少一个 Sheet");
-      $("generate").textContent = "生成中...";
+
       try {
-        const response = await fetch("/api/optimize", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ workbookId: state.workbookId, sheets: selectedSheets().map((sheet) => sheet.name), plan: planPayload() })
-        });
-        const payload = await response.json();
-        if (!response.ok) throw new Error(payload.error || "生成失败");
-        $("result").classList.remove("hidden");
-        $("result").innerHTML = `<div class="ok">✓</div><h3 style="text-align:center">文件已生成</h3><p class="muted small">已设置打印区域、缩放、重复表头与所选方案。</p>${payload.downloads.map((item) => `<div class="download"><span>${esc(item.label)}</span><a href="${esc(item.url)}">下载</a></div>`).join("")}`;
-        $("result").scrollIntoView({ behavior: "smooth", block: "nearest" });
+        state.uploadStage = "previewing";
+        renderAll();
+        await refreshPreview();
+        renderAll();
+        showToast("Excel 上传完成，首轮预览已就绪");
       } catch (error) {
-        alert(error.message);
-      } finally {
-        $("generate").textContent = "生成优化 Excel 与 PDF";
+        reportClientIssue("preview-request", error);
+        state.uploadStage = "preview-error";
+        setUploadStatus(`工作簿已解析成功，但首轮分页预览暂未完成。${explainNetworkError(error)}`, "warn");
+        renderAll();
       }
-    };
-    renderPromo();
-    renderPlans();
-    renderPages();
-    renderCompare();
-=======
-  <main class="stage">
-    <section class="phone" aria-label="小程序预览">
-      <div class="statusbar"></div>
-      <div class="nav">Excel优化打印</div>
-      <div class="screen">
-        <header class="hero">
-          <h2 class="title">Excel优化打印</h2>
-          <p class="subtitle">上传表格，自动识别 Sheet，推荐适合打印的版式。</p>
-        </header>
-
-        <section class="panel">
-          <div class="section-title">1. 上传文件</div>
-          <button class="button" id="uploadButton">选择 Excel 文件</button>
-          <div class="file" id="fileName">经营月报_打印版.xlsx</div>
-        </section>
-
-        <section class="panel" id="sheetsPanel" hidden>
-          <div class="section-title">2. 选择需要打印的 Sheet</div>
-          <label class="sheet-row">
-            <input class="checkbox" type="checkbox" checked />
-            <span>
-              <span class="sheet-name">销售明细</span>
-              <span class="sheet-meta">240 行 · 18 列 · 建议横向</span>
-            </span>
-          </label>
-          <label class="sheet-row">
-            <input class="checkbox" type="checkbox" checked />
-            <span>
-              <span class="sheet-name">汇总表</span>
-              <span class="sheet-meta">36 行 · 9 列 · 建议纵向</span>
-            </span>
-          </label>
-          <label class="sheet-row">
-            <input class="checkbox" type="checkbox" />
-            <span>
-              <span class="sheet-name">隐藏参数</span>
-              <span class="sheet-meta">12 行 · 4 列 · 可能无需打印</span>
-            </span>
-          </label>
-        </section>
-
-        <section class="panel" id="plansPanel" hidden>
-          <div class="section-title">3. 选择推荐方案</div>
-          <button class="plan active" data-plan="标准清晰版">
-            <span class="plan-name">标准清晰版</span>
-            <span class="plan-desc">保留可读字号，自动设置打印区域、重复标题行和页边距。</span>
-          </button>
-          <button class="plan" data-plan="节纸紧凑版">
-            <span class="plan-name">节纸紧凑版</span>
-            <span class="plan-desc">适配一页宽，缩小页边距，适合内部流转和批量打印。</span>
-          </button>
-          <button class="plan" data-plan="宽表横向版">
-            <span class="plan-name">宽表横向版</span>
-            <span class="plan-desc">横向打印并优化分页，适合列很多的台账和明细表。</span>
-          </button>
-        </section>
-
-        <section class="panel" id="generatePanel" hidden>
-          <div class="section-title">4. 生成打印文件</div>
-          <div class="diagnosis" id="diagnosis">
-            已识别 2 个 Sheet。建议为宽表启用横向打印，并为明细表重复首行表头。
-          </div>
-          <p class="caption">MVP 中这里会创建后端生成任务，完成后返回 PDF 和优化 Excel。</p>
-          <button class="button" id="generateButton">生成 PDF 和优化 Excel</button>
-        </section>
-
-        <section class="panel result" id="resultPanel">
-          <div class="section-title">生成完成</div>
-          <div class="download-row">
-            <span>可打印 PDF</span>
-            <button class="mini-button">下载</button>
-          </div>
-          <div class="download-row">
-            <span>优化 Excel</span>
-            <button class="mini-button">下载</button>
-          </div>
-          <div class="download-row">
-            <span>批量打印 XLSM</span>
-            <button class="mini-button">高级版</button>
-          </div>
-        </section>
-      </div>
-    </section>
-
-    <aside class="sidebar">
-      <div class="eyebrow">MVP Preview</div>
-      <h1>上传、识别、推荐、生成，一条线跑通。</h1>
-      <p>
-        这个预览用于确认第一版产品体验：先把 Excel 打印前最容易出错的步骤做成清晰流程，
-        让用户不用理解复杂打印设置，也能得到稳定可打印的 PDF 和优化表格。
-      </p>
-      <div class="flow">
-        <div class="flow-item">
-          <div class="num">1</div>
-          <div>
-            <div class="flow-title">文件上传</div>
-            <div class="flow-text">MVP 支持 xlsx，预留 xlsm 用于未来批量打印按钮。</div>
-          </div>
-        </div>
-        <div class="flow-item">
-          <div class="num">2</div>
-          <div>
-            <div class="flow-title">Sheet 诊断</div>
-            <div class="flow-text">识别行列范围、隐藏表、宽表风险和重复表头需求。</div>
-          </div>
-        </div>
-        <div class="flow-item">
-          <div class="num">3</div>
-          <div>
-            <div class="flow-title">方案选择</div>
-            <div class="flow-text">提供标准清晰、节纸紧凑、宽表横向三种稳定策略。</div>
-          </div>
-        </div>
-        <div class="flow-item">
-          <div class="num">4</div>
-          <div>
-            <div class="flow-title">文件生成</div>
-            <div class="flow-text">生成 PDF 和优化 Excel，高级版再加入 XLSM 批量打印。</div>
-          </div>
-        </div>
-      </div>
-      <div class="tag-row">
-        <span class="tag">微信小程序</span>
-        <span class="tag">Excel 打印优化</span>
-        <span class="tag">PDF 输出</span>
-        <span class="tag">AI 推荐解释</span>
-      </div>
-    </aside>
-  </main>
-
-  <script>
-    const uploadButton = document.querySelector("#uploadButton");
-    const fileName = document.querySelector("#fileName");
-    const sheetsPanel = document.querySelector("#sheetsPanel");
-    const plansPanel = document.querySelector("#plansPanel");
-    const generatePanel = document.querySelector("#generatePanel");
-    const resultPanel = document.querySelector("#resultPanel");
-    const generateButton = document.querySelector("#generateButton");
-    const diagnosis = document.querySelector("#diagnosis");
-
-    uploadButton.addEventListener("click", () => {
-      fileName.style.display = "block";
-      sheetsPanel.hidden = false;
-      plansPanel.hidden = false;
-      generatePanel.hidden = false;
-      resultPanel.style.display = "none";
     });
 
-    document.querySelectorAll(".plan").forEach((button) => {
-      button.addEventListener("click", () => {
-        document.querySelectorAll(".plan").forEach((item) => item.classList.remove("active"));
-        button.classList.add("active");
-        diagnosis.textContent = button.dataset.plan + "将用于当前选中的 Sheet，生成前会自动检查打印区域和分页。";
-      });
+    $("previewRefresh").addEventListener("click", async () => {
+      try {
+        await refreshPreview();
+      } catch (error) {
+        setDownloadStatus(explainNetworkError(error), "error");
+      }
     });
 
-    generateButton.addEventListener("click", () => {
-      generateButton.textContent = "生成中...";
-      generateButton.disabled = true;
-
-      window.setTimeout(() => {
-        generateButton.textContent = "生成 PDF 和优化 Excel";
-        generateButton.disabled = false;
-        resultPanel.style.display = "block";
-        resultPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
-      }, 650);
+    $("matchAndSelect").addEventListener("click", async () => {
+      try {
+        await runBatchSelection();
+      } catch (error) {
+        setDownloadStatus(explainNetworkError(error), "error");
+      }
     });
->>>>>>> 0a421774928d224ab073103df35ad86eab590b9e
+
+    $("applyBatchRange").addEventListener("click", async () => {
+      try {
+        await runBatchRangeApply();
+      } catch (error) {
+        setDownloadStatus(explainNetworkError(error), "error");
+      }
+    });
+
+    $("applyBatchRangeInline").addEventListener("click", async () => {
+      try {
+        await runBatchRangeApply();
+      } catch (error) {
+        setDownloadStatus(explainNetworkError(error), "error");
+      }
+    });
+
+    $("wrapLongTextToggle").addEventListener("click", async () => {
+      syncUiSettingsFromSheet(settingsSheetName());
+      state.settings.wrapLongText = !state.settings.wrapLongText;
+      if (!state.settings.wrapLongText) {
+        state.settings.wrapTextColumns = "";
+      }
+      commitUiSettingsToSheet(settingsSheetName());
+      renderAll();
+      try {
+        await refreshPreview();
+      } catch (error) {
+        setDownloadStatus(explainNetworkError(error), "error");
+      }
+    });
+
+    $("applyWrapColumns").addEventListener("click", async () => {
+      syncUiSettingsFromSheet(settingsSheetName());
+      state.settings.wrapLongText = true;
+      state.settings.wrapTextColumns = $("wrapColumnsInput").value.trim();
+      commitUiSettingsToSheet(settingsSheetName());
+      renderAll();
+      try {
+        await refreshPreview();
+      } catch (error) {
+        setDownloadStatus(explainNetworkError(error), "error");
+      }
+    });
+
+    $("jumpExport").addEventListener("click", async () => {
+      if (!hasExcelQuickPrint()) {
+        setStage("export");
+        return;
+      }
+      try {
+        await runExcelQuickPrint();
+      } catch (error) {
+        setDownloadStatus(explainNetworkError(error), "error");
+      }
+    });
+    $("jumpArea").addEventListener("click", () => setStage("area"));
+    $("sheetToArea").addEventListener("click", () => setStage("area"));
+    $("jumpSettings").addEventListener("click", () => setStage("settings"));
+    $("jumpAi").addEventListener("click", () => setStage("ai"));
+    $("backToUpload").addEventListener("click", () => setStage("upload"));
+    $("exportFromTop").addEventListener("click", () => $("exportButton").click());
+
+    $("applyRange").addEventListener("click", async () => {
+      const sheet = activeSheet();
+      const bounds = parseRange($("manualRangeInput").value);
+      if (!sheet || !bounds) {
+        showToast("请输入合法的 A1 范围");
+        return;
+      }
+      const auto = parseRange(sheet.autoRange);
+      if (!auto || !intersects(bounds, auto)) {
+        showToast("打印范围需要落在识别出的数据区域内");
+        return;
+      }
+      updateSelectionFromBounds(bounds, false);
+      try {
+        await refreshPreview();
+      } catch (error) {
+        setDownloadStatus(explainNetworkError(error), "error");
+      }
+    });
+
+    $("resetRange").addEventListener("click", async () => {
+      const sheet = activeSheet();
+      if (!sheet) return;
+      sheet.printRange = sheet.nativePrintArea || sheet.autoRange;
+      sheet.rangeSource = sheet.hasNativePrintArea ? "excel" : "auto";
+      renderAll();
+      try {
+        await refreshPreview();
+      } catch (error) {
+        setDownloadStatus(explainNetworkError(error), "error");
+      }
+    });
+
+    $("syncRangePreview").addEventListener("click", async () => {
+      try {
+        await refreshPreview();
+      } catch (error) {
+        setDownloadStatus(explainNetworkError(error), "error");
+      }
+    });
+
+    $("exportButton").addEventListener("click", async () => {
+      try {
+        await exportResults();
+      } catch (error) {
+        setDownloadStatus(explainNetworkError(error), "error");
+      }
+    });
+
+    window.addEventListener("resize", () => schedulePaperLayouts());
+
+    renderAll();
   </script>
 </body>
 </html>

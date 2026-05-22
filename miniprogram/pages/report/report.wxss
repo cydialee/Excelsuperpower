@@ -3,17 +3,40 @@
   font-weight: 700;
 }
 
+.report-intro {
+  margin-top: 36rpx;
+  text-align: center;
+}
+
 .report-title {
-  margin-top: 42rpx;
+  margin-top: 18rpx;
   font-size: 43rpx;
   font-weight: 800;
-  text-align: center;
+  line-height: 1.35;
 }
 
 .report-subtitle {
   margin-top: 12rpx;
   color: #8f717b;
   text-align: center;
+}
+
+.report-tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12rpx;
+  margin-top: 20rpx;
+}
+
+.report-tag {
+  min-height: 42rpx;
+  padding: 0 16rpx;
+  border-radius: 999rpx;
+  background: rgba(255, 255, 255, 0.74);
+  color: #677d74;
+  font-size: 18rpx;
+  line-height: 42rpx;
 }
 
 .map-stage {
@@ -26,6 +49,28 @@
     radial-gradient(circle at 18% 34%, #8bc79f 0 54rpx, transparent 56rpx),
     radial-gradient(circle at 82% 28%, #f08e7f 0 48rpx, transparent 50rpx),
     linear-gradient(180deg, #dff0d1, #a8d38e);
+}
+
+.map-glow {
+  position: absolute;
+  border-radius: 50%;
+  animation: glow-shift 3s ease-in-out infinite;
+}
+
+.map-glow-left {
+  top: 40rpx;
+  left: 52rpx;
+  width: 110rpx;
+  height: 110rpx;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.map-glow-right {
+  top: 60rpx;
+  right: 66rpx;
+  width: 150rpx;
+  height: 150rpx;
+  background: rgba(255, 255, 255, 0.14);
 }
 
 .hill {
@@ -47,6 +92,7 @@
   border-radius: 50%;
   background: #7bc7d6;
   box-shadow: inset 0 -18rpx 0 #e9c26e;
+  animation: pulse-soft 2.8s ease-in-out infinite;
 }
 
 .fountain view {
@@ -65,6 +111,7 @@
   height: 126rpx;
   border-radius: 56rpx 56rpx 38rpx 38rpx;
   background: #f7c85e;
+  animation: float-slow 3s ease-in-out infinite;
 }
 
 .map-helper.left {
@@ -83,32 +130,38 @@
   border: 2rpx solid #e8d0ca;
   border-radius: 22rpx;
   background: rgba(255, 252, 250, 0.95);
+  box-shadow: 0 16rpx 30rpx rgba(90, 75, 67, 0.1);
   font-size: 22rpx;
+  animation: float-slow 3.2s ease-in-out infinite;
 }
 
 .risk-count {
-  color: #ff6f91;
+  color: #25837f;
   font-weight: 700;
 }
 
 .bubble-0 {
   top: 30rpx;
   left: 28rpx;
+  animation-delay: 0.1s;
 }
 
 .bubble-1 {
   top: 42rpx;
   right: 30rpx;
+  animation-delay: 0.4s;
 }
 
 .bubble-2 {
   top: 218rpx;
   left: 18rpx;
+  animation-delay: 0.2s;
 }
 
 .bubble-3 {
   top: 214rpx;
   right: 22rpx;
+  animation-delay: 0.5s;
 }
 
 .health-card {
@@ -126,8 +179,14 @@
   margin: 24rpx 0 34rpx;
 }
 
+.score-panel {
+  padding: 18rpx;
+  border-radius: 28rpx;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 245, 220, 0.7));
+}
+
 .score {
-  color: #ff6f91;
+  color: #25837f;
   font-size: 92rpx;
   font-weight: 800;
 }

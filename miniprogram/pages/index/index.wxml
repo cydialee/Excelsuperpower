@@ -1,63 +1,133 @@
-<view class="page-shell workbench">
-  <view class="brand-row">
-    <view class="brand-mark">P</view>
-    <view>
-      <view class="brand-name">PrintMind</view>
-      <view class="brand-caption">AI 打印助手</view>
+<view class="page-shell workbench {{pageReady ? 'page-entered' : ''}}">
+  <view class="hero-panel soft-panel">
+    <view class="brand-row reveal-block">
+      <view class="brand-mark">表</view>
+      <view class="brand-copy">
+        <view class="brand-name">表格美化打印</view>
+        <view class="brand-caption">Excel 导入 · AI 美化 · 预览导出</view>
+      </view>
+      <view class="header-stars">
+        <view class="glass-tag header-tag">AI 就绪</view>
+        <view class="star-dot"></view>
+        <view class="bell">*</view>
+      </view>
     </view>
-    <view class="header-stars">
-      <view class="star-dot"></view>
-      <view class="bell">⌁</view>
+
+    <view class="hero-copy reveal-block delay-1">
+      <view class="section-kicker">Excel Print Studio</view>
+      <view class="hero-title">表格美化打印</view>
+      <view class="hero-subtitle">把“能打印”升级成“值得打印”的业务表格体验</view>
+      <view class="hero-dynamic-line">
+        <text class="hero-dynamic-word">{{headlineWords[activeHeroWordIndex]}}</text>
+        <text class="hero-dynamic-copy">{{heroStatusLine}}</text>
+      </view>
     </view>
-  </view>
 
-  <view class="hero-copy">
-    <view class="hero-title">PrintMind</view>
-    <view class="hero-subtitle">AI 打印助手</view>
-  </view>
-
-  <view class="file-stage">
-    <view class="paper paper-left"></view>
-    <view class="paper paper-center"></view>
-    <view class="paper paper-right"></view>
-    <swiper
-      class="promo-swiper"
-      autoplay
-      circular
-      interval="2600"
-      duration="520"
-      indicator-dots
-      indicator-color="rgba(255,255,255,.54)"
-      indicator-active-color="#ffffff"
-      bindtap="previewFlow"
-    >
-      <swiper-item wx:for="{{promoSlides}}" wx:key="id">
-        <view class="play-panel promo-{{item.tone}}">
-          <view class="panel-copy">{{item.title}}</view>
-          <view class="panel-subtitle">{{item.subtitle}}</view>
-          <view class="play-arrow"></view>
-          <view class="tiny-helper">
-            <view class="helper-face"></view>
-          </view>
+    <view class="flow-strip reveal-block delay-2">
+      <view
+        wx:for="{{flowSteps}}"
+        wx:key="id"
+        class="flow-item {{activeFlowIndex === index ? 'active' : ''}}"
+      >
+        <view class="flow-topline">
+          <text class="flow-index">{{item.index}}</text>
+          <text class="flow-label">{{item.label}}</text>
         </view>
-      </swiper-item>
-    </swiper>
+        <view class="flow-detail">{{item.detail}}</view>
+      </view>
+    </view>
+
+    <view class="file-stage reveal-block delay-3">
+      <view class="ambient-orb orb-left"></view>
+      <view class="ambient-orb orb-right"></view>
+      <view class="paper paper-left"></view>
+      <view class="paper paper-center"></view>
+      <view class="paper paper-right"></view>
+      <view class="hero-floating-card floating-top">
+        <view class="floating-label">当前优势</view>
+        <view class="floating-value">自动识别分页与表头</view>
+      </view>
+      <view class="hero-floating-card floating-bottom">
+        <view class="floating-label">输出结果</view>
+        <view class="floating-value">优化 Excel / 打印 PDF</view>
+      </view>
+      <swiper
+        class="promo-swiper"
+        autoplay
+        circular
+        interval="2600"
+        duration="520"
+        indicator-dots
+        indicator-color="rgba(255,255,255,.54)"
+        indicator-active-color="#ffffff"
+        bindtap="previewFlow"
+        bindchange="handlePromoChange"
+      >
+        <swiper-item wx:for="{{promoSlides}}" wx:key="id">
+          <view class="play-panel promo-{{item.tone}}">
+            <view class="panel-copy">{{item.title}}</view>
+            <view class="panel-subtitle">{{item.subtitle}}</view>
+            <view class="play-arrow"></view>
+            <view class="tiny-helper">
+              <view class="helper-face"></view>
+            </view>
+          </view>
+        </swiper-item>
+      </swiper>
+    </view>
+
+    <view class="hero-metrics reveal-block delay-4">
+      <view
+        wx:for="{{heroMetrics}}"
+        wx:key="label"
+        class="metric-chip metric-{{item.tone}}"
+      >
+        <view class="metric-value">{{item.value}}</view>
+        <view class="metric-label">{{item.label}}</view>
+      </view>
+    </view>
   </view>
 
-  <view class="upload-card soft-panel" bindtap="chooseExcelFile">
-    <view class="section-title">拖拽 Excel 文件到这里</view>
-    <view class="muted">或点击上传文件</view>
+  <view class="upload-card soft-panel reveal-block delay-3" bindtap="chooseExcelFile">
+    <view class="upload-glow"></view>
+    <view class="section-kicker">上传入口</view>
+    <view class="section-title">导入 Excel 表格</view>
+    <view class="muted">点击上传后自动识别 Sheet、打印区域和推荐分页方案</view>
     <view class="support-line">支持 .xlsx / .xlsm 格式</view>
+    <view class="upload-pill-row">
+      <view class="glass-tag upload-pill">读取真实 Sheet</view>
+      <view class="glass-tag upload-pill">识别表头与范围</view>
+      <view class="glass-tag upload-pill">直接进入分析流程</view>
+    </view>
   </view>
 
-  <view class="between-row list-heading">
-    <view class="section-title">最近文件</view>
+  <view class="capability-rack reveal-block delay-4">
+    <view
+      wx:for="{{featureCards}}"
+      wx:key="id"
+      class="feature-card soft-panel"
+    >
+      <view class="feature-eyebrow">{{item.eyebrow}}</view>
+      <view class="feature-title">{{item.title}}</view>
+      <view class="feature-detail">{{item.detail}}</view>
+      <view class="feature-meter">
+        <view class="feature-meter-fill"></view>
+        <view class="feature-meter-tag">{{item.stat}}</view>
+      </view>
+    </view>
+  </view>
+
+  <view class="between-row list-heading reveal-block delay-5">
+    <view class="section-title">我的打印</view>
     <view class="all-link" bindtap="openBatch">全部 ›</view>
   </view>
-  <view class="soft-panel recent-list">
+  <view class="soft-panel recent-list reveal-block delay-5">
     <view wx:for="{{recentFiles}}" wx:key="id" class="recent-row" bindtap="openRecent">
       <view class="excel-pill">X</view>
-      <view class="recent-name">{{item.name}}</view>
+      <view class="recent-main">
+        <view class="recent-name">{{item.name}}</view>
+        <view class="recent-status status-{{item.tone}}">{{item.status}}</view>
+      </view>
       <view class="recent-time">{{item.updatedAt}}</view>
     </view>
   </view>
