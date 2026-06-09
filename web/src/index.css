@@ -1,0 +1,253 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== CSS Design Tokens ===== */
+:root {
+  --paper: #FFFDF5;
+  --paper-dark: #F5F0E0;
+  --surface: #FFFAF0;
+  --primary: #0D9488;
+  --primary-hover: #0F766E;
+  --primary-light: #CCFBF1;
+  --accent: #F59E0B;
+  --text: #1E293B;
+  --text-muted: #64748B;
+  --border: #E2D5BE;
+  --danger: #EF4444;
+  --success: #22C55E;
+
+  --radius-sm: 6px;
+  --radius-card: 12px;
+  --radius-panel: 16px;
+  --radius-container: 24px;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.08);
+  --shadow-xl: 0 16px 48px rgba(0,0,0,0.10);
+  --shadow-primary: 0 8px 24px rgba(13,148,136,0.20);
+}
+
+/* ===== Base Styles ===== */
+@layer base {
+  html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply bg-paper text-slate-800 font-sans;
+    min-height: 100vh;
+  }
+
+  ::selection {
+    @apply bg-primary-100 text-primary-800;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-slate-300 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-slate-400;
+  }
+}
+
+/* ===== Paper Texture Background ===== */
+.paper-texture {
+  background:
+    linear-gradient(rgba(255,255,255,0.36) 2px, transparent 2px),
+    linear-gradient(90deg, rgba(255,255,255,0.28) 2px, transparent 2px),
+    radial-gradient(circle at 10% 6%, rgba(245,158,11,0.10), transparent 32%),
+    radial-gradient(circle at 92% 2%, rgba(13,148,136,0.08), transparent 28%),
+    #FFFDF5;
+  background-size: 52px 52px, 52px 52px, auto, auto, auto;
+}
+
+/* ===== Card Styles ===== */
+.card-panel {
+  @apply bg-white/90 border border-border rounded-card shadow-card-md;
+  backdrop-filter: blur(8px);
+}
+
+.card-panel-hover {
+  @apply card-panel transition-all duration-200 ease-out;
+}
+.card-panel-hover:hover {
+  @apply shadow-card-lg border-primary-200;
+  transform: translateY(-1px);
+}
+
+/* ===== Glass Components ===== */
+.glass-tag {
+  @apply inline-flex items-center justify-center px-3 py-1.5
+         border border-white/40 rounded-full
+         bg-white/70 shadow-sm
+         text-primary-700 text-xs font-semibold;
+  backdrop-filter: blur(4px);
+}
+
+/* ===== Button Variants ===== */
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2
+         px-6 py-3 rounded-full
+         bg-primary-600 text-white font-semibold
+         shadow-primary
+         transition-all duration-200 ease-out;
+}
+.btn-primary:hover {
+  @apply bg-primary-700 shadow-lg;
+  transform: translateY(-1px);
+}
+.btn-primary:active {
+  transform: translateY(0);
+}
+.btn-primary:disabled {
+  @apply opacity-50 cursor-not-allowed;
+  transform: none;
+}
+
+.btn-ghost {
+  @apply inline-flex items-center justify-center gap-2
+         px-6 py-3 rounded-full
+         border-2 border-dashed border-primary-400
+         bg-white/80 text-primary-700 font-semibold
+         transition-all duration-200 ease-out;
+}
+.btn-ghost:hover {
+  @apply border-primary-500 bg-primary-50;
+}
+
+/* ===== Excel Pill ===== */
+.excel-pill {
+  @apply inline-flex items-center justify-center
+         w-10 h-10 rounded-[14px]
+         bg-emerald-600 text-white text-sm font-bold;
+}
+
+/* ===== Section Kicker ===== */
+.section-kicker {
+  @apply inline-flex items-center px-3 py-1
+         border border-primary-200/40 rounded-full
+         bg-white/60 text-primary-700
+         text-xs font-bold uppercase tracking-wider;
+}
+
+/* ===== Animations ===== */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes glow-shift {
+  0%, 100% { opacity: 0.54; }
+  50% { opacity: 0.9; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-rise-in {
+  animation: rise-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  opacity: 0;
+}
+
+.animate-float-slow {
+  animation: float-slow 3s ease-in-out infinite;
+}
+
+.animate-glow-shift {
+  animation: glow-shift 3s ease-in-out infinite;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f0ebe0 25%, #f8f5ec 50%, #f0ebe0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--radius-sm);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===== Progress Bar ===== */
+.progress-track {
+  @apply w-full h-2 bg-slate-100 rounded-full overflow-hidden;
+}
+.progress-fill {
+  @apply h-full bg-gradient-to-r from-primary-500 to-primary-400 rounded-full;
+  transition: width 0.3s ease-out;
+}
+
+/* ===== Focus Ring ===== */
+.focus-ring {
+  @apply outline-none focus-visible:ring-2 focus-visible:ring-primary-400 focus-visible:ring-offset-2;
+}
+
+/* ===== Toggle Switch ===== */
+.toggle-track {
+  @apply relative w-11 h-6 rounded-full transition-colors duration-200;
+}
+.toggle-track.on {
+  @apply bg-primary-500;
+}
+.toggle-track.off {
+  @apply bg-slate-200;
+}
+.toggle-thumb {
+  @apply absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow-sm
+         transition-transform duration-200;
+}
+.toggle-track.on .toggle-thumb {
+  transform: translateX(20px);
+}
+
+/* ===== Toast ===== */
+.toast {
+  @apply fixed bottom-6 left-1/2 -translate-x-1/2 z-50
+         px-5 py-3 rounded-full shadow-lg
+         text-sm font-medium animate-slide-up;
+}
+
+/* ===== Data Table Preview ===== */
+.data-cell {
+  @apply px-2 py-1 text-xs border border-slate-100
+         truncate max-w-[120px];
+}
+.data-cell.header {
+  @apply bg-primary-600 text-white font-semibold text-center;
+}
+.data-cell.merged {
+  @apply bg-primary-50/50;
+}
+.data-cell.selected {
+  @apply bg-amber-100 outline outline-1 outline-amber-400 outline-offset-[-1px];
+}

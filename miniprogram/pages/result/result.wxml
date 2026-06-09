@@ -1,18 +1,19 @@
 <view class="page-shell result-page">
   <view class="nav-row">
-    <view class="back-link" bindtap="goBack">‹</view>
+    <view class="back-link" bindtap="goBack">&lt;</view>
     <view class="page-title">生成任务</view>
     <view class="star-dot"></view>
   </view>
 
   <view wx:if="{{job}}" class="soft-panel result-card">
     <view class="ready-mark">✓</view>
-    <view class="headline">Demo 打印任务已生成</view>
+    <view class="headline">打印任务已准备完成</view>
     <view class="muted">{{job.workbook.filename}}</view>
     <view class="summary">
       <view>方案　<text>{{job.plan.name}} {{job.plan.title}}</text></view>
       <view>Sheet　<text>{{job.selectedSheets.length}} 个</text></view>
       <view>纸张　<text>{{job.settings.paper}} · {{job.settings.orientation === 'landscape' ? '横向' : '纵向'}}</text></view>
+      <view>适配　<text>{{job.settings.fitMode === 'singlePage' ? '整表单页' : job.settings.fitMode === 'fitRows' ? '按行适配' : '按列适配'}}</text></view>
     </view>
     <view class="output" wx:for="{{job.outputs}}" wx:key="id">
       <view>{{item.label}}</view>
@@ -25,14 +26,22 @@
   </view>
 
   <view wx:if="{{job && job.preview && job.preview.sheets.length}}" class="soft-panel preview-card">
-    <view class="section-title">生成后预览结构</view>
+    <view class="section-title">生成后预览结果</view>
     <view wx:for="{{job.preview.sheets}}" wx:key="name" class="preview-sheet">
       <view>{{item.name}}</view>
       <view class="muted">{{item.range}} · {{item.rows}} 行 · {{item.columns}} 列</view>
+      <view class="muted">预计 {{item.pageCount || item.optimizedPageCount || 1}} 页</view>
     </view>
   </view>
 
-  <view wx:if="{{!job}}" class="soft-panel empty-card">尚未生成任务，请先上传文件并保存打印设置。</view>
+  <view wx:if="{{job && job.warnings && job.warnings.length}}" class="soft-panel preview-card">
+    <view class="section-title">生成提示</view>
+    <view wx:for="{{job.warnings}}" wx:key="*this" class="preview-sheet">
+      <view class="muted">{{item}}</view>
+    </view>
+  </view>
+
+  <view wx:if="{{!job}}" class="soft-panel empty-card">还没有生成任务，请先上传文件并完成打印设置。</view>
 
   <button wx:if="{{job}}" class="primary-button" bindtap="copyRecipe">复制任务配置</button>
   <button class="ghost-button restart" bindtap="restart">返回重新上传</button>

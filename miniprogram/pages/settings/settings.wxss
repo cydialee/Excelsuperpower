@@ -69,8 +69,22 @@
   padding: 30rpx;
 }
 
+.hero-setting {
+  margin-top: 16rpx;
+  color: #25443d;
+  font-size: 38rpx;
+  font-weight: 800;
+}
+
+.setting-help {
+  margin-top: 12rpx;
+  color: #6f7064;
+  font-size: 22rpx;
+  line-height: 1.6;
+}
+
 .setting-label {
-  margin: 18rpx 0 14rpx;
+  margin: 24rpx 0 14rpx;
   color: #705962;
   font-size: 24rpx;
 }
@@ -94,7 +108,8 @@
 }
 
 .segmented view,
-.paper-row view {
+.paper-row view,
+.fit-mode {
   min-height: 58rpx;
   border-radius: 18rpx;
   background: #fff9f5;
@@ -104,9 +119,16 @@
 }
 
 .segmented .active,
-.paper-row .active {
+.paper-row .active,
+.fit-mode.active {
   background: #42b8b4;
   color: #fff;
+}
+
+.fit-mode-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10rpx;
 }
 
 .margin-grid {
@@ -156,4 +178,25 @@
 
 .switch.on::after {
   left: 34rpx;
+}
+
+.wrap-input {
+  min-height: 68rpx;
+  padding: 0 20rpx;
+  border: 2rpx solid #dbc698;
+  border-radius: 18rpx;
+  background: #fffdf7;
+  color: #25443d;
+  font-size: 24rpx;
+}
+
+.setting-footer {
+  margin-top: 20rpx;
+}
+
+.setting-link {
+  margin-top: 10rpx;
+  color: #25837f;
+  font-size: 22rpx;
+  font-weight: 700;
 }

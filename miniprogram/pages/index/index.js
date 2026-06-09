@@ -1,44 +1,51 @@
-const { getPromoSlides, getRecentFiles } = require("../../utils/workflow");
-const { createDemoWorkbookSession } = require("../../utils/workflow");
+const {
+  createBackendWorkbookSession,
+  createDemoWorkbookSession,
+  getPromoSlides,
+  getRecentFiles
+} = require("../../utils/workflow");
 
-const HERO_WORDS = ["更灵", "更清晰", "更专业"];
+const HERO_WORDS = ["更清晰", "更可信", "更体面"];
 const HERO_LINES = [
-  "自动识别表头、打印区域与宽表分页",
-  "把复杂 Excel 变成更适合纸面的版式",
-  "一键输出优化 Excel、PDF 与批量任务"
+  "自动识别表头、打印区域与宽表分页建议",
+  "让预览、设置和导出都尽量贴近 Excel 打印逻辑",
+  "一键输出优化后的 Excel、PDF 和批量任务配置"
 ];
+
 const FLOW_STEPS = [
-  { id: "import", index: "01", label: "导入表格", detail: "读取 Sheet 与结构" },
-  { id: "select", index: "02", label: "选择区域", detail: "筛选要打印的内容" },
-  { id: "optimize", index: "03", label: "优化美化", detail: "生成分页与版式建议" },
-  { id: "export", index: "04", label: "预览导出", detail: "输出 Excel / PDF" }
+  { id: "import", index: "01", label: "导入文件", detail: "读取 Sheet 与现有打印区域" },
+  { id: "range", index: "02", label: "确认范围", detail: "逐个 Sheet 校对打印区和方向" },
+  { id: "plan", index: "03", label: "比较方案", detail: "按列、按行、单页和紧凑模式对比" },
+  { id: "export", index: "04", label: "导出结果", detail: "生成 Excel、PDF 和批量打印任务" }
 ];
+
 const HERO_METRICS = [
-  { label: "典型节省", value: "18%", tone: "mint" },
-  { label: "优化建议", value: "3 类", tone: "sky" },
-  { label: "导出形态", value: "2 种", tone: "gold" }
+  { label: "默认识别准确区", value: "A1", tone: "mint" },
+  { label: "打印模式", value: "5 种", tone: "sky" },
+  { label: "导出结果", value: "Excel + PDF", tone: "gold" }
 ];
+
 const FEATURE_CARDS = [
   {
     id: "layout",
-    eyebrow: "智能分页",
-    title: "针对宽表与长表自动给出打印策略",
-    detail: "把一页宽、横向分页、批量任务放到同一条操作链里。",
-    stat: "分页建议"
+    eyebrow: "打印语义",
+    title: "先确定有效打印区域，再做分页推荐",
+    detail: "系统会优先读取 Excel 原打印区域，没有时再用自动识别范围作为默认值。",
+    stat: "范围优先"
   },
   {
     id: "repeat",
-    eyebrow: "表头修复",
-    title: "自动识别重复表头与关键字段位置",
-    detail: "减少跨页后表头消失、字段错位和阅读断层。",
-    stat: "结构识别"
+    eyebrow: "分页可信",
+    title: "预览结果按表头、方向和适配方式生成",
+    detail: "避免把所有方案都做成同一种“伪预览”，让对比结果更接近真实打印体验。",
+    stat: "分页校准"
   },
   {
     id: "batch",
-    eyebrow: "导出闭环",
-    title: "从分析结果直接走向优化 Excel 与 PDF",
-    detail: "让打印前预览、下载和批量处理连成一个可执行流程。",
-    stat: "输出闭环"
+    eyebrow: "批量控制",
+    title: "每个 Sheet 都能保留自己的打印方式",
+    detail: "批量任务不再只是一键串行，而是支持逐个 Sheet 维护范围、方向和适配模式。",
+    stat: "独立设置"
   }
 ];
 
@@ -49,21 +56,6 @@ function decorateRecentFiles(files) {
     ...file,
     tone: tones[index % tones.length]
   }));
-}
-
-function normalizeBackendWorkbook(payload) {
-  return {
-    id: payload.workbookId,
-    filename: payload.filename,
-    mode: "backend",
-    plans: payload.plans,
-    sheets: payload.sheets.map((sheet, index) => ({
-      ...sheet,
-      id: sheet.name,
-      checked: index < 2
-    })),
-    selectedSheetIds: payload.sheets.slice(0, 2).map((sheet) => sheet.name)
-  };
 }
 
 Page({
@@ -142,7 +134,7 @@ Page({
       extension: ["xlsx", "xlsm"],
       success: (res) => {
         const file = res.tempFiles[0];
-        wx.showLoading({ title: "上传解析中" });
+        wx.showLoading({ title: "正在上传并识别..." });
         wx.uploadFile({
           url: `${getApp().globalData.apiBaseUrl}/upload`,
           filePath: file.path,
@@ -154,12 +146,12 @@ Page({
               wx.showToast({ title: payload.error || "上传失败", icon: "none" });
               return;
             }
-            wx.setStorageSync("printmindWorkbook", normalizeBackendWorkbook(payload));
+            wx.setStorageSync("printmindWorkbook", createBackendWorkbookSession(payload));
             wx.navigateTo({ url: "/pages/analyze/analyze" });
           },
           fail: () => {
             wx.hideLoading();
-            wx.showToast({ title: "请先启动本地后端", icon: "none" });
+            wx.showToast({ title: "请先启动本地预览后端", icon: "none" });
           }
         });
       }

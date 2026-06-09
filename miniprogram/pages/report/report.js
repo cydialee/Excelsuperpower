@@ -2,9 +2,9 @@ const { createAnalysisSnapshot } = require("../../utils/workflow");
 
 function buildReportTags(snapshot) {
   return [
-    `发现 ${snapshot.opportunities.length} 类风险`,
-    `${snapshot.metrics[0].value} 纸张利用率`,
-    "可继续进入优化方案"
+    `发现 ${snapshot.opportunities.length} 类优化点`,
+    `${snapshot.metrics[1].value} 人工选区`,
+    "下一步进入方案对比与打印设置"
   ];
 }
 
@@ -43,7 +43,7 @@ Page({
   },
 
   seePlans() {
-    wx.setStorageSync("printmindSelectedPlan", "horizontal");
+    wx.setStorageSync("printmindSelectedPlan", "fit-columns");
     wx.switchTab({ url: "/pages/plans/plans" });
   }
 });

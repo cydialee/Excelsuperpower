@@ -7,16 +7,16 @@
     <swiper-item wx:for="{{plans}}" wx:key="id">
       <view class="soft-panel plan-card {{selectedId === item.id ? 'selected' : ''}}" data-id="{{item.id}}" bindtap="selectPlan">
         <view class="between-row">
-          <view class="plan-title">{{item.name}}　{{item.title}} <text wx:if="{{index === 0 || item.recommended}}">(推荐)</text></view>
+          <view class="plan-title">{{item.name}} · {{item.title}} <text wx:if="{{index === 0 || item.recommended}}">(推荐)</text></view>
           <view wx:if="{{selectedId === item.id}}" class="pick">✓</view>
         </view>
         <view class="plan-body">
           <view class="plan-metrics">
-            <view wx:if="{{item.pages}}">节省纸张　<text>{{item.pages}}</text></view>
+            <view wx:if="{{item.pages}}">分页结果　<text>{{item.pages}}</text></view>
             <view wx:if="{{item.paperUse}}">纸张利用率　<text>{{item.paperUse}}</text></view>
             <view wx:if="{{item.description}}">{{item.description}}</view>
             <view wx:if="{{item.fitToWidth}}">宽度适配　<text>{{item.fitToWidth}} 页</text></view>
-            <view>推荐指数　<text class="score-stars">★★★★☆</text></view>
+            <view>推荐指数　<text class="score-stars">{{item.score >= 5 ? '★★★★★' : '★★★★☆'}}</text></view>
           </view>
           <view class="paper-preview">
             <view></view><view></view>
@@ -27,7 +27,7 @@
   </swiper>
 
   <view class="action-row">
-    <button class="primary-button grow" bindtap="comparePlan">应用当前方案</button>
-    <button class="ghost-button tune" bindtap="tuneSettings">调</button>
+    <button class="primary-button grow" bindtap="comparePlan">查看分页预览</button>
+    <button class="ghost-button tune" bindtap="tuneSettings">设置</button>
   </view>
 </view>

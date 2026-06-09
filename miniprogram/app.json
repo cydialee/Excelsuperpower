@@ -12,7 +12,7 @@
     "pages/profile/profile"
   ],
   "window": {
-    "navigationBarTitleText": "表格美化打印",
+    "navigationBarTitleText": "Excel 打印工作台",
     "navigationBarBackgroundColor": "#FFF6D8",
     "navigationBarTextStyle": "black",
     "backgroundColor": "#FFF6D8"
@@ -33,11 +33,11 @@
       },
       {
         "pagePath": "pages/templates/templates",
-        "text": "模板乐园"
+        "text": "模板库"
       },
       {
         "pagePath": "pages/profile/profile",
-        "text": "我的星球"
+        "text": "我的"
       }
     ]
   },

@@ -77,32 +77,88 @@
   text-align: center;
 }
 
+.quick-panel,
 .queue-panel {
-  padding: 8rpx 24rpx;
+  padding: 24rpx;
+}
+
+.quick-panel {
+  margin-bottom: 18rpx;
+}
+
+.quick-plan-row,
+.queue-plan-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+  margin-top: 14rpx;
+}
+
+.quick-plan,
+.queue-plan {
+  min-height: 52rpx;
+  padding: 0 20rpx;
+  border-radius: 999rpx;
+  background: #fff8ef;
+  color: #7a6857;
+  font-size: 22rpx;
+  line-height: 52rpx;
+}
+
+.quick-plan.active,
+.queue-plan.active {
+  background: #42b8b4;
+  color: #fff;
+}
+
+.queue-card {
+  padding: 18rpx 0 24rpx;
+  border-bottom: 2rpx solid #f5e8e6;
+}
+
+.queue-card:last-child {
+  border-bottom: 0;
 }
 
 .queue-row {
   display: flex;
   align-items: center;
   gap: 16rpx;
-  min-height: 82rpx;
-  border-bottom: 2rpx solid #f5e8e6;
-  font-size: 24rpx;
 }
 
-.queue-row:last-child {
-  border-bottom: 0;
+.queue-main {
+  flex: 1;
+  min-width: 0;
 }
 
 .queue-name {
-  flex: 1;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  color: #25443d;
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+.queue-sub {
+  margin-top: 8rpx;
+  color: #7b8b80;
+  font-size: 20rpx;
+}
+
+.queue-input {
+  min-height: 68rpx;
+  margin-top: 14rpx;
+  padding: 0 20rpx;
+  border: 2rpx solid #dbc698;
+  border-radius: 18rpx;
+  background: #fffdf7;
+  color: #25443d;
+  font-size: 24rpx;
 }
 
 .queue-state {
+  margin-top: 12rpx;
   color: #3ca16d;
+  font-size: 22rpx;
+  font-weight: 700;
 }
 
 .batch-button {

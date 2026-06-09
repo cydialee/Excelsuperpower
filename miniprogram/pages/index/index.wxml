@@ -1,22 +1,22 @@
 <view class="page-shell workbench {{pageReady ? 'page-entered' : ''}}">
   <view class="hero-panel soft-panel">
     <view class="brand-row reveal-block">
-      <view class="brand-mark">表</view>
+      <view class="brand-mark">印</view>
       <view class="brand-copy">
-        <view class="brand-name">表格美化打印</view>
-        <view class="brand-caption">Excel 导入 · AI 美化 · 预览导出</view>
+        <view class="brand-name">Excel 打印工作台</view>
+        <view class="brand-caption">导入识别 · 区域确认 · 分页对比 · 导出结果</view>
       </view>
       <view class="header-stars">
         <view class="glass-tag header-tag">AI 就绪</view>
         <view class="star-dot"></view>
-        <view class="bell">*</view>
+        <view class="bell">•</view>
       </view>
     </view>
 
     <view class="hero-copy reveal-block delay-1">
       <view class="section-kicker">Excel Print Studio</view>
-      <view class="hero-title">表格美化打印</view>
-      <view class="hero-subtitle">把“能打印”升级成“值得打印”的业务表格体验</view>
+      <view class="hero-title">让打印结果像正式交付，而不只是“能打出来”</view>
+      <view class="hero-subtitle">从 Sheet、打印区域到分页方式，整条链路都按更接近 Excel 的逻辑来处理。</view>
       <view class="hero-dynamic-line">
         <text class="hero-dynamic-word">{{headlineWords[activeHeroWordIndex]}}</text>
         <text class="hero-dynamic-copy">{{heroStatusLine}}</text>
@@ -44,12 +44,12 @@
       <view class="paper paper-center"></view>
       <view class="paper paper-right"></view>
       <view class="hero-floating-card floating-top">
-        <view class="floating-label">当前优势</view>
-        <view class="floating-value">自动识别分页与表头</view>
+        <view class="floating-label">当前亮点</view>
+        <view class="floating-value">保留 Excel 原打印区域优先级</view>
       </view>
       <view class="hero-floating-card floating-bottom">
         <view class="floating-label">输出结果</view>
-        <view class="floating-value">优化 Excel / 打印 PDF</view>
+        <view class="floating-value">优化 Excel / 打印 PDF / 批量任务</view>
       </view>
       <swiper
         class="promo-swiper"
@@ -92,12 +92,12 @@
     <view class="upload-glow"></view>
     <view class="section-kicker">上传入口</view>
     <view class="section-title">导入 Excel 表格</view>
-    <view class="muted">点击上传后自动识别 Sheet、打印区域和推荐分页方案</view>
-    <view class="support-line">支持 .xlsx / .xlsm 格式</view>
+    <view class="muted">支持读取真实 Sheet、现有打印区域、表头结构和分页建议。</view>
+    <view class="support-line">支持 `.xlsx` / `.xlsm` 文件，点击即可开始识别</view>
     <view class="upload-pill-row">
-      <view class="glass-tag upload-pill">读取真实 Sheet</view>
-      <view class="glass-tag upload-pill">识别表头与范围</view>
-      <view class="glass-tag upload-pill">直接进入分析流程</view>
+      <view class="glass-tag upload-pill">识别真实 Sheet</view>
+      <view class="glass-tag upload-pill">沿用 Excel 打印区</view>
+      <view class="glass-tag upload-pill">进入分析工作流</view>
     </view>
   </view>
 
@@ -118,8 +118,8 @@
   </view>
 
   <view class="between-row list-heading reveal-block delay-5">
-    <view class="section-title">我的打印</view>
-    <view class="all-link" bindtap="openBatch">全部 ›</view>
+    <view class="section-title">最近任务</view>
+    <view class="all-link" bindtap="openBatch">批量任务 →</view>
   </view>
   <view class="soft-panel recent-list reveal-block delay-5">
     <view wx:for="{{recentFiles}}" wx:key="id" class="recent-row" bindtap="openRecent">

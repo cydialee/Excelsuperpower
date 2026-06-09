@@ -1,8 +1,12 @@
-const { getComparisonSlides, getPlanById } = require("../../utils/workflow");
+const {
+  buildPrintTargets,
+  getComparisonSlides,
+  getPlanById
+} = require("../../utils/workflow");
 
 Page({
   data: {
-    plan: getPlanById("horizontal"),
+    plan: getPlanById("fit-columns"),
     slides: getComparisonSlides(),
     activeIndex: 0,
     preview: null,
@@ -13,7 +17,7 @@ Page({
     const session = wx.getStorageSync("printmindWorkbook");
     const plan = session && session.plans
       ? session.plans.find((item) => item.id === query.id) || session.plans[0]
-      : getPlanById(query.id);
+      : getPlanById(query.id || "fit-columns");
     this.setData({ plan });
     if (session && session.mode === "backend") {
       this.loadBackendPreview(session, plan);
@@ -27,8 +31,7 @@ Page({
       method: "POST",
       data: {
         workbookId: session.id,
-        sheets: session.selectedSheetIds,
-        plan
+        printTargets: buildPrintTargets(session, plan, plan.id)
       },
       success: (response) => {
         wx.hideLoading();
@@ -37,7 +40,10 @@ Page({
           return;
         }
         const preview = response.data.preview;
-        const pages = preview.sheets.reduce((all, sheet) => all.concat(sheet.pages.map((page) => ({ ...page, sheet: sheet.name }))), []);
+        const pages = preview.sheets.reduce(
+          (all, sheet) => all.concat(sheet.pages.map((page) => ({ ...page, sheet: sheet.name }))),
+          []
+        );
         this.setData({ preview, pages });
       },
       fail: () => {

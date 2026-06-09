@@ -7,9 +7,9 @@
 
   <view class="report-intro reveal-block delay-1">
     <view class="section-kicker">Insight Map</view>
-    <view class="report-title">AI 分析完成，可以开始优化了</view>
+    <view class="report-title">分析完成，可以开始做可信的打印优化了</view>
     <view class="report-subtitle">
-      {{session ? session.filename : '当前工作簿'}} · 发现 {{snapshot.opportunities.length}} 个优化机会
+      {{session ? session.filename : '当前工作簿'}} · 已发现 {{snapshot.opportunities.length}} 类待优化问题
     </view>
     <view class="report-tags">
       <view wx:for="{{reportTags}}" wx:key="*this" class="report-tag">{{item}}</view>
@@ -38,7 +38,7 @@
       <view class="score-panel">
         <text class="score">{{snapshot.score}}</text>
         <text class="score-total">/100</text>
-        <view class="score-stars">★☆★☆★</view>
+        <view class="score-stars">★★★★★</view>
       </view>
       <view class="metrics">
         <view wx:for="{{snapshot.metrics}}" wx:key="label" class="metric-row">

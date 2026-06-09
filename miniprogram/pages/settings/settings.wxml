@@ -1,6 +1,6 @@
 <view class="page-shell settings-page">
   <view class="nav-row">
-    <view class="back-link" bindtap="goBack">‹</view>
+    <view class="back-link" bindtap="goBack">&lt;</view>
     <view class="page-title">打印设置</view>
     <view class="star-dot"></view>
   </view>
@@ -16,7 +16,11 @@
   </view>
 
   <view class="soft-panel setting-card">
-    <view class="setting-label">打印方向</view>
+    <view class="section-kicker">当前方案</view>
+    <view class="hero-setting">{{currentPlan.name}} · {{currentPlan.title}}</view>
+    <view class="setting-help">{{currentPlan.description}}</view>
+
+    <view class="setting-label">纸张方向</view>
     <view class="segmented">
       <view class="{{settings.orientation === 'portrait' ? 'active' : ''}}" data-value="portrait" bindtap="setOrientation">纵向</view>
       <view class="{{settings.orientation === 'landscape' ? 'active' : ''}}" data-value="landscape" bindtap="setOrientation">横向</view>
@@ -26,27 +30,69 @@
     <view class="paper-row">
       <view class="{{settings.paper === 'A4' ? 'active' : ''}}" data-value="A4" bindtap="setPaper">A4</view>
       <view class="{{settings.paper === 'A3' ? 'active' : ''}}" data-value="A3" bindtap="setPaper">A3</view>
-      <view class="{{settings.paper === 'custom' ? 'active' : ''}}" data-value="custom" bindtap="setPaper">自定义</view>
+      <view class="{{settings.paper === 'Letter' ? 'active' : ''}}" data-value="Letter" bindtap="setPaper">Letter</view>
     </view>
 
-    <view class="setting-label">页边距（毫米）</view>
+    <view class="setting-label">页面适配模式</view>
+    <view class="fit-mode-row">
+      <view
+        wx:for="{{fitModes}}"
+        wx:key="id"
+        class="fit-mode {{settings.fitMode === item.id ? 'active' : ''}}"
+        data-value="{{item.id}}"
+        bindtap="setFitMode"
+      >
+        {{item.label}}
+      </view>
+    </view>
+
+    <view class="setting-label">边距预设</view>
+    <view class="fit-mode-row">
+      <view
+        wx:for="{{marginPresets}}"
+        wx:key="id"
+        class="fit-mode {{settings.marginPreset === item.id ? 'active' : ''}}"
+        data-value="{{item.id}}"
+        bindtap="setMarginPreset"
+      >
+        {{item.label}}
+      </view>
+    </view>
+
+    <view class="setting-label">当前页边距（毫米）</view>
     <view class="margin-grid">
-      <view>上 <text>{{settings.top}}</text></view>
-      <view>下 <text>{{settings.bottom}}</text></view>
-      <view>左 <text>{{settings.left}}</text></view>
-      <view>右 <text>{{settings.right}}</text></view>
+      <view>上<text>{{settings.top}}</text></view>
+      <view>下<text>{{settings.bottom}}</text></view>
+      <view>左<text>{{settings.left}}</text></view>
+      <view>右<text>{{settings.right}}</text></view>
     </view>
 
-    <view class="toggle-row" bindtap="toggle" data-key="fitToWidth">
-      <text>缩放比例</text><view class="switch {{settings.fitToWidth ? 'on' : ''}}"></view>
-    </view>
     <view class="toggle-row" bindtap="toggle" data-key="repeatHeader">
       <text>重复表头</text><view class="switch {{settings.repeatHeader ? 'on' : ''}}"></view>
     </view>
-    <view class="toggle-row" bindtap="toggle" data-key="gridline">
-      <text>网格线</text><view class="switch {{settings.gridline ? 'on' : ''}}"></view>
+    <view class="toggle-row" bindtap="toggle" data-key="beautify">
+      <text>AI 基础美化</text><view class="switch {{settings.beautify ? 'on' : ''}}"></view>
+    </view>
+    <view class="toggle-row" bindtap="toggle" data-key="showGridLines">
+      <text>打印网格线</text><view class="switch {{settings.showGridLines ? 'on' : ''}}"></view>
+    </view>
+    <view class="toggle-row" bindtap="toggle" data-key="wrapLongText">
+      <text>长文本自动换行</text><view class="switch {{settings.wrapLongText ? 'on' : ''}}"></view>
+    </view>
+
+    <view class="setting-label">换行列（可选）</view>
+    <input
+      class="wrap-input"
+      value="{{settings.wrapTextColumns}}"
+      placeholder="例如 B,D:F"
+      bindblur="onWrapColumnsBlur"
+    />
+
+    <view class="setting-footer">
+      <view class="muted">如果不同 Sheet 需要不同的适配方式，请先去批量调整页分别设置。</view>
+      <view class="setting-link" bindtap="openBatch">前往批量调整 →</view>
     </view>
   </view>
 
-  <button class="primary-button" bindtap="saveSettings">保存设置</button>
+  <button class="primary-button" bindtap="saveSettings">保存设置并生成结果</button>
 </view>

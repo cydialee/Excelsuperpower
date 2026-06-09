@@ -1,46 +1,60 @@
+const {
+  createAnalysisSnapshot,
+  formatRangeSourceLabel,
+  isValidRange,
+  normalizeSession,
+  resetSessionSheetRange,
+  updateSessionSheetRange
+} = require("../../utils/workflow");
+
 const ANALYSIS_MESSAGES = [
   {
     badge: "读取结构",
-    title: "正在为这份表格建立打印模型",
-    detail: "先识别 Sheet、表头、区域边界，再判断哪些位置适合分页。",
+    title: "正在为这份表格建立打印结构",
+    detail: "先识别可见 Sheet、打印区域和表头，再确定分页和方向建议。",
     focus: "表头与打印范围"
   },
   {
-    badge: "分析布局",
-    title: "AI 正在判断宽表、长表和跨页风险",
-    detail: "把列宽、行高、标题重复和页面方向一起纳入分析。",
-    focus: "列宽与横向分页"
+    badge: "校验范围",
+    title: "逐个 Sheet 对齐 Excel 打印语义",
+    detail: "如果文件里已有原打印区域，系统会优先保留；否则使用自动识别结果。",
+    focus: "原打印区与人工选区"
   },
   {
     badge: "生成建议",
-    title: "正在整理可执行的优化方案",
-    detail: "输出更适合纸面阅读的版式建议，并准备后续导出结果。",
-    focus: "导出方案与节省页数"
+    title: "正在整理更可信的优化方案",
+    detail: "后续的方案推荐、分页预览和导出都会基于当前确认的打印区域继续计算。",
+    focus: "分页方式与导出结果"
   }
 ];
+
 const FOOTER_HINTS = [
-  "小贴士：会优先处理分页、表头和纸张方向这三类问题。",
-  "小贴士：宽表更适合横向分页，长表更适合压缩重复表头。",
-  "小贴士：AI 建议整理完后，会直接带你进入后续优化结果页。"
+  "建议先确认每个 Sheet 的打印区域，再进入方案对比，这样预览结果会更接近 Excel。",
+  "若系统识别到 Excel 原打印区域，会显示“沿用 Excel”，你也可以再手动改成新的 A1 范围。",
+  "批量任务页支持把当前已选 Sheet 继续统一调整。"
 ];
 
-function buildProgressHighlights(session, selectedSheetIds) {
+function buildProgressHighlights(session) {
+  const selectedCount = (session.selectedSheetIds || []).length;
+  const manualCount = (session.sheets || []).filter(
+    (sheet) => session.selectedSheetIds.includes(sheet.id) && sheet.rangeSource === "manual"
+  ).length;
+
   return [
-    `${(selectedSheetIds || []).length} 个 Sheet`,
-    "3 类建议",
-    session && session.mode === "backend" ? "真实文件解析" : "本地示例流程"
+    `${selectedCount} 个已选 Sheet`,
+    `${manualCount} 个人工选区`,
+    session && session.mode === "backend" ? "真实文件解析" : "本地演示流程"
   ];
 }
 
-function syncCheckedSheets(session, selectedSheetIds) {
-  const activeIds = selectedSheetIds || [];
+function decorateSession(session) {
+  const normalized = normalizeSession(session || {});
 
   return {
-    ...session,
-    sheets: (session.sheets || []).map((sheet) => ({
+    ...normalized,
+    sheets: normalized.sheets.map((sheet) => ({
       ...sheet,
-      preview: sheet.preview || [],
-      checked: activeIds.includes(sheet.id)
+      rangeSourceLabel: formatRangeSourceLabel(sheet.rangeSource)
     }))
   };
 }
@@ -56,28 +70,32 @@ Page({
     analysisMessages: ANALYSIS_MESSAGES,
     footerHint: FOOTER_HINTS[0],
     progressHighlights: [],
+    snapshot: createAnalysisSnapshot(["sales"]),
     steps: [
-      { label: "读取文件内容", done: true },
-      { label: "识别表格结构", done: false },
-      { label: "分析数据区域", done: false },
-      { label: "检测打印问题", done: false },
-      { label: "生成优化建议", done: false }
+      { label: "读取工作簿内容", done: true },
+      { label: "识别有效 Sheet", done: false },
+      { label: "确认打印区域", done: false },
+      { label: "分析分页风险", done: false },
+      { label: "输出优化建议", done: false }
     ]
   },
 
   onLoad() {
-    const rawSession = wx.getStorageSync("printmindWorkbook");
-    const selectedSheetIds = rawSession && rawSession.selectedSheetIds ? rawSession.selectedSheetIds : [];
-    const session = rawSession ? syncCheckedSheets(rawSession, selectedSheetIds) : null;
-    if (!session) {
+    const stored = wx.getStorageSync("printmindWorkbook");
+    const session = decorateSession(stored);
+
+    if (!session || !session.sheets || !session.sheets.length) {
       wx.showToast({ title: "请先上传 Excel", icon: "none" });
       return;
     }
 
+    const snapshot = createAnalysisSnapshot(session.selectedSheetIds, session.sheets);
+
     this.setData({
       session,
-      selectedSheetIds,
-      progressHighlights: buildProgressHighlights(session, selectedSheetIds)
+      selectedSheetIds: session.selectedSheetIds,
+      progressHighlights: buildProgressHighlights(session),
+      snapshot
     });
 
     this.enterPage();
@@ -89,7 +107,7 @@ Page({
         this.setData({
           progress: 100,
           ready: true,
-          footerHint: "分析完成，可以查看风险地图并继续选择优化方案。",
+          footerHint: "分析完成，可以继续校对打印区域、进入批量调整，或直接查看分析地图。",
           steps: this.data.steps.map((step) => ({ ...step, done: true }))
         });
         return;
@@ -119,10 +137,7 @@ Page({
   },
 
   onHide() {
-    clearInterval(this.analysisTimer);
-    clearTimeout(this.enterTimer);
-    this.analysisTimer = null;
-    this.enterTimer = null;
+    this.clearTimers();
   },
 
   onUnload() {
@@ -161,22 +176,57 @@ Page({
     this.enterTimer = null;
   },
 
+  persistSession(session) {
+    wx.setStorageSync("printmindWorkbook", session);
+    this.setData({
+      session,
+      selectedSheetIds: session.selectedSheetIds,
+      progressHighlights: buildProgressHighlights(session),
+      snapshot: createAnalysisSnapshot(session.selectedSheetIds, session.sheets)
+    });
+  },
+
   goBack() {
     wx.navigateBack();
   },
 
   onSheetChange(event) {
     const selectedSheetIds = event.detail.value;
-    const session = syncCheckedSheets(
-      { ...this.data.session, selectedSheetIds },
+    const session = decorateSession({
+      ...this.data.session,
       selectedSheetIds
-    );
-    wx.setStorageSync("printmindWorkbook", session);
-    this.setData({
-      session,
-      selectedSheetIds,
-      progressHighlights: buildProgressHighlights(session, selectedSheetIds)
     });
+
+    this.persistSession(session);
+  },
+
+  onRangeBlur(event) {
+    const sheetId = event.currentTarget.dataset.id;
+    const nextRange = String(event.detail.value || "").trim().toUpperCase();
+
+    if (!nextRange) {
+      const session = decorateSession(resetSessionSheetRange(this.data.session, sheetId));
+      this.persistSession(session);
+      return;
+    }
+
+    if (!isValidRange(nextRange)) {
+      wx.showToast({ title: "请输入合法的 A1 范围，例如 B3:H42", icon: "none" });
+      return;
+    }
+
+    const session = decorateSession(updateSessionSheetRange(this.data.session, sheetId, nextRange));
+    this.persistSession(session);
+  },
+
+  resetRange(event) {
+    const sheetId = event.currentTarget.dataset.id;
+    const session = decorateSession(resetSessionSheetRange(this.data.session, sheetId));
+    this.persistSession(session);
+  },
+
+  openBatch() {
+    wx.navigateTo({ url: "/pages/batch/batch" });
   },
 
   seeReport() {

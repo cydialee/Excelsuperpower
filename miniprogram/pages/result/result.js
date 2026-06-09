@@ -14,7 +14,10 @@ Page({
 
   copyRecipe() {
     wx.setClipboardData({
-      data: JSON.stringify(this.data.job, null, 2)
+      data: JSON.stringify(this.data.job, null, 2),
+      success: () => {
+        wx.showToast({ title: "已复制任务配置", icon: "none" });
+      }
     });
   },
 

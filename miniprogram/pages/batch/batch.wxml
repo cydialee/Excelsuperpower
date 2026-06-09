@@ -1,6 +1,6 @@
 <view class="page-shell batch-page">
   <view class="nav-row">
-    <view class="back-link" bindtap="goBack">‹</view>
+    <view class="back-link" bindtap="goBack">&lt;</view>
     <view class="page-title">批量任务舱</view>
     <view class="star-dot"></view>
   </view>
@@ -9,17 +9,59 @@
     <view class="ship-star"></view>
     <view class="ship-window"></view>
     <view class="ship-body"></view>
-    <view class="ship-paper left">X</view>
-    <view class="ship-paper right">X</view>
+    <view class="ship-paper left">A1</view>
+    <view class="ship-paper right">页</view>
   </view>
 
-  <view class="batch-count">{{files.length}} 个文件等待处理</view>
-  <view class="soft-panel queue-panel">
-    <view wx:for="{{files}}" wx:key="id" class="queue-row">
-      <view class="excel-pill">X</view>
-      <view class="queue-name">{{item.name}}</view>
-      <view class="queue-state">{{item.status}}</view>
+  <view class="batch-count">{{files.length}} 个 Sheet 待统一校对</view>
+
+  <view class="soft-panel quick-panel">
+    <view class="section-title">一键套用到全部已选 Sheet</view>
+    <view class="quick-plan-row">
+      <view
+        wx:for="{{quickPlans}}"
+        wx:key="id"
+        class="quick-plan {{activePlanId === item.id ? 'active' : ''}}"
+        data-id="{{item.id}}"
+        bindtap="applyPresetToAll"
+      >
+        {{item.title}}
+      </view>
     </view>
   </view>
-  <button class="primary-button batch-button" bindtap="startBatch">开始批量打印（{{files.length}}）</button>
+
+  <view class="soft-panel queue-panel">
+    <view wx:for="{{files}}" wx:key="id" class="queue-card">
+      <view class="queue-row">
+        <view class="excel-pill">X</view>
+        <view class="queue-main">
+          <view class="queue-name">{{item.name}}</view>
+          <view class="queue-sub">{{item.rows}} 行 · {{item.columns}} 列 · 当前范围 {{item.printRange}}</view>
+        </view>
+      </view>
+      <input
+        class="queue-input"
+        value="{{item.printRange}}"
+        data-id="{{item.id}}"
+        placeholder="例如 B3:H42"
+        bindblur="onRangeBlur"
+      />
+      <view class="queue-plan-row">
+        <view
+          wx:for="{{quickPlans}}"
+          wx:key="id"
+          class="queue-plan {{plan.id === (item.plan && item.plan.id) ? 'active' : ''}}"
+          wx:for-item="plan"
+          data-sheet-id="{{item.id}}"
+          data-plan-id="{{plan.id}}"
+          bindtap="applySheetPreset"
+        >
+          {{plan.title}}
+        </view>
+      </view>
+      <view class="queue-state">{{item.planLabel}}</view>
+    </view>
+  </view>
+
+  <button class="primary-button batch-button" bindtap="startBatch">保存批量设置</button>
 </view>

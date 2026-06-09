@@ -3,9 +3,9 @@ const { plans } = require("../../utils/workflow");
 Page({
   data: {
     plans,
-    selectedId: "horizontal",
+    selectedId: "fit-columns",
     activeIndex: 0,
-    filters: ["推荐方案", "节省优先", "效果优先", "自定义"]
+    filters: ["推荐优先", "分页可信", "省纸优先", "可手动控制"]
   },
 
   onShow() {
@@ -17,7 +17,15 @@ Page({
         selectedId,
         activeIndex: Math.max(0, session.plans.findIndex((plan) => plan.id === selectedId))
       });
+      return;
     }
+
+    const selectedId = wx.getStorageSync("printmindSelectedPlan") || "fit-columns";
+    this.setData({
+      plans,
+      selectedId,
+      activeIndex: Math.max(0, plans.findIndex((plan) => plan.id === selectedId))
+    });
   },
 
   selectPlan(event) {

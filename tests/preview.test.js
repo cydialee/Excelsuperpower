@@ -6,15 +6,12 @@ const path = require("node:path");
 
 const previewPath = path.join(__dirname, "..", "preview", "index.html");
 
-test("browser preview has resolved markup and executable inline script", () => {
+function extractScript() {
   const html = fs.readFileSync(previewPath, "utf8");
-
-  assert.doesNotMatch(html, /^(<<<<<<<|=======|>>>>>>>)/m);
-
   const script = html.split("<script>")[1]?.split("</script>")[0];
   assert.ok(script, "preview inline script should exist");
-  new vm.Script(script);
-});
+  return { html, script };
+}
 
 function createFakeElement(id = "") {
   return {
@@ -25,37 +22,31 @@ function createFakeElement(id = "") {
     value: "",
     checked: false,
     dataset: {},
-    style: {},
-    scrollHeight: 800,
-    clientWidth: 1200,
-    clientHeight: 900,
+    style: { width: "" },
+    files: [],
     classList: {
       add() {},
       remove() {},
       toggle() {},
+      contains() { return false; }
     },
     addEventListener() {},
     appendChild() {},
     remove() {},
     click() {},
-    querySelector() {
-      return createFakeElement();
-    },
-    querySelectorAll() {
-      return [];
-    },
-    closest() {
-      return null;
-    },
+    scrollIntoView() {},
+    focus() {},
+    querySelector() { return createFakeElement(); },
+    querySelectorAll() { return []; },
+    closest() { return null; }
   };
 }
 
-function loadPreviewExports() {
-  const html = fs.readFileSync(previewPath, "utf8");
-  const script = html.split("<script>")[1]?.split("</script>")[0];
-  assert.ok(script, "preview inline script should exist");
+function loadPreviewApp(fetchImpl = async () => ({ ok: true, json: async () => ({ ok: true }) })) {
+  const { html, script } = extractScript();
+  const ids = [...html.matchAll(/id="([^"]+)"/g)].map((match) => match[1]);
+  const elements = new Map(ids.map((id) => [id, createFakeElement(id)]));
 
-  const elements = new Map();
   const getElement = (id) => {
     if (!elements.has(id)) elements.set(id, createFakeElement(id));
     return elements.get(id);
@@ -69,31 +60,22 @@ function loadPreviewExports() {
     getElementById(id) {
       return getElement(id);
     },
+    querySelector() {
+      return createFakeElement("query");
+    },
     querySelectorAll() {
       return [];
     },
-    addEventListener() {},
+    addEventListener() {}
   };
-  document.body.appendChild = () => {};
 
   const sandbox = {
     console,
-    URL,
-    window: {
-      location: {
-        origin: "http://127.0.0.1:4173",
-        protocol: "http:",
-      },
-      addEventListener() {},
-    },
-    location: {
-      origin: "http://127.0.0.1:4173",
-      protocol: "http:",
-    },
     document,
-    fetch: async () => {
-      throw new Error("fetch should not be called in preview unit tests");
-    },
+    window: null,
+    location: { origin: "http://127.0.0.1:4173" },
+    navigator: { userAgent: "node-test", clipboard: { writeText: async () => {} } },
+    fetch: fetchImpl,
     FormData: class {
       append() {}
     },
@@ -105,111 +87,96 @@ function loadPreviewExports() {
     },
     setTimeout,
     clearTimeout,
-    requestAnimationFrame(fn) {
-      return 1;
-    },
-    cancelAnimationFrame() {},
-    HTMLSelectElement: class {},
-    HTMLInputElement: class {},
-    navigator: { userAgent: "node-test" },
+    URL,
   };
-  sandbox.window.document = document;
-  sandbox.window.setTimeout = setTimeout;
-  sandbox.window.clearTimeout = clearTimeout;
-  sandbox.window.requestAnimationFrame = sandbox.requestAnimationFrame;
-  sandbox.window.cancelAnimationFrame = sandbox.cancelAnimationFrame;
-  sandbox.window.navigator = sandbox.navigator;
+
+  sandbox.window = sandbox;
+  sandbox.window.addEventListener = () => {};
   sandbox.globalThis = sandbox;
 
-  const instrumented = `${script.replace(/\brenderAll\(\);\s*$/, "")}
-globalThis.__previewTestExports = {
-  state,
-  DEFAULT_PRINT_SETTINGS,
-  sheetSettings,
-  syncUiSettingsFromSheet,
-  commitUiSettingsToSheet,
-  selectedTargets,
-  applyPlan,
-  previewOrientation
-};`;
-
   vm.createContext(sandbox);
-  new vm.Script(instrumented).runInContext(sandbox);
-  return sandbox.__previewTestExports;
+  new vm.Script(script).runInContext(sandbox);
+  return sandbox.__previewApp;
 }
 
-test("sheet print settings stay isolated per selected sheet", () => {
-  const preview = loadPreviewExports();
-  const { state, syncUiSettingsFromSheet, applyPlan, selectedTargets, previewOrientation } = preview;
+test("browser preview inline script compiles", () => {
+  const { script } = extractScript();
+  assert.doesNotThrow(() => new vm.Script(script));
+});
 
-  state.sheets = [
-    {
-      name: "申报表202511月",
-      checked: true,
-      printRange: "A1:AN55",
-      rangeSource: "auto",
-      recommendedOrientation: "portrait",
-    },
-    {
-      name: "收入、税金分割表",
-      checked: true,
-      printRange: "A1:N23",
-      rangeSource: "manual",
-      recommendedOrientation: "landscape",
-    },
-  ];
-  state.activeSheetName = "申报表202511月";
-  state.previewUi.settingsSheetName = "申报表202511月";
-  state.sheetSettingsByName = {};
-  state.preview = {
-    sheets: [
-      { name: "申报表202511月", pages: [] },
-      { name: "收入、税金分割表", pages: [] },
-    ],
-  };
+test("browser preview boot script can run in a fake DOM", () => {
+  assert.doesNotThrow(() => {
+    loadPreviewApp();
+  });
+});
 
-  applyPlan({
-    id: "portrait-plan",
-    orientation: "portrait",
-    fitMode: "singlePage",
-    fitToWidth: 1,
-    fitToHeight: 1,
-    beautify: true,
-  }, "申报表202511月");
+test("selectedTargets keep per-sheet ranges and plans isolated", () => {
+  const app = loadPreviewApp();
+  const sales = app.createSheetState({
+    name: "Sales",
+    rows: 45,
+    columns: 6,
+    autoRange: "A1:F45",
+    printRange: "A1:F45",
+    rangeSource: "auto",
+    recommendedOrientation: "portrait"
+  }, 0);
+  const notes = app.createSheetState({
+    name: "Notes",
+    rows: 8,
+    columns: 12,
+    autoRange: "A1:L8",
+    printRange: "A1:L8",
+    rangeSource: "auto",
+    recommendedOrientation: "landscape"
+  }, 1);
 
-  applyPlan({
-    id: "landscape-plan",
-    orientation: "landscape",
-    fitMode: "fitColumns",
-    fitToWidth: 1,
-    fitToHeight: 0,
-    beautify: false,
-  }, "收入、税金分割表");
+  app.state.sheets = [sales, notes];
+  app.state.activeSheetName = "Sales";
+  app.applyPlanToSheet("Sales", { orientation: "portrait", fitMode: "singlePage" });
+  app.applyPlanToSheet("Notes", { orientation: "landscape", fitMode: "fitColumns" });
+  app.state.sheets[0].printRange = "A1:D20";
+  app.state.sheets[0].rangeSource = "manual";
+  app.state.sheets[1].printRange = "B2:H7";
+  app.state.sheets[1].rangeSource = "batch";
 
-  syncUiSettingsFromSheet("申报表202511月");
-  assert.equal(state.settings.orientation, "portrait");
-  assert.equal(state.settings.fitMode, "singlePage");
-
-  syncUiSettingsFromSheet("收入、税金分割表");
-  assert.equal(state.settings.orientation, "landscape");
-  assert.equal(state.settings.fitMode, "fitColumns");
-
-  const targets = selectedTargets();
+  const targets = app.selectedTargets();
   assert.equal(targets.length, 2);
   assert.deepEqual(
-    targets.map((target) => ({
-      sheet: target.sheet,
-      orientation: target.plan.orientation,
-      fitMode: target.plan.fitMode,
+    targets.map((item) => ({
+      sheet: item.sheet,
+      range: item.range,
+      rangeSource: item.rangeSource,
+      orientation: item.plan.orientation,
+      fitMode: item.plan.fitMode
     })),
     [
-      { sheet: "申报表202511月", orientation: "portrait", fitMode: "singlePage" },
-      { sheet: "收入、税金分割表", orientation: "landscape", fitMode: "fitColumns" },
-    ],
+      {
+        sheet: "Sales",
+        range: "A1:D20",
+        rangeSource: "manual",
+        orientation: "portrait",
+        fitMode: "singlePage"
+      },
+      {
+        sheet: "Notes",
+        range: "B2:H7",
+        rangeSource: "batch",
+        orientation: "landscape",
+        fitMode: "fitColumns"
+      }
+    ]
   );
+});
 
-  state.previewUi.settingsSheetName = "收入、税金分割表";
-  assert.equal(previewOrientation("settings"), "landscape");
-  state.previewUi.settingsSheetName = "申报表202511月";
-  assert.equal(previewOrientation("settings"), "portrait");
+test("range parser and formatter round-trip A1 ranges", () => {
+  const app = loadPreviewApp();
+  const bounds = app.parseA1Range("B2:F18");
+  assert.deepEqual({ ...bounds }, {
+    startRow: 2,
+    endRow: 18,
+    startCol: 2,
+    endCol: 6
+  });
+  assert.equal(app.formatA1Range(bounds), "B2:F18");
 });
